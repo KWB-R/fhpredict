@@ -103,7 +103,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Get URLs to Available Radolan Files on DWD Server</h1>
-    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/radolan.R'><code>R/radolan.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/dwd_radolan.R'><code>R/dwd_radolan.R</code></a></small>
     <div class="hidden name"><code>get_radolan_urls.Rd</code></div>
     </div>
 
@@ -113,8 +113,36 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>get_radolan_urls</span>()</pre>
-        
+    <pre class="usage"><span class='fu'>get_radolan_urls</span>(<span class='kw'>date_start_daily</span> <span class='kw'>=</span> <span class='st'>"2006-10-01"</span>,
+  <span class='kw'>date_start_hourly</span> <span class='kw'>=</span> <span class='st'>"2005-06-01"</span>,
+  <span class='kw'>date_end_daily</span> <span class='kw'>=</span> <span class='kw pkg'>lubridate</span><span class='kw ns'>::</span><span class='fu'><a href='http://lubridate.tidyverse.org/reference/rollback.html'>rollback</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Sys.time'>Sys.Date</a></span>(), <span class='kw'>roll_to_first</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>),
+  <span class='kw'>date_end_hourly</span> <span class='kw'>=</span> <span class='no'>date_end_daily</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>date_start_daily</th>
+      <td><p>date string (yyyy-mm-dd) of first day of daily
+records. Default: "2006-10-01"</p></td>
+    </tr>
+    <tr>
+      <th>date_start_hourly</th>
+      <td><p>date string (yyyy-mm-dd) of first day of hourly
+records. Default: "2005-06-01"</p></td>
+    </tr>
+    <tr>
+      <th>date_end_daily</th>
+      <td><p>date string (yyyy-mm-dd) of last day of daily
+records. Defaults to the first day of the current month.</p></td>
+    </tr>
+    <tr>
+      <th>date_end_hourly</th>
+      <td><p>date string (yyyy-mm-dd) of last day of hourly
+records. Defaults to <code>date_end_daily</code>.</p></td>
+    </tr>
+    </table>
+    
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>list with "daily_historical_urls" and "hourly_historical_urls"</p>
@@ -124,6 +152,7 @@
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
           </ul>

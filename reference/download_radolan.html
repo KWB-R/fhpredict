@@ -103,7 +103,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Download Radolan Files on DWD Server</h1>
-    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/radolan.R'><code>R/radolan.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/dwd_radolan.R'><code>R/dwd_radolan.R</code></a></small>
     <div class="hidden name"><code>download_radolan.Rd</code></div>
     </div>
 
@@ -113,14 +113,15 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>download_radolan</span>(<span class='kw'>temporal_resolution</span> <span class='kw'>=</span> <span class='st'>"daily"</span>, <span class='kw'>export_dir</span> <span class='kw'>=</span> <span class='st'>"data"</span>)</pre>
+    <pre class="usage"><span class='fu'>download_radolan</span>(<span class='kw'>resolution</span> <span class='kw'>=</span> <span class='st'>"daily"</span>, <span class='kw'>export_dir</span> <span class='kw'>=</span> <span class='st'>"data"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>temporal_resolution</th>
-      <td><p>"daily" or "hourly" (default: daily)</p></td>
+      <th>resolution</th>
+      <td><p>temporal resolution, one of "daily" or "hourly" (default:
+"daily")</p></td>
     </tr>
     <tr>
       <th>export_dir</th>
@@ -134,6 +135,10 @@ directory)</p></td>
     <p>list with "daily_historical_urls" and "hourly_historical_urls"</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='fu'>download_radolan</span>(<span class='kw'>resolution</span> <span class='kw'>=</span> <span class='st'>"daily"</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -141,7 +146,9 @@ directory)</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>
