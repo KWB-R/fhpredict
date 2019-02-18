@@ -43,11 +43,13 @@ get_radolan_urls <- function(
   year_string <- function(start, end) date_string(start, end, format = "%Y")
   month_string <- function(start, end) date_string(start, end, format = "%m")
 
-  url_hist_file <- function(years, months, subdir, prefix, year, month = "01") {
+  url_hist_file <- function(
+    years, months, subdir, resolution, year, month = "01"
+  ) {
 
     urls <- sprintf(
       paste0("%s/%s/", subdir, "-%s%s.tar.gz"),
-      base_urls[[paste0(prefix, "_historical")]], years, years, months
+      base_urls[[paste0(resolution, "_historical")]], years, years, months
     )
 
     indices <- seq.int(which(years == year & months == month), length(urls))
@@ -64,14 +66,14 @@ get_radolan_urls <- function(
       years = year_string(date_start_daily, date_end_daily),
       months = month_string(date_start_daily, date_end_daily),
       subdir = "SF",
-      prefix = "daily",
+      resolution = "daily",
       year = "2009"
     ),
     hourly_historical_urls = url_hist_file(
       years = year_string(date_start_hourly, date_end_hourly),
       months = month_string(date_start_hourly, date_end_hourly),
       subdir = "RW",
-      prefix = "hourly",
+      resolution = "hourly",
       year = "2006"
     )
   )
