@@ -110,6 +110,7 @@ download_radolan <- function(resolution = "daily", export_dir = "data") {
       messageText = sprintf(
         'Download: "%s, historical" and save to %s', resolution, export_path
       ),
+      newLine = 3,
       expr = try(
         utils::download.file(url = url, destfile = export_path, mode = "wb")
       )
@@ -117,7 +118,9 @@ download_radolan <- function(resolution = "daily", export_dir = "data") {
   }
 
   kwb.utils::catAndRun(
-    sprintf("Download: '%s' historical radolan data", resolution), {
+    messageText = sprintf("Download: '%s' historical radolan data", resolution),
+    newLine = 3,
+    expr = {
       sapply(
         X = get_radolan_urls()[[paste0(resolution, "_historical_urls")]],
         FUN = download_historical,
