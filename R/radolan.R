@@ -1,9 +1,14 @@
 #' Get URLs to Available Radolan Files on DWD Server
 #'
+#' @importFrom magrittr %>%
+#' @importFrom kwb.utils resolve
+#' @importFrom lubridate rollback
+#' @importFrom stringr str_replace
+#' @importFrom fs dir_create
+#' @return list with "daily_historical_urls" and "hourly_historical_urls"
 #' @export
 get_radolan_urls <- function() {
 
-  `%>%` <- magrittr::`%>%`
 
   base_urls <- kwb.utils::resolve(list(
     base_url = "ftp://ftp-cdc.dwd.de/pub/CDC/grids_germany",
@@ -99,6 +104,16 @@ get_radolan_urls <- function() {
   )
 }
 
+#' Download Radolan Files on DWD Server
+#' @param temporal_resolution "daily" or "hourly" (default: daily)
+#' @param export_dir export directory (default: "data" in current working
+#' directory)
+#' @importFrom magrittr %>%
+#' @importFrom kwb.utils catAndRun
+#' @importFrom fs dir_create
+#' @importFrom utils download.file
+#' @return list with "daily_historical_urls" and "hourly_historical_urls"
+#' @export
 download_radolan <- function(
   temporal_resolution = "daily", export_dir = "data"
 ) {
@@ -127,14 +142,14 @@ download_radolan <- function(
 
     fs::dir_create(hourly_hist_dir, recursive = TRUE)
 
-    export_path <- sprintf("%s/%s", daily_hist_dir, basename(url))
+    export_path <- sprintf("%s/%s", hourly_hist_dir, basename(url))
 
     kwb.utils::catAndRun(
       messageText = sprintf(
         'Download: "daily, historical" and save to %s', export_path
       ),
       expr = try(
-        download.file(url = url, destfile = export_path, mode = "wb")
+        utils::download.file(url = url, destfile = export_path, mode = "wb")
       )
     )
   }
