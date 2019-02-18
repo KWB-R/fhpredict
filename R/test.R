@@ -100,64 +100,67 @@ get_radolan_urls <- function() {
 }
 
 download_radolan <- function(
-  temporal_resolution = "daily",
-  export_dir = "data"
+  temporal_resolution = "daily", export_dir = "data"
 ) {
+
+  download_daily_historical <- function(url) {
+
+    daily_hist_dir <- sprintf("%s/daily/historical", export_dir)
+
+    fs::dir_create(daily_hist_dir, recursive = TRUE)
+
+    export_path <- sprintf("%s/%s", daily_hist_dir, basename(url))
+
+    kwb.utils::catAndRun(
+      messageText = sprintf(
+        'Download: "daily, historical" and save to %s', export_path
+      ),
+      expr = try(
+        download.file(url = url, destfile = export_path, mode = "wb")
+      )
+    )
+  }
+
+  download_hourly_historical <- function(url) {
+
+    hourly_hist_dir <- sprintf("%s/hourly/historical", export_dir)
+
+    fs::dir_create(hourly_hist_dir, recursive = TRUE)
+
+    export_path <- sprintf("%s/%s", daily_hist_dir, basename(url))
+
+    kwb.utils::catAndRun(
+      messageText = sprintf(
+        'Download: "daily, historical" and save to %s', export_path
+      ),
+      expr = try(
+        download.file(url = url, destfile = export_path, mode = "wb")
+      )
+    )
+  }
 
   urls <-  get_radolan_urls()
 
-  if (temporal_resolution == "daily") {
+  message_text <- sprintf(
+    "Download: '%s' historical radolan data", temporal_resolution
+  )
 
-    kwb.utils::catAndRun(
-      messageText = "Download: 'daily' historical radolan data",
-      expr = {
-        sapply(urls$daily_historical_urls, FUN = function(url) {
+  url_key <- paste0(temporal_resolution, "_historical_urls")
 
-          daily_hist_dir <- sprintf("%s/daily/historical", export_dir)
+  resolution_to_function <- list(
+    daily = download_daily_historical,
+    hourly = download_hourly_historical
+  )
 
-          fs::dir_create(daily_hist_dir, recursive = TRUE)
-
-          export_path <- sprintf("%s/%s", daily_hist_dir, basename(url))
-
-          msg <- sprintf('Download: "daily, historical" and save to %s',
-                         export_path)
-
-          kwb.utils::catAndRun(messageText = msg, expr = {
-            try(download.file(url = url, destfile = export_path, mode = "wb"))
-          })
-        })
-      }
-    )
-
-  } else if (temporal_resolution == "hourly") {
-
-    kwb.utils::catAndRun(
-      messageText = "Download: 'hourly' historical radolan data",
-      expr = {
-        sapply(urls$hourly_historical_urls, FUN = function(url) {
-
-          hourly_hist_dir <- sprintf("%s/hourly/historical", export_dir)
-
-          fs::dir_create(hourly_hist_dir, recursive = TRUE)
-
-          export_path <- sprintf("%s/%s", daily_hist_dir, basename(url))
-
-          msg <- sprintf('Download: "daily, historical" and save to %s',
-                         export_path)
-
-          kwb.utils::catAndRun(
-            messageText = msg, expr = {
-              try(download.file(url = url, destfile = export_path, mode = "wb"))
-            }
-          )
-        })
-      }
-    )
-
-  } else {
+  if (is.null(resolution_to_function[[temporal_resolution]])) {
 
     stop("temporal_resolution must be one of 'daily', 'hourly'", call. = FALSE)
   }
+
+  kwb.utils::catAndRun(
+    messageText = message_text,
+    expr = sapply(urls[[url_key]], FUN = fun)
+  )
 }
 
 #download_radolan(temporal_resolution = "daily")
