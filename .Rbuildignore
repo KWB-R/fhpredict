@@ -1,0 +1,7 @@
+^codecov\.yml$
+^docs$
+^_pkgdown\.yml$
+^LICENSE\.md$
+^README\.md$
+^.travis\.yml$
+^appveyor\.yml$

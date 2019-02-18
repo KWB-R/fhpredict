@@ -1,0 +1,26 @@
+Package: fhpredict
+Title: R Package for the Project Flusshygiene
+Version: 0.0.0.9000
+Authors@R: 
+    c(person(given = "Wolfgang",
+             family = "Seis",
+             role = c("aut"),
+             email = "wolfgang.seis@kompetenz-wasser.de",
+             comment = c(ORCID = "0000-0002-7436-8575")),
+      person(given = "Hauke",
+             family = "Sonnenberg",
+             role = c("aut", "cre"),
+             email = "hauke.sonnenberg@kompetenz-wasser.de",
+             comment = c(ORCID = "0000-0001-9134-2871")),
+      person(given = "Kompetenzzentrum Wasser Berlin gGmbH (KWB)",
+             role = "cph"))
+Description: This R package provides all functions that are
+    required for the Web application that is developed within the
+    Flusshygiene project.
+License: MIT + file LICENSE
+URL: https://github.com/KWB-R/fhpredict
+BugReports: https://github.com/KWB-R/fhpredict/issues
+Encoding: UTF-8
+LazyData: true
+Suggests: 
+    covr
