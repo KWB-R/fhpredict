@@ -7,3 +7,5 @@
 ^appveyor\.yml$
 fhpredict.Rproj
 ^index\.Rmd$
+^.*\.Rproj$
+^\.Rproj\.user$
