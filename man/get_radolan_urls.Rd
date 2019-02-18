@@ -4,7 +4,23 @@
 \alias{get_radolan_urls}
 \title{Get URLs to Available Radolan Files on DWD Server}
 \usage{
-get_radolan_urls()
+get_radolan_urls(date_start_daily = "2006-10-01",
+  date_start_hourly = "2005-06-01",
+  date_end_daily = lubridate::rollback(Sys.Date(), roll_to_first = TRUE),
+  date_end_hourly = date_end_daily)
+}
+\arguments{
+\item{date_start_daily}{date string (yyyy-mm-dd) of first day of daily
+records. Default: "2006-10-01"}
+
+\item{date_start_hourly}{date string (yyyy-mm-dd) of first day of hourly
+records. Default: "2005-06-01"}
+
+\item{date_end_daily}{date string (yyyy-mm-dd) of last day of daily
+records. Defaults to the first day of the current month.}
+
+\item{date_end_hourly}{date string (yyyy-mm-dd) of last day of hourly
+records. Defaults to \code{date_end_daily}.}
 }
 \value{
 list with "daily_historical_urls" and "hourly_historical_urls"

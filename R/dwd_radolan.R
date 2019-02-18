@@ -17,7 +17,8 @@
 #' @export
 get_radolan_urls <- function(
   date_start_daily = "2006-10-01", date_start_hourly = "2005-06-01",
-  date_end = lubridate::rollback(Sys.Date(), roll_to_first = TRUE)
+  date_end_daily = lubridate::rollback(Sys.Date(), roll_to_first = TRUE),
+  date_end_hourly = date_end_daily
 ) {
 
   base_urls <- kwb.utils::resolve(list(
@@ -60,15 +61,15 @@ get_radolan_urls <- function(
   # Return download links for "hourly" and "daily" in a list
   list(
     daily_historical_urls = url_hist_file(
-      years = year_string(date_start_daily, date_end),
-      months = month_string(date_start_daily, date_end),
+      years = year_string(date_start_daily, date_end_daily),
+      months = month_string(date_start_daily, date_end_daily),
       subdir = "SF",
       prefix = "daily",
       year = "2009"
     ),
     hourly_historical_urls = url_hist_file(
-      years = year_string(date_start_hourly, date_end),
-      months = month_string(date_start_hourly, date_end),
+      years = year_string(date_start_hourly, date_end_hourly),
+      months = month_string(date_start_hourly, date_end_hourly),
       subdir = "RW",
       prefix = "hourly",
       year = "2006"
@@ -77,7 +78,8 @@ get_radolan_urls <- function(
 }
 
 #' Download Radolan Files on DWD Server
-#' @param temporal_resolution "daily" or "hourly" (default: daily)
+#' @param resolution temporal resolution, one of "daily" or "hourly" (default:
+#'   "daily")
 #' @param export_dir export directory (default: "data" in current working
 #' directory)
 #' @importFrom magrittr %>%
@@ -86,39 +88,27 @@ get_radolan_urls <- function(
 #' @importFrom utils download.file
 #' @return list with "daily_historical_urls" and "hourly_historical_urls"
 #' @export
-download_radolan <- function(
-  temporal_resolution = "daily", export_dir = "data"
-) {
+#' @examples
+#' \dontrun{download_radolan(resolution = "daily")}
+download_radolan <- function(resolution = "daily", export_dir = "data") {
 
-  download_daily_historical <- function(url) {
+  if (! resolution %in% c("daily", "hourly")) {
 
-    daily_hist_dir <- sprintf("%s/daily/historical", export_dir)
-
-    fs::dir_create(daily_hist_dir, recursive = TRUE)
-
-    export_path <- sprintf("%s/%s", daily_hist_dir, basename(url))
-
-    kwb.utils::catAndRun(
-      messageText = sprintf(
-        'Download: "daily, historical" and save to %s', export_path
-      ),
-      expr = try(
-        download.file(url = url, destfile = export_path, mode = "wb")
-      )
-    )
+    stop("resolution must be one of 'daily', 'hourly'", call. = FALSE)
   }
 
-  download_hourly_historical <- function(url) {
+  # Define helper function
+  download_historical <- function(url, resolution) {
 
-    hourly_hist_dir <- sprintf("%s/hourly/historical", export_dir)
+    hist_dir <- sprintf("%s/%s/historical", resolution, export_dir)
 
-    fs::dir_create(hourly_hist_dir, recursive = TRUE)
+    fs::dir_create(hist_dir, recursive = TRUE)
 
-    export_path <- sprintf("%s/%s", hourly_hist_dir, basename(url))
+    export_path <- sprintf("%s/%s", hist_dir, basename(url))
 
     kwb.utils::catAndRun(
       messageText = sprintf(
-        'Download: "daily, historical" and save to %s', export_path
+        'Download: "%s, historical" and save to %s', resolution, export_path
       ),
       expr = try(
         utils::download.file(url = url, destfile = export_path, mode = "wb")
@@ -126,28 +116,13 @@ download_radolan <- function(
     )
   }
 
-  urls <-  get_radolan_urls()
-
-  message_text <- sprintf(
-    "Download: '%s' historical radolan data", temporal_resolution
-  )
-
-  url_key <- paste0(temporal_resolution, "_historical_urls")
-
-  resolution_to_function <- list(
-    daily = download_daily_historical,
-    hourly = download_hourly_historical
-  )
-
-  if (is.null(resolution_to_function[[temporal_resolution]])) {
-
-    stop("temporal_resolution must be one of 'daily', 'hourly'", call. = FALSE)
-  }
-
   kwb.utils::catAndRun(
-    messageText = message_text,
-    expr = sapply(urls[[url_key]], FUN = fun)
+    sprintf("Download: '%s' historical radolan data", resolution), {
+      sapply(
+        X = get_radolan_urls()[[paste0(resolution, "_historical_urls")]],
+        FUN = download_historical,
+        resolution = resolution
+      )
+    }
   )
 }
-
-#download_radolan(temporal_resolution = "daily")
