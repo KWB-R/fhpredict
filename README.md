@@ -8,7 +8,7 @@
 
 This R package provides all functions that are
 required for the Web application that is developed within the
-Flusshygiene project.
+[Flusshygiene](https://www.kompetenz-wasser.de/en/project/flusshygiene/) project.
 
 ## Installation
 
