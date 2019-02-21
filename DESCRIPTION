@@ -35,7 +35,8 @@ Imports:
     fs,
     kwb.utils,
     lubridate,
-    stringr
+    stringr,
+    jsonlite
 Suggests:
     covr
 Remotes:
