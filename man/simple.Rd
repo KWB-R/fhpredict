@@ -10,7 +10,7 @@ simple(str = "{\\"foo\\":\\"bah\\"}")
 \item{str}{A JSON string (optional)}
 }
 \description{
-simple function to test io on stdin
+simple function to test the opencpu API for the project
 }
 \examples{
 \dontrun{simple()}
