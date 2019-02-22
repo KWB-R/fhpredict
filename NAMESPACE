@@ -3,6 +3,7 @@
 export("%>%")
 export(download_radolan)
 export(get_radolan_urls)
+export(simple)
 importFrom(fs,dir_create)
 importFrom(kwb.utils,catAndRun)
 importFrom(kwb.utils,resolve)
