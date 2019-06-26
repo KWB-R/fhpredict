@@ -26,13 +26,14 @@ License: MIT + file LICENSE
 URL: https://github.com/KWB-R/fhpredict
 BugReports: https://github.com/KWB-R/fhpredict/issues
 Imports: 
-    magrittr,
-    fs,
-    kwb.utils,
-    lubridate,
-    stringr
+    magrittr (>= 1.5),
+    fs (>= 1.2.6),
+    httr (>= 1.4.0),
+    kwb.utils (>= 0.4.2),
+    lubridate (>= 1.7.4),
+    stringr (>= 1.4.0)
 Suggests: 
-    covr
+    covr (>= 3.2.1)
 Remotes: 
     github::kwb-r/kwb.utils
 Encoding: UTF-8
