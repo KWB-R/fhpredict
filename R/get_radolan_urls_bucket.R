@@ -44,11 +44,9 @@ get_environment_var <- function(name)
 {
   value <- Sys.getenv(name)
 
-  if (! nzchar(value)) {
-    stop(call. = FALSE, sprintf(
-      "Please set the environment variable '%s'", name
-    ))
+  if (nzchar(value)) {
+    return(value)
   }
 
-  name
+  stop(sprintf("Please set the environment variable '%s'", name), call. = FALSE)
 }
