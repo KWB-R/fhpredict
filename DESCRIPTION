@@ -34,6 +34,7 @@ Imports:
     magrittr (>= 1.5),
     fs (>= 1.2.6),
     httr (>= 1.4.0),
+    jsonlite (>= 1.6),
     kwb.utils (>= 0.4.2),
     lubridate (>= 1.7.4),
     stringr (>= 1.4.0)
