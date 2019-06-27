@@ -18,11 +18,12 @@ same day as given in \code{from}}
 URLs are not filtered by time}
 }
 \description{
-This function requires an environment variable "TOKEN_PROD" to be set to the
-token that is required to access the "Production Endpoint". Use
+This function requires two environment variables to be set:
+"ENDPOINT_PROD": Endpoint to the service that returns URLs to Radolan
+files, "TOKEN_PROD": token that is required to access the endpoint. Use
 \code{usethis::edit_r_environ()} to open the .Renviron file in your home
-directory and add a line "TOKEN_PROD=..." where ... is replaced with the
-token.
+directory and add two lines "ENDPOINT_PROD=..." and "TOKEN_PROD=..." where
+... is replaced with the corresponding values.
 }
 \examples{
 \dontrun{
