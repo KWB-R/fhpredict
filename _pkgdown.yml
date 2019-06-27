@@ -12,6 +12,9 @@ authors:
 template:
   params:
     bootswatch: cerulean
+    docsearch:
+      api_key: eab9471a295adad1867e1368f918ef6d
+      index_name: kwb_fhpredict
 development:
   mode: auto
 

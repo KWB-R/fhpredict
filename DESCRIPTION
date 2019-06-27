@@ -1,7 +1,7 @@
 Package: fhpredict
 Title: R Package for the Project Flusshygiene
 Version: 0.0.0.9000
-Authors@R: 
+Authors@R:
     c(person(given = "Wolfgang",
              family = "Seis",
              role = "aut",
@@ -17,6 +17,11 @@ Authors@R:
              role = "ctb",
              email = "michael.rustler@kompetenz-wasser.de",
              comment = c(ORCID = "0000-0003-0647-7726")),
+      person(given = "Fabian",
+             family = "Mor\u00F3n Zirfas",
+             role = "ctb",
+             email = "moron-zirfas@technologiestiftung-berlin.de",
+             comment = c(ORCID = "0000-0002-9777-7283")),
       person(given = "Kompetenzzentrum Wasser Berlin gGmbH (KWB)",
              role = "cph"))
 Description: This R package provides all functions that are
