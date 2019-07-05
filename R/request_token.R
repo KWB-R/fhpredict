@@ -10,6 +10,8 @@
 #'   \item AUTH0_AUDIENCE
 #' }
 #'
+#' @keywords internal
+#'
 request_token <- function()
 {
   url <- get_environment_var("AUTH0_REQ_URL")

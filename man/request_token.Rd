@@ -15,3 +15,4 @@ The function requires the following envirionment variables to be set:
   \item AUTH0_AUDIENCE
 }
 }
+\keyword{internal}
