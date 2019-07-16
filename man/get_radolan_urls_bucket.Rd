@@ -9,13 +9,21 @@ get_radolan_urls_bucket(from = format(Sys.Date() - 1, "\%Y\%m\%d"),
 }
 \arguments{
 \item{from}{first day considered in format yyyymmdd, e.g. "20190625".
-Default: string representing "yesterday"}
+Default: string representing "yesterday". If only the year and the month
+or only the year are given, the first day of the month and the first day
+of the year, respectively, are assumed.}
 
 \item{to}{last day considered in format yyyymmdd, e.g. "20190625". Default:
-same day as given in \code{from}}
+same day as given in \code{from}. If only the year and the month
+or only the year are given, the last day of the month and the last day
+of the year, respectively, are assumed.}
 
 \item{time}{considered, given in format HHMM, e.g. "1050". Default: "", i.e.
 URLs are not filtered by time}
+
+\item{bathing_season_only}{= FALSE if \code{TRUE} (the default is
+\code{FALSE}), only URLs related to days between May 1 and September 30 are
+returned}
 }
 \description{
 This function requires two environment variables to be set:
