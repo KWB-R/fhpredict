@@ -25,10 +25,11 @@ request_token <- function()
     grant_type = "client_credentials"
   )))
 
-  #  When your token expires you can do this request
+  # Request a new token
   response <- httr::POST(url, config = config, body = body, encode = "json")
 
-  status <- httr::status_code(response) # should be 200
+  # Get the status code (200 means success)
+  status <- httr::status_code(response)
 
   if (status != 200) {
     message(sprintf(

@@ -38,15 +38,3 @@ get_radolan_urls_bucket <- function(
 
   sapply(httr::content(response, "parsed")$files, "[[", "url")
 }
-
-# get_environment_var ----------------------------------------------------------
-get_environment_var <- function(name)
-{
-  value <- Sys.getenv(name)
-
-  if (nzchar(value)) {
-    return(value)
-  }
-
-  stop(sprintf("Please set the environment variable '%s'", name), call. = FALSE)
-}
