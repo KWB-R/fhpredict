@@ -33,13 +33,15 @@
 #' }
 #'
 get_radolan_urls_bucket <- function(
-  from = format(Sys.Date() - 1, "%Y%m%d"), to = from, time = ""
+  from = format(Sys.Date() - 1, "%Y%m%d"), to = from, time = "",
+  bathing_season_only = FALSE
 )
 {
+  #kwb.utils::assignPackageObjects("fhpredict")
   endpoint <- get_environment_var("ENDPOINT_PROD")
   token <- get_environment_var("TOKEN_PROD")
 
-  url <- sprintf(
+  request <- sprintf(
     "%s?from=%s&to=%s&time=%s",
     endpoint,
     partial_date_string_to_date_string(from),
@@ -47,9 +49,18 @@ get_radolan_urls_bucket <- function(
     time
   )
 
-  response <- httr::GET(url, httr::add_headers("x-api-key" = token))
+  response <- httr::GET(request, httr::add_headers("x-api-key" = token))
 
-  sapply(httr::content(response, "parsed")$files, "[[", "url")
+  urls <- sapply(httr::content(response, "parsed")$files, "[[", "url")
+
+  start <- nchar("raa01-sf_10000-")
+  mmdd <- substr(basename(urls), start + 3, start + 6)
+
+  if (bathing_season_only) {
+    urls[mmdd > "0430" & mmdd < "1001"]
+  } else {
+    urls
+  }
 }
 
 # partial_date_string_to_date_string -------------------------------------------
@@ -57,6 +68,11 @@ partial_date_string_to_date_string <- function(x, to_first = TRUE)
 {
   stopifnot(is.character(x))
   stopifnot(length(x) == 1)
+
+  # Nothing to do if this already looks like yyyymmdd
+  if (grepl("^\\d{8}$", x)) {
+    return(x)
+  }
 
   suffix <- if (grepl("^\\d{6}$", x)) {
     ifelse(to_first, "01", last_day_of_yyyymm(x))
