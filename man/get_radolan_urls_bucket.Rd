@@ -5,7 +5,7 @@
 \title{Get URLs to Binary Radolan Filed From Flusshygiene's Amazon Bucket}
 \usage{
 get_radolan_urls_bucket(from = format(Sys.Date() - 1, "\%Y\%m\%d"),
-  to = from, time = "")
+  to = from, time = "", bathing_season_only = FALSE)
 }
 \arguments{
 \item{from}{first day considered in format yyyymmdd, e.g. "20190625".
@@ -24,6 +24,11 @@ URLs are not filtered by time}
 \item{bathing_season_only}{= FALSE if \code{TRUE} (the default is
 \code{FALSE}), only URLs related to days between May 1 and September 30 are
 returned}
+}
+\value{
+vector of character containing the URLs to the radolan files. The
+  date and time to which the data in the files relate are encoded in the
+  names of the returned vector elements in the format "yyyymmddHHMM".
 }
 \description{
 This function requires two environment variables to be set:

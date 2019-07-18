@@ -22,6 +22,9 @@
 #' @param bathing_season_only = FALSE if \code{TRUE} (the default is
 #'   \code{FALSE}), only URLs related to days between May 1 and September 30 are
 #'   returned
+#' @return vector of character containing the URLs to the radolan files. The
+#'   date and time to which the data in the files relate are encoded in the
+#'   names of the returned vector elements in the format "yyyymmddHHMM".
 #' @export
 #' @examples
 #' \dontrun{
@@ -53,14 +56,20 @@ get_radolan_urls_bucket <- function(
 
   urls <- sapply(httr::content(response, "parsed")$files, "[[", "url")
 
+  if (length(urls) == 0) {
+    return(character())
+  }
+
   start <- nchar("raa01-sf_10000-")
   mmdd <- substr(basename(urls), start + 3, start + 6)
 
   if (bathing_season_only) {
-    urls[mmdd > "0430" & mmdd < "1001"]
-  } else {
-    urls
+    urls <- urls[mmdd > "0430" & mmdd < "1001"]
   }
+
+  date_strings <- kwb.utils::extractSubstring("-(\\d{10})-", basename(urls), 1)
+
+  stats::setNames(urls, paste0("20", date_strings))
 }
 
 # partial_date_string_to_date_string -------------------------------------------
