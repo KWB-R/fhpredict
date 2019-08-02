@@ -79,3 +79,29 @@ postgres_request <- function(path, type = "GET", body = NULL)
     parsed$data
   }
 }
+
+# safe_postgres_get ------------------------------------------------------------
+safe_postgres_get <- function(path)
+{
+  result <- postgres_get(path)
+  stop_on_request_failure(result)
+  result
+}
+
+# safe_postgres_post -----------------------------------------------------------
+safe_postgres_post <- function(path, body)
+{
+  result <- postgres_post(path, body)
+  stop_on_request_failure(result)
+  result
+}
+
+# stop_on_request_failure ------------------------------------------------------
+stop_on_request_failure <- function(result)
+{
+  get_slot <- function(x) kwb.utils::selectElements(result, x)
+
+  if (! get_slot("success")) {
+    stop("HTTP request failed: ", get_slot("message"))
+  }
+}
