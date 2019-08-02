@@ -88,10 +88,10 @@ partial_date_string_to_date_string <- function(x, to_first = TRUE)
   } else if (grepl("^\\d{4}$", x)) {
     ifelse(to_first, "0101", "1231")
   } else {
-    stop("Unexpected input to partial_date_string_to_date_string(): ", x)
+    clean_stop("Unexpected input to partial_date_string_to_date_string(): ", x)
   }
 
-  return(paste0(x, suffix))
+  paste0(x, suffix)
 }
 
 # last_day_of_yyyymm -----------------------------------------------------------

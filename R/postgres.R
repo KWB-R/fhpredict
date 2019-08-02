@@ -102,6 +102,6 @@ stop_on_request_failure <- function(result)
   get_slot <- function(x) kwb.utils::selectElements(result, x)
 
   if (! get_slot("success")) {
-    stop("HTTP request failed: ", get_slot("message"))
+    clean_stop("HTTP request failed: ", get_slot("message"))
   }
 }

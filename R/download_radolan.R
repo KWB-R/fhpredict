@@ -15,7 +15,7 @@
 download_radolan <- function(resolution = "daily", export_dir = "data") {
 
   if (! resolution %in% c("daily", "hourly")) {
-    stop("resolution must be one of 'daily', 'hourly'", call. = FALSE)
+    clean_stop("resolution must be one of 'daily', 'hourly'")
   }
 
   # Define helper function

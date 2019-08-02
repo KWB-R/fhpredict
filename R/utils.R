@@ -13,7 +13,7 @@ flatten_recursive_list <- function(x)
     return(data.frame())
   }
 
-  x <- kwb.utils::excludeNULL(x)
+  x <- kwb.utils::excludeNULL(x, dbg = FALSE)
 
   x <- x[! sapply(x, is.list)]
 
@@ -31,5 +31,11 @@ get_environment_var <- function(name)
     return(value)
   }
 
-  stop(sprintf("Please set the environment variable '%s'", name), call. = FALSE)
+  clean_stop(sprintf("Please set the environment variable '%s'", name))
+}
+
+# clean_stop -------------------------------------------------------------------
+clean_stop <- function(...)
+{
+  stop(..., call. = FALSE)
 }
