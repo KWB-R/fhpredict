@@ -6,24 +6,28 @@
 #' the token is valid, it is returned. If the token is not valid or if there is
 #' no token stored locally, request a new token, store it locally and return it.
 #'
+#' @param dbg if \code{TRUE}, debug messages are shown
 #' @export
 #'
-get_postgres_api_token <- function()
+get_postgres_api_token <- function(dbg = FALSE)
 {
   file <- "~/.postgres_api_token"
 
   read_token <- function() kwb.utils::catAndRun(
     sprintf("Reading access token from '%s'", file),
+    dbg = dbg,
     readLines(file)
   )
 
   write_token <- function(token) kwb.utils::catAndRun(
     sprintf("Writing access token to '%s'", file),
+    dbg = dbg,
     writeLines(token, file)
   )
 
   new_token <- function() kwb.utils::catAndRun(
     "Requesting a new access token",
+    dbg = dbg,
     if (! is.null(token_data <- request_token())) {
       kwb.utils::selectElements(token_data, "access_token")
     }

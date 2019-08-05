@@ -4,7 +4,10 @@
 \alias{get_postgres_api_token}
 \title{Get a Valid Token to Access the Postgres API}
 \usage{
-get_postgres_api_token()
+get_postgres_api_token(dbg = FALSE)
+}
+\arguments{
+\item{dbg}{if \code{TRUE}, debug messages are shown}
 }
 \description{
 If a token is stored locally it is checked whether this token is valid. If
