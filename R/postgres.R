@@ -5,9 +5,9 @@
 #' @param path relative path, e.g. \code{bathingspots/1} to get data for
 #'   bathingspot with ID 1
 #' @return In case of success this function returns what
-#'   \code{httr::content(response, "parsed")} returns. In case of failure an
-#'   empty list with attribute \code{response} (containing the response object
-#'   returned by \code{\link[httr]{GET}}) is returned.
+#'   \code{httr::content(response, as = "parsed")} returns. In case of failure
+#'   an empty list with attribute \code{response} (containing the response
+#'   object returned by \code{\link[httr]{GET}}) is returned.
 #' @export
 #'
 postgres_get <- function(path)
@@ -24,7 +24,7 @@ postgres_get <- function(path)
 #' @param body list with the fields to be set as \code{key = value} pairs, e.g.
 #'   \code{list(name = "lirum larum")}
 #' @return In case of success this function returns what
-#'   \code{httr::content(response, "parsed")$data} returns. In case of failure
+#'   \code{httr::content(response, as = "parsed")} returns. In case of failure
 #'   an empty list with attribute \code{response} (containing the response
 #'   object returned by \code{\link[httr]{POST}}) is returned.
 #' @export
@@ -34,10 +34,27 @@ postgres_post <- function(path, body = NULL)
   postgres_request(path, "POST", body)
 }
 
+# postgres_delete --------------------------------------------------------------
+
+#' Send DELETE Request to Postgres API
+#'
+#' @param path relative path, e.g. \code{users/3/bathingspots/18/genericInputs}
+#'   to delete a generic input for bathing spot with id 18 of user with id 3
+#' @return In case of success this function returns what
+#'   \code{httr::content(response, as = "parsed")} returns. In case of failure
+#'   an empty list with attribute \code{response} (containing the response
+#'   object returned by \code{\link[httr]{DELETE}}) is returned.
+#' @export
+#'
+postgres_delete <- function(path)
+{
+  postgres_request(path, "DELETE")
+}
+
 # postgres_request -------------------------------------------------------------
 postgres_request <- function(path, type = "GET", body = NULL)
 {
-  stopifnot(type %in% c("GET", "POST"))
+  stopifnot(type %in% c("GET", "POST", "DELETE"))
 
   url <- paste0(assert_final_slash(get_environment_var("API_URL")), path)
 
@@ -49,35 +66,31 @@ postgres_request <- function(path, type = "GET", body = NULL)
 
     httr::GET(url, config = config)
 
+  } else if (type == "DELETE") {
+
+    httr::DELETE(url, config = config)
+
   } else if (type == "POST") {
 
     httr::POST(url, config = config, body = body, encode = "json")
   }
 
-  parsed <- httr::content(response, "parsed")
+  status <- httr::http_status(response)
 
-  status <- httr::status_code(response)
+  if (status$category != "Success") {
 
-  if (type == "GET" && status != 200) {
-    error <- kwb.utils::defaultIfNULL(parsed$message, "")
-    message(sprintf("GET request '%s' returned with error:\n'%s'", path, error))
+    message(
+      sprintf("%s request '%s' returned with error:\n", type, path),
+      sprintf("- status code: %d\n", httr::status_code(response)),
+      sprintf("- category: %s\n", status$category),
+      sprintf("- reason: %s\n", status$reason),
+      sprintf("- message: %s\n", status$message)
+    )
+
     return(structure(list(), response = response))
   }
 
-  if (type == "POST" && status != 201) {
-    error <- kwb.utils::defaultIfNULL(parsed$message, "")
-    message(sprintf("POST request '%s' returned with error:\n'%s'", path, error))
-    return(structure(list(), response = response))
-  }
-
-  if (type == "GET") {
-
-    parsed
-
-  } else {
-
-    parsed$data
-  }
+  httr::content(response, as = "parsed")
 }
 
 # safe_postgres_get ------------------------------------------------------------
@@ -99,9 +112,15 @@ safe_postgres_post <- function(path, body)
 # stop_on_request_failure ------------------------------------------------------
 stop_on_request_failure <- function(result)
 {
-  get_slot <- function(x) kwb.utils::selectElements(result, x)
+  response <- attr(result, "response")
 
-  if (! get_slot("success")) {
-    clean_stop("HTTP request failed: ", get_slot("message"))
+  if (is.null(response)) {
+    return()
+  }
+
+  status <- httr::http_status(response)
+
+  if (status$category != "Success") {
+    clean_stop("HTTP request failed: ", status$message)
   }
 }

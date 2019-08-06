@@ -12,9 +12,9 @@ bathingspot with ID 1}
 }
 \value{
 In case of success this function returns what
-  \code{httr::content(response, "parsed")} returns. In case of failure an
-  empty list with attribute \code{response} (containing the response object
-  returned by \code{\link[httr]{GET}}) is returned.
+  \code{httr::content(response, as = "parsed")} returns. In case of failure
+  an empty list with attribute \code{response} (containing the response
+  object returned by \code{\link[httr]{GET}}) is returned.
 }
 \description{
 Send GET Request to Postgres API

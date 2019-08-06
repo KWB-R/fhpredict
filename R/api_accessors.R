@@ -32,49 +32,21 @@ api_measurements_spot <- function(user_id = -1, spot_id = -1)
   })
 }
 
-# api_get_bathingspot ----------------------------------------------------------
-
-#' Get Bathing Spot(s)
-#'
-#' @param user_id user ID or -1L (all users)
-#' @param spot_id bathing spot ID or -1L (all bathing spots)
-#' @param pattern optional. Pattern matching the names of bathing spots to be
-#'   returned
-#' @export
-api_get_bathingspot <- function(user_id = -1L, spot_id = -1L, pattern = "")
+# check_user_id ----------------------------------------------------------------
+check_user_id <- function(user_id)
 {
-  #kwb.utils::assignPackageObjects("fhpredict")
+  if (user_id == -1L) {
+    return()
+  }
+
   users <- api_users()
 
-  if (user_id != -1L && ! user_id %in% users$id) {
+  if (! user_id %in% users$id) {
+
     print(kwb.utils::selectColumns(users, c("id", "firstName", "lastName")))
-    clean_stop("Invalid user_id: ", user_id, ". See above for possible users.")
+
+    clean_stop(sprintf(
+      "Invalid user_id: %d. See above for possible users.", user_id
+    ))
   }
-
-  spots <- run_cached(
-    name = path_bathingspot(user_id, spot_id, sep = "-"),
-    expr = {
-      result_all <- postgres_get(path_bathingspot(user_id, spot_id))
-      result_user <- postgres_get(path_bathingspot(user_id = 3, spot_id))
-      result_spot <- postgres_get(path_bathingspot(spot_id = 111))
-      result_user_spot <- postgres_get(path_bathingspot(user_id = 3, spot_id = 111))
-
-      str(result_all, 1)
-      str(result_user, 1)
-      str(result_spot, 1)
-      str(result_user_spot, 1)
-
-      spots <- do.call(rbind, lapply(result$data, function(x) {
-        kwb.utils::asNoFactorDataFrame(
-          kwb.utils::selectElements(x, c("id", "name"))
-        )
-      }))
-    }
-  )
-
-  if (pattern == "") {
-    return(spots)
-  }
-
-  spots[grepl(pattern, spots$name, ignore.case = TRUE), ]
 }
