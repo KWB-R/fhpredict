@@ -1,13 +1,12 @@
 # api_users --------------------------------------------------------------------
 api_users <- function()
 {
+  #kwb.utils::assignPackageObjects("fhpredict")
   run_cached(name = "users", {
 
     result <- safe_postgres_get("users")
 
-    users <- kwb.utils::safeRowBindAll(lapply(
-      result$data, flatten_recursive_list
-    ))
+    users <- flatten_recursive_list(x = result$data)
 
     first_columns <- c("id", "firstName", "lastName", "role")
 
