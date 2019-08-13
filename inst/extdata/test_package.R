@@ -143,3 +143,78 @@ if (FALSE)
 
   result
 }
+
+# What different results do I get? ---------------------------------------------
+if (FALSE)
+{
+  #kwb.utils::assignPackageObjects("fhpredict")
+
+  path_1 <- fhpredict:::path_bathingspot()
+  path_2 <- fhpredict:::path_bathingspot(user_id = 3)
+  path_3 <- fhpredict:::path_bathingspot(user_id = 3, spot_id = 18)
+
+  path_1 <- "bathingspots"
+  path_2 <- "users/3/bathingspots"
+  path_3 <- "users/3/bathingspots/18"
+  path_4 <- "bathingspots/18"
+
+  token <- get_postgres_api_token()
+  config <- httr::add_headers("Authorization" = paste("Bearer", token))
+
+  responses <- lapply(c(path_1, path_2, path_3, path_4), function(path) {
+
+    url <- paste0(assert_final_slash(get_environment_var("API_URL")), path)
+
+    httr::GET(url, config = config)
+  })
+
+  str(responses, 2)
+
+  sapply(responses, httr::status_code)
+
+  contents_raw <- lapply(responses, httr::content, as = "raw")
+  contents_text <- lapply(responses, httr::content, as = "text")
+  contents_parsed <- lapply(responses, httr::content, as = "parsed")
+
+  str(contents_raw, 1)
+  str(contents_text, 1)
+  str(contents_parsed, 2)
+
+  lapply(contents_text, substr, 1, 100)
+
+  d1 <- contents_parsed[[1]][[1]]
+  d2 <- contents_parsed[[2]]$data[[1]]
+
+  # d1 has "region" but no "user"
+  d1$region
+
+  # d2 has "user" but no "region"
+  d2$user
+
+  out1 <- capture.output(str(d1, 1))
+  out2 <- capture.output(str(d2, 1))
+
+  out1[out1 != out2]
+  out2[out1 != out2]
+
+  if (type == "GET" && status != 200) {
+    error <- kwb.utils::defaultIfNULL(parsed$message, "")
+    message(sprintf("GET request '%s' returned with error:\n'%s'", path, error))
+    return(structure(list(), response = response))
+  }
+
+  if (type == "POST" && status != 201) {
+    error <- kwb.utils::defaultIfNULL(parsed$message, "")
+    message(sprintf("POST request '%s' returned with error:\n'%s'", path, error))
+    return(structure(list(), response = response))
+  }
+
+  if (type == "GET") {
+
+    parsed
+
+  } else {
+
+    parsed$data
+  }
+}
