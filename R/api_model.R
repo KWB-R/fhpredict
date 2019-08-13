@@ -30,7 +30,7 @@ api_add_model <- function(user_id, spot_id, model, comment = "any comment?")
   model_id <- kwb.utils::selectElements(model_data[[1]], "id")
 
   message(
-    "The model has been stored in the database. It has been given model_id = ",
+    "The model has been stored in the database. It has been given the id ",
     model_id, "."
   )
 
@@ -96,7 +96,8 @@ api_get_model <- function(user_id, spot_id, model_id = -1L)
 
   if (length(index) == 0) {
     print(model_info)
-    stop("No such model_id: ", model_id, ". See above for available models.")
+    stop("There is no model with id ", model_id,
+         ". See above for available models.")
   }
 
   # Read the model back from the database

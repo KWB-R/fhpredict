@@ -7,28 +7,12 @@ if (FALSE)
   models <- fhpredict::api_get_model(3, 18)
 
   # Get meta information on the models
-  model_info <- kwb.utils::getAttribute(models, "model_info")
+  (model_info <- kwb.utils::getAttribute(models, "model_info"))
 
   # Select a model by looking at the comment
-  models[[which(model_info$comment == "Again only cars")[1]]]
+  models[[grep("Kleine", model_info$comment)[1]]]
 
-  # Delete a model
-  path <- fhpredict:::path_models(user_id = 3, spot_id = 18, model_id = 28)
-  path <- fhpredict:::path_models(user_id = 3, spot_id = 18)
-  fhpredict::postgres_delete(path)
-
-  # Provide a model object
-  model <- kwb.flusshygiene.app:::model_grunewaldturm
-
-  # Add the model object to the database
-  fhpredict::api_add_model(
-    user_id = 3, spot_id = 18, model = model,
-    comment = paste(
-      "Modell fuer die Badestelle Grunewaldturm, wie es im Paket ",
-      "kwb.flusshygiene.app gespeichert ist."
-    )
-  )
-
+  # Add something that is not a model
   model_id <- fhpredict:::api_add_model(
     user_id = 3, spot_id = 18, model = cars, comment = "Test mode"
   )
@@ -39,19 +23,24 @@ if (FALSE)
   # Nothing should have changed!
   identical(cars, my_cars)
 
-  # Now: Add a real STAN model
+  # Delete a model
+  fhpredict::api_delete_model(3, 18, 30)
+
+  # Now: Add a real STAN model object to the database
   model <- kwb.flusshygiene.app:::model_kleine_badewiese
 
-  # Save a new model in the database
   model_id <- fhpredict::api_add_model(
-    user_id = 3, spot_id = 18, model = model,
-    comment = "Brandneues Modell fuer die Kleine Badewiese"
+    user_id = 3,
+    spot_id = 18,
+    model = model,
+    comment = paste(
+      "Modell fuer die Kleine Badewiese, wie es im Paket ",
+      "kwb.flusshygiene.app gespeichert ist."
+    )
   )
 
   # Reading the model back from the database
-  model_back <- fhpredict::api_get_model(
-    user_id = 3, spot_id = 18, model_id = model_id
-  )
+  model_back <- fhpredict::api_get_model(3, 18, model_id)
 
   # The models are not identical
   identical(model, model_back)
@@ -63,9 +52,11 @@ if (FALSE)
   # Show the differences in the structures
   out_1[out_1 != out_2]
   out_2[out_1 != out_2]
+
+  # The difference is only in two environments. What does that mean?
 }
 
-# MAIN -------------------------------------------------------------------------
+# Do some test related to bathingspots -----------------------------------------
 if (FALSE)
 {
   path <- "bathingspots"
