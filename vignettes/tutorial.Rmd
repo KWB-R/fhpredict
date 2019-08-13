@@ -1,0 +1,108 @@
+---
+title: "Tutorial: How to use fhpredict"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Install the package
+
+Install the package fhpredict from GitHub, using the package remotes. Install
+from the "dev" branch to get the latest version:
+
+```{r eval = FALSE}
+# install.packages(remotes)
+
+remotes::install_github("kwb-r/fhpredict@dev")
+```
+
+## Models
+
+### Overview on available models
+
+Use the function `api_get_model()` to get an overview on the models that are
+stored in the postgres database. You need to pass the user id (here: 3) and
+the id of the bathing spot (here: 18) to the function.
+
+```{r}
+# Read all models that are stored for one bathing spot of one user
+models <- fhpredict::api_get_model(user_id = 3, spot_id = 18)
+```
+
+The function returns a list with each list element representing one model. 
+
+The metadata about the models are returned in the attribute "model_info" of the
+returned list:
+
+```{r}
+# Get and show meta information on the models
+(model_info <- kwb.utils::getAttribute(models, "model_info"))
+```
+
+Use the list of available models to lookup the id of the model that you want
+to fetch from the database. 
+
+### Fetching a model
+
+Use the model id to fetch a specific model from the database:
+
+```{r}
+# Load model with id 36 from the database
+model <- fhpredict::api_get_model(user_id = 3, spot_id = 18, model_id = 36)
+
+# Show the model
+model
+```
+
+### Saving a model
+
+For testing purposes we store a simple, small object instead of a STAN model.
+We use the `cars` dataset that is shipped with "base R". Use the function 
+`api_add_model()` to add the "model" to the database:
+
+```{r}
+# Look at the head of the cars dataset
+head(cars)
+
+# Add the cars dataset to the database
+model_id <- fhpredict:::api_add_model(
+  user_id = 3, spot_id = 18, model = cars, comment = "Cars in R"
+)
+```
+
+The function returns the id of the model that was given by the database. We
+stored the id in the variable `model_id`. To check if the model arrived in the
+database we read it back, again using `api_get_model()`
+
+```{r}
+# Read the "model" back
+my_cars <- fhpredict::api_get_model(3, 18, model_id)
+```
+
+We convince ourselves that what we get is identical to what we stored:
+
+```{r}
+# Nothing should have changed!
+identical(cars, my_cars)
+```
+
+### Deleting a model
+
+Use the function `api_delete_model()` to remove a model from the database. 
+Let's delete the model that we just added. Its id is given in the variable
+`model_id`.
+
+```{r eval}
+# Delete the model with the id given in "model_id"
+fhpredict::api_delete_model(3, 18, model_id)
+```
+

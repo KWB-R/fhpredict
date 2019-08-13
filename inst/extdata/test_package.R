@@ -14,7 +14,7 @@ if (FALSE)
 
   # Add something that is not a model
   model_id <- fhpredict:::api_add_model(
-    user_id = 3, spot_id = 18, model = cars, comment = "Test mode"
+    user_id = 3, spot_id = 18, model = cars, comment = "Mein Automodell"
   )
 
   # Read the fake model back
@@ -24,7 +24,7 @@ if (FALSE)
   identical(cars, my_cars)
 
   # Delete a model
-  fhpredict::api_delete_model(3, 18, 30)
+  fhpredict::api_delete_model(3, 18, 35)
 
   # Now: Add a real STAN model object to the database
   model <- kwb.flusshygiene.app:::model_kleine_badewiese
@@ -35,7 +35,7 @@ if (FALSE)
     model = model,
     comment = paste(
       "Modell fuer die Kleine Badewiese, wie es im Paket ",
-      "kwb.flusshygiene.app gespeichert ist."
+      "kwb.flusshygiene.app gespeichert ist. Soso."
     )
   )
 
@@ -59,24 +59,34 @@ if (FALSE)
 # Do some test related to bathingspots -----------------------------------------
 if (FALSE)
 {
-  path <- "bathingspots"
+  # Get all users
+  fhpredict:::api_get_users()
 
-  content <- fhpredict::postgres_get(path)
-
-  bathing_spots <- dplyr::bind_rows(lapply(content, function(x) {
-    kwb.utils::asNoFactorDataFrame(
-      x[! sapply(x, function(xx) is.null(xx) || is.list(xx))]
-    )
-  }))
+  # Get main info on all bathingspots
+  bathing_spots <- fhpredict::api_get_bathingspot(user_id = 3) #, limit = 10000)
 
   View(bathing_spots)
 
-  bathing_spots2 <- fhpredict:::api_bathingspots(user_id = 3)
+  spot <- fhpredict::api_get_bathingspot(user_id = 3, spot_id = 1441)
 
-  table(bathing_spots2$id %in% bathing_spots$id)
-  table(bathing_spots$id %in% bathing_spots2$id)
+  spot$KLEINE_BADEWIESE$
 
-  result <- fhpredict::postgres_get("bathingspots/10")
+  spot_res <- fhpredict::api_get_bathingspot(3, 1441, as = "response")
+
+  str(spot_42_res, 2)
+
+  jsonlite::toJSON(spot_42_res$data[[1]]$area)
+
+
+  str(spot_42_res$data[[1]]$area$coordinates)
+
+  get_area_coordinates(spot_42_res$data[[1]])
+
+
+  bathing_spot <- spot_42_res$data[[1]]
+
+  result <- fhpredict::postgres_get("bathingspots/100")
+  fhpredict:::extract_flat_information(result$data[[1]])
 
   path <- "users/3/bathingspots/18/genericInputs/1"
 
@@ -88,12 +98,11 @@ if (FALSE)
 
   fhpredict::postgres_get(path)
   fhpredict::postgres_post(path) # -> not yet implemented
+
   response <- kwb.utils::getAttribute(result, "response")
   str(response)
 
   str(fhpredict::postgres_get(path)$data)
-
-  View(bathing_spots)
 }
 
 # Test the cache and other things ----------------------------------------------
@@ -104,7 +113,7 @@ if (FALSE)
   clear_cache()
 
   # What users are available?
-  users <- api_users()
+  users <- api_get_users()
 
   # Get purification plant data
   spots <- get_bathingspots_for_user(user_id = 3)

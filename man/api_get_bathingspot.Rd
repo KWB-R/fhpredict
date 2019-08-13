@@ -4,12 +4,17 @@
 \alias{api_get_bathingspot}
 \title{Get Bathing Spot(s)}
 \usage{
-api_get_bathingspot(user_id = -1L, spot_id = -1L, pattern = "")
+api_get_bathingspot(user_id = -1L, spot_id = -1L, limit = NULL,
+  skip = NULL, pattern = "")
 }
 \arguments{
 \item{user_id}{user ID or -1L (all users)}
 
 \item{spot_id}{bathing spot ID or -1L (all bathing spots)}
+
+\item{limit}{passed to \code{fhpredict:::path_bathingspot}}
+
+\item{skip}{passed to \code{fhpredict:::path_bathingspot}}
 
 \item{pattern}{optional. Pattern matching the names of bathing spots to be
 returned}

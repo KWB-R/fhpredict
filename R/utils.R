@@ -4,6 +4,30 @@ assert_final_slash <- function(x)
   paste0(gsub("/+$", "", x), "/")
 }
 
+# extract_flat_information -----------------------------------------------------
+extract_flat_information <- function(x, keep_null = FALSE)
+{
+  stopifnot(is.list(x))
+
+  is_null <- sapply(x, is.null)
+
+  if (keep_null) {
+
+    # Replace NULL with NA
+    x[is_null] <- as.list(rep(NA, sum(is_null)))
+
+  } else {
+
+    x <- kwb.utils::excludeNULL(x, dbg = FALSE)
+  }
+
+  # Which elements are (non-list) vectors of length one?
+  is_length_one_vector <- ! sapply(x, is.list) & lengths(x) == 1
+
+  # Convert these elements to a data frame with one row
+  kwb.utils::asNoFactorDataFrame(x[is_length_one_vector])
+}
+
 # flatten_recursive_list -------------------------------------------------------
 flatten_recursive_list <- function(x)
 {
