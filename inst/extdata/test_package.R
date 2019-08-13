@@ -6,33 +6,31 @@ if (FALSE)
   # Read all models that are stored for one bathing spot of one user
   models <- fhpredict::api_get_model(3, 18)
 
-  # Get information on the models
+  # Get meta information on the models
   model_info <- kwb.utils::getAttribute(models, "model_info")
 
   # Select a model by looking at the comment
   models[[which(model_info$comment == "Again only cars")[1]]]
 
   # Delete a model
-  path <- fhpredict:::path_models(user_id = 3, spot_id = 18, model_id = 27)
+  path <- fhpredict:::path_models(user_id = 3, spot_id = 18, model_id = 28)
+  path <- fhpredict:::path_models(user_id = 3, spot_id = 18)
+  fhpredict::postgres_delete(path)
 
-  url <- paste0(assert_final_slash(get_environment_var("API_URL")), path)
+  # Provide a model object
+  model <- kwb.flusshygiene.app:::model_grunewaldturm
 
-  token <- get_postgres_api_token()
-  config <- httr::add_headers("Authorization" = paste("Bearer", token))
-  url <- "http://.../api/v1/users/3/bathingspots/18/models/1/"
-  response <- httr::DELETE(url, config = config)
+  # Add the model object to the database
+  fhpredict::api_add_model(
+    user_id = 3, spot_id = 18, model = model,
+    comment = paste(
+      "Modell fuer die Badestelle Grunewaldturm, wie es im Paket ",
+      "kwb.flusshygiene.app gespeichert ist."
+    )
+  )
 
-  parsed <- httr::content(response, "parsed")
-
-  status <- httr::status_code(response)
-
-#############################
-
-  fhpredict:::postgres_request
-
-  # Add a new fake model
   model_id <- fhpredict:::api_add_model(
-    user_id = 3, spot_id = 18, model = cars, comment = "Again only cars"
+    user_id = 3, spot_id = 18, model = cars, comment = "Test mode"
   )
 
   # Read the fake model back

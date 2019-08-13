@@ -2,6 +2,7 @@
 
 export("%>%")
 export(api_add_model)
+export(api_delete_model)
 export(api_get_bathingspot)
 export(api_get_model)
 export(download_radolan)

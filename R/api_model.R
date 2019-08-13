@@ -20,14 +20,19 @@ api_add_model <- function(user_id, spot_id, model, comment = "any comment?")
   )
 
   # The result should contain exactly one element, namely the model added
-  stopifnot(is.list(result), length(result) == 1)
+  model_data <- kwb.utils::selectElements(result, "data")
+
+  if (length(model_data) != 1) {
+    clean_stop("Not exactly one model was returned as expected!")
+  }
 
   # Get the ID of the newly created model
-  model_id <- kwb.utils::selectElements(result[[1]], "id")
+  model_id <- kwb.utils::selectElements(model_data[[1]], "id")
 
-  message(sprintf(
-    "The model with model_id = %d has been stored in the database.", model_id
-  ))
+  message(
+    "The model has been stored in the database. It has been given model_id = ",
+    model_id, "."
+  )
 
   # Return the model ID
   model_id
@@ -96,4 +101,34 @@ api_get_model <- function(user_id, spot_id, model_id = -1L)
 
   # Read the model back from the database
   text_to_model(text = kwb.utils::selectElements(models[[index]], "rmodel"))
+}
+
+# api_delete_model -------------------------------------------------------------
+
+#' Delete a Model from the Database
+#'
+#' This function deletes a model from the database.
+#'
+#' @param user_id user ID
+#' @param spot_id bathing spot ID
+#' @param model_id model ID
+#' @export
+
+api_delete_model <- function(user_id, spot_id, model_id)
+{
+  #kwb.utils::assignPackageObjects("fhpredict")
+  stopifnot(all(sapply(list(user_id, spot_id, model_id), is.numeric)))
+  stopifnot(all(sapply(list(user_id, spot_id, model_id), `>`, 0)))
+
+  result <- postgres_delete(path_models(user_id, spot_id, model_id))
+
+  stop_on_request_failure(result)
+
+  stopifnot(kwb.utils::selectElements(result, "success"))
+  stopifnot(length(kwb.utils::selectElements(result, "data")) == 1)
+
+  message(sprintf(
+    "The model with id %d (%s) was deleted.",
+    model_id, kwb.utils::selectElements(result$data[[1]], "comment")
+  ))
 }
