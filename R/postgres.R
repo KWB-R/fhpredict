@@ -110,7 +110,7 @@ safe_postgres_post <- function(path, body)
 }
 
 # stop_on_request_failure ------------------------------------------------------
-stop_on_request_failure <- function(result)
+stop_on_request_failure <- function(result, error_text = "")
 {
   response <- attr(result, "response")
 
@@ -121,6 +121,18 @@ stop_on_request_failure <- function(result)
   status <- httr::http_status(response)
 
   if (status$category != "Success") {
-    clean_stop("HTTP request failed: ", status$message)
+
+    status_message <- paste("HTTP request failed:", status$message)
+
+    text <- if (nzchar(error_text)) {
+
+      sprintf("%s (%s)", error_text, status_message)
+
+    } else {
+
+      status_message
+    }
+
+    clean_stop(text)
   }
 }
