@@ -17,7 +17,8 @@ api_get_bathingspot(user_id = -1L, spot_id = -1L, limit = NULL,
 \item{skip}{passed to \code{fhpredict:::path_bathingspot}}
 
 \item{pattern}{optional. Pattern matching the names of bathing spots to be
-returned}
+returned. Only considered if no \code{spot_id} is given (i.e. has its
+default value \code{-1L}).}
 }
 \description{
 Get Bathing Spot(s)
