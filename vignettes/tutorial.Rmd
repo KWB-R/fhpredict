@@ -1,6 +1,8 @@
 ---
 title: "Tutorial: How to use fhpredict"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    toc: true
 vignette: >
   %\VignetteIndexEntry{tutorial}
   %\VignetteEngine{knitr::rmarkdown}
@@ -37,6 +39,112 @@ users <- fhpredict::api_get_users()
 
 # Print the data frame
 users
+```
+
+## Bathing Spots
+
+### Overview on available bathing spots
+
+Use the function `api_get_bathingspot()` to get an overview on the bathing spots
+that are stored in the postgres database. You need to specify the user to whom
+the bathing spots are associated. See above for how to get a list of available
+user ids.
+
+```{r}
+# Get overview on the first "limit" bathingspots associated to user with id 3
+bathing_spots <- fhpredict::api_get_bathingspot(user_id = 3)
+
+# Number of bathing spots returned
+nrow(bathing_spots)
+```
+
+By default, only the first `r nrow(bathing_spots)` bathing spots are considered
+in the returned data frame. Set the argument `limit` to a high number so that
+you get a list of all available bathing spots:
+
+```{r}
+# Get overview on all bathing spots associated to user with id 3
+all_bathing_spots <- fhpredict::api_get_bathingspot(user_id = 3, limit = 10000)
+
+# Number of bathing spots returned
+nrow(all_bathing_spots)
+```
+
+### Fetching data related to one bathing spot
+
+Use the overview as retrieved above to lookup the bathing spot id that you are 
+interested in. Then, call `api_get_bathingspot()` again, this time by setting 
+the argument `spot_id` accordingly:
+
+```{r}
+# Lookup bathing spots of interest by name
+all_bathing_spots[grep("AHLBECK", all_bathing_spots$name), c("id", "name")]
+
+# Lookup the bathing spot id and store it in a variable spot_id
+spot_id <- 1170
+
+# Load the data available for the corresponding bathing spot id
+spot <- fhpredict::api_get_bathingspot(user_id = 3, spot_id = spot_id)
+```
+
+It is also possible to get a bathing spot without specifying a user id:
+
+```{r}
+# It is also possible to get a bathing spot without specifying a user id
+spot_no_user <- fhpredict::api_get_bathingspot(spot_id = spot_id)
+
+# Is this the same as what we get when a user is specified?
+identical(spot, spot_no_user)
+```
+
+### Accessing the properties of a bathing spot
+
+The variable `spot` now contains a list of properties of the selected bathing
+spot. As the list contains a lot of `NULL` elements, we remove these elements 
+before looking at the overall structure of the list:
+
+```{r}
+# Look at the overall structure of the list omitting any NULL element
+str(kwb.utils::excludeNULL(spot), 1)
+```
+
+Use the `$` operator to access the different properties of the bathing spot:
+
+```{r}
+spot$id
+spot$nameLong
+```
+
+#### Polygon defining the "catchment area"
+
+We are especially interested in the coordinates of the polygon that defines the
+area over which to average the rain data that is assumed to influence the
+water quality of the bathing spot. This information is stored in the list 
+element `area`. It can be transformed into a GeoJSON string using the function
+`toJSON()` frmo the jsonlite package. There is also a list element 
+`area_coordinates` that contains the same coordinates in the form of a two
+column data frame.
+
+```{r}
+# Polygon coordinates as a GeoJSON string
+jsonlite::toJSON(spot$area)
+
+# Polygon coordinates as a data frame
+head(spot$area_coordinates)
+```
+
+#### Water quality measurements
+
+The `spot` object contains the results of water quality measurements in its list
+element `measurements`. Use the (non-exported) function `flatten_recursive_list`
+to convert the corresponding recursive list into a data frame.
+
+```{r}
+# Provide the measurements related to the bathing spot
+measurements <- fhpredict:::flatten_recursive_list(spot$measurements)
+
+# Have a look at the first measurements (after removing empty columns)
+head(kwb.utils::removeEmptyColumns(measurements))
 ```
 
 ## Models
