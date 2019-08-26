@@ -121,7 +121,7 @@ We are especially interested in the coordinates of the polygon that defines the
 area over which to average the rain data that is assumed to influence the
 water quality of the bathing spot. This information is stored in the list 
 element `area`. It can be transformed into a GeoJSON string using the function
-`toJSON()` frmo the jsonlite package. There is also a list element 
+`toJSON()` from the jsonlite package. There is also a list element 
 `area_coordinates` that contains the same coordinates in the form of a two
 column data frame.
 
