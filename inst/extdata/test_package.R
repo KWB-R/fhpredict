@@ -58,37 +58,53 @@ if (FALSE)
   fhpredict::api_get_users()
 
   # Get main info on all bathingspots
-  bathing_spots <- fhpredict::api_get_bathingspot(user_id = 3) #, limit = 10000)
+  bathing_spots <- fhpredict::api_get_bathingspot(user_id = 3)
+  nrow(bathing_spots)
 
-  View(bathing_spots)
+  all_bathing_spots <- fhpredict::api_get_bathingspot(user_id = 3, limit = 10000)
+  nrow(all_bathing_spots)
+
+  #View(all_bathing_spots)
 
   spot <- fhpredict::api_get_bathingspot(user_id = 3, spot_id = 1441)
 
-  spot$KLEINE_BADEWIESE$
+  stopifnot(spot$id == 1441)
+  spot$nameLong
 
-  spot_res <- fhpredict::api_get_bathingspot(3, 1441, as = "response")
+  # Polygon as GeoJSON string
+  jsonlite::toJSON(spot$area)
 
-  str(spot_42_res, 2)
+  # Polygon coordinates as data frame
+  spot$area_coordinates
 
-  jsonlite::toJSON(spot_42_res$data[[1]]$area)
+  # It is also possible to get a bathing spot without specifying a user id
+  spot_100 <- fhpredict::api_get_bathingspot(spot_id = 100)
 
+  # Get the "flat" data out of the list
+  fhpredict:::extract_flat_information(spot_100)
 
-  str(spot_42_res$data[[1]]$area$coordinates)
+  # What kind of (non-NULL) data do we get?
+  str(kwb.utils::excludeNULL(spot_100), 2)
 
-  get_area_coordinates(spot_42_res$data[[1]])
+  # Does the list contain information from foreign database tables?
+  measurements <- fhpredict:::flatten_recursive_list(spot_100$measurements)
 
+  # Have a look at the measurements
+  View(measurements)
 
-  bathing_spot <- spot_42_res$data[[1]]
+  # Is this the same as what the measurement endpoint provides?
+  response <- fhpredict::postgres_get("users/3/bathingspots/100/measurements")
 
-  result <- fhpredict::postgres_get("bathingspots/100")
-  fhpredict:::extract_flat_information(result$data[[1]])
+  # Check the response
+  fhpredict:::stop_on_request_failure(response)
 
-  path <- "users/3/bathingspots/18/genericInputs/1"
+  # Convert list structure to a data frame
+  measurements2 <- fhpredict:::flatten_recursive_list(response$data)
 
-  (result <- fhpredict::postgres_post(
-    path, body = list(name = "lirum larum 99")
-  ))
+  # Compare with what the former request returned
+  identical(measurements2, measurements)
 
+  # Try to access the purification plant measurements...
   path <- "users/3/bathingspots/18/purificationPlants/1/measurement"
 
   fhpredict::postgres_get(path)
@@ -98,6 +114,13 @@ if (FALSE)
   str(response)
 
   str(fhpredict::postgres_get(path)$data)
+
+  # Try to access the generic inputs...
+  path <- "users/3/bathingspots/18/genericInputs/1"
+
+  (result <- fhpredict::postgres_post(
+    path, body = list(name = "lirum larum 99")
+  ))
 }
 
 # Test the cache and other things ----------------------------------------------
