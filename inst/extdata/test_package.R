@@ -1,16 +1,11 @@
-# Test adding and reading models -----------------------------------------------
+# Test adding and reading models (see also the vignette) -----------------------
 if (FALSE)
 {
   #kwb.utils::assignPackageObjects("fhpredict")
 
-  # Read all models that are stored for one bathing spot of one user
-  models <- fhpredict::api_get_model(3, 18)
-
-  # Get meta information on the models
-  (model_info <- kwb.utils::getAttribute(models, "model_info"))
-
-  # Select a model by looking at the comment
-  models[[grep("Kleine", model_info$comment)[1]]]
+  # Get meta information on all models that are stored for one bathing spot of
+  # one user
+  (model_info <- fhpredict::api_get_model(3, 18))
 
   # Add something that is not a model
   model_id <- fhpredict:::api_add_model(
@@ -24,7 +19,7 @@ if (FALSE)
   identical(cars, my_cars)
 
   # Delete a model
-  fhpredict::api_delete_model(3, 18, 35)
+  fhpredict::api_delete_model(3, 18, model_id)
 
   # Now: Add a real STAN model object to the database
   model <- kwb.flusshygiene.app:::model_kleine_badewiese
