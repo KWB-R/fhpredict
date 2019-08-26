@@ -22,7 +22,7 @@ from the "dev" branch to get the latest version:
 ```{r eval = FALSE}
 # install.packages(remotes)
 
-remotes::install_github("kwb-r/fhpredict@dev")
+remotes::install_github("kwb-r/fhpredict@dev", build_vignettes = TRUE)
 ```
 
 ## Users
@@ -114,8 +114,40 @@ Use the function `api_delete_model()` to remove a model from the database.
 Let's delete the model that we just added. Its id is given in the variable
 `model_id`.
 
-```{r eval}
+```{r}
 # Delete the model with the id given in "model_id"
 fhpredict::api_delete_model(3, 18, model_id)
+```
+
+## Purification Plants
+
+Use the following script to check if there are any purification plants defined.
+As there are many bathing spots, the script takes quite a long time and is not
+run here so that you do not see any outputs.
+
+```{r eval = FALSE}
+# Get meta information on all bathing spots
+bathing_spots <- fhpredict::api_get_bathingspot(user_id = 3, limit = 10000)
+
+# Number of bathing spots
+nrow(bathing_spots)
+
+# Access the "purificationPlants" endpoint for each bathing spot
+purification_plants <- lapply(bathing_spots$id, function(spot_id) {
+  
+  message("spot id = ", spot_id)
+  
+  result <- fhpredict::postgres_get(path = sprintf(
+    "%s/purificationPlants", 
+    fhpredict:::path_bathingspot(user_id = 3, spot_id = spot_id)
+  ))
+  
+  fhpredict:::stop_on_request_failure(result)
+  
+  result$data
+})
+
+# How many bathing spots have purification plants?
+sum(lengths(purification_plants) > 0)
 ```
 
