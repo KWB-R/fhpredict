@@ -58,50 +58,38 @@ api_add_model <- function(user_id, spot_id, model, comment = "any comment?")
 api_get_model <- function(user_id, spot_id, model_id = -1L)
 {
   #user_id = 3; spot_id = 18; model_id = 19
+  #kwb.utils::assignPackageObjects("fhpredict")
 
   path <- path_models(user_id, spot_id, model_id)
 
   # Send a GET request to the database
-  kwb.utils::catAndRun(
+  result <- kwb.utils::catAndRun(
     sprintf(
       "Reading %s from the database",
       if (model_id == -1L) "all models" else paste("model with id =", model_id)
     ),
-    expr = {
-      result <- postgres_get(path = path)
-    }
+    expr = postgres_get(path = path)
   )
 
-  stop_on_request_failure(result)
+  stop_on_request_failure(result, sprintf(
+    "There is no model with id %d. Call %s for available models.", model_id,
+    sprintf("api_get_model(user_id = %d, spot_id = %d)", user_id, spot_id)
+  ))
 
   models <- kwb.utils::selectElements(result, "data")
 
-  model_info <- kwb.utils::safeRowBindAll(lapply(models, function(x) {
-    x <- kwb.utils::excludeNULL(x, dbg = FALSE)
-    kwb.utils::asNoFactorDataFrame(x[setdiff(names(x), "rmodel")])
-  }))
-
-  # Return all models in a list
+  # If no model id was given, return the metadata about available models in a
+  # data frame
   if (model_id == -1L) {
 
-    result <- lapply(models, function(model_record) {
-      text_to_model(text = kwb.utils::selectElements(model_record, "rmodel"))
-    })
-
-    return(structure(result, model_info = model_info))
+    return(flatten_recursive_list(models))
   }
 
-  # Return only the requested model
-  index <- which(kwb.utils::selectColumns(model_info, "id") == model_id)
+  # There should be exactly one element in the list of models
+  stopifnot(length(models) == 1)
 
-  if (length(index) == 0) {
-    print(model_info)
-    stop("There is no model with id ", model_id,
-         ". See above for available models.")
-  }
-
-  # Read the model back from the database
-  text_to_model(text = kwb.utils::selectElements(models[[index]], "rmodel"))
+  # Convert the first list element to text
+  text_to_model(text = kwb.utils::selectElements(models[[1]], "rmodel"))
 }
 
 # api_delete_model -------------------------------------------------------------
