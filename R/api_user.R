@@ -1,4 +1,12 @@
 # api_get_users ----------------------------------------------------------------
+
+#' Get Overview on Available Users
+#'
+#' @return data frame with one row per user and variables describing the user,
+#'   such as: \code{id}, \code{firstName}, \code{lastName}, \code{rold},
+#'   \code{email}
+#' @export
+#'
 api_get_users <- function()
 {
   #kwb.utils::assignPackageObjects("fhpredict")

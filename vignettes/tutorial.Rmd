@@ -25,6 +25,20 @@ from the "dev" branch to get the latest version:
 remotes::install_github("kwb-r/fhpredict@dev")
 ```
 
+## Users
+
+In the data model of the app everything is assigned to a user identified by
+a unique identifier, the user id. To get an overview on available users and 
+their associated ids, run:
+
+```{r}
+# Get overview on available users in a data frame
+users <- fhpredict::api_get_users()
+
+# Print the data frame
+users
+```
+
 ## Models
 
 ### Overview on available models

@@ -55,7 +55,7 @@ if (FALSE)
 if (FALSE)
 {
   # Get all users
-  fhpredict:::api_get_users()
+  fhpredict::api_get_users()
 
   # Get main info on all bathingspots
   bathing_spots <- fhpredict::api_get_bathingspot(user_id = 3) #, limit = 10000)
