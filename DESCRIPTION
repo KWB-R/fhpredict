@@ -38,12 +38,13 @@ Imports:
     kwb.utils (>= 0.4.2),
     lubridate (>= 1.7.4),
     magrittr (>= 1.5),
+    rstanarm (>= 2.18.2),
     stringr (>= 1.4.0)
 Suggests: 
     covr (>= 3.2.1),
-    testthat,
-    knitr,
-    rmarkdown
+    testthat (>= 2.2.1),
+    knitr (>= 1.22),
+    rmarkdown (>= 1.14)
 Remotes: 
     github::kwb-r/kwb.utils
 Encoding: UTF-8
