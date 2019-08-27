@@ -1,19 +1,24 @@
 language: r
 sudo: required
 cache: packages
+# from https://github.com/stan-dev/rstanarm/blob/master/.travis.yml
 r_packages:
 - remotes
 - covr
 matrix:
   include:
-  - r: devel
-  - r: release
-    after_success:
-    - Rscript -e 'covr::codecov()'
-    before_deploy:
-    - Rscript -e 'remotes::install_cran("pkgdown")'
-    deploy:
-      provider: script
-      script: Rscript -e 'pkgdown::deploy_site_github(verbose = TRUE)'
+    - r: devel
+    - r: release
+      after_success:
+      - Rscript -e 'covr::codecov()'
+      before_deploy:
+      - Rscript -e 'remotes::install_cran("pkgdown")'
+      deploy:
+        provider: script
+        script: Rscript -e 'pkgdown::deploy_site_github(verbose = TRUE)'
       skip_cleanup: 'true'
-  - r: oldrel
+      on:
+        branch: 
+          - master
+          - dev
+    - r: oldrel
