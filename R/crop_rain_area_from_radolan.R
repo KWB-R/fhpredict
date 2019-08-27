@@ -31,8 +31,8 @@ crop_rain_area_from_radolan <- function(area,
   y <<- raster::crop(x = radolan_stack, y = pols)
 
   x <- raster::cellStats(y, stat_fun)
-  data.frame(SAMPLE_DATE = lubridate::ymd(substr(names(x),
-                                                 2, 7)), rain_mean = as.numeric(x))
+  data.frame(datum = lubridate::ymd(substr(names(x),
+                                           2, 7)), rain = as.numeric(x)/10)
 
 
 
