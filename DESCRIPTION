@@ -35,9 +35,11 @@ Imports:
     fs (>= 1.2.6),
     httr (>= 1.4.0),
     jsonlite (>= 1.6),
+    kwb.dwd (>= 0.0.0.9000),
     kwb.utils (>= 0.4.2),
     lubridate (>= 1.7.4),
     magrittr (>= 1.5),
+    raster (>= 2.8.19),
     rstanarm (>= 2.18.2),
     stringr (>= 1.4.0)
 Suggests: 
@@ -46,6 +48,7 @@ Suggests:
     knitr (>= 1.22),
     rmarkdown (>= 1.14)
 Remotes: 
+    github::kwb-r/kwb.dwd
     github::kwb-r/kwb.utils
 Encoding: UTF-8
 LazyData: true
