@@ -1,5 +1,5 @@
 # crop_area_from_radolan_stack -------------------------------------------------
-crop_area_from_radolan_stack <- function(area, radolan_stack, stat_fun)
+crop_area_from_radolan_stack <- function(area, radolan_stack)
 {
   # Convert the area list structure to a matrix with columns "lon" and "lat"
   lonlat <- area_to_longitude_latitude_matrix(area)
@@ -20,10 +20,7 @@ crop_area_from_radolan_stack <- function(area, radolan_stack, stat_fun)
   polygons_transformed <- sf::st_transform(x = polygons_sf, crs = crs_radolan)
 
   # Crop the polygon areas from the raster stack
-  cropped <- raster::crop(x = radolan_stack, y = polygons_transformed)
-
-  # Aggregate the cells of each raster point using the statistics function
-  raster::cellStats(cropped, stat_fun)
+  raster::crop(x = radolan_stack, y = polygons_transformed)
 }
 
 # area_to_longitude_latitude_matrix --------------------------------------------

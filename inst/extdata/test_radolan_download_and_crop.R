@@ -6,8 +6,8 @@ radolan_stack <- fhpredict:::read_radolan_raster_stack(
   sampling_time = "1050"
 )
 
-# The day information can be restored from the names of the layers
-as.Date(substr(names(radolan_stack), 2, 9), format = "%Y%m%d")
+# Show the raster images
+plot(radolan_stack)
 
 # Select Kleine Badewiese
 spot_id <- 1441
@@ -25,13 +25,22 @@ area <- area_from_db
 str(area_from_app)
 str(area_from_db)
 
-aggregated <- crop_area_from_radolan_stack(
+# Crop the polygons from each raster layer
+cropped <- fhpredict:::crop_area_from_radolan_stack(
   area = area,
   radolan_stack = radolan_stack,
   stat_fun = mean
 )
 
+# Get the mean over all layers for each point on the raster
+aggregated <- raster::cellStats(cropped, stat = mean)
+
+# The day information can be restored from the names of the layers
+dates <- as.Date(substr(names(radolan_stack), 2, 9), format = "%Y%m%d")
+
 rain_df <- data.frame(
-  datum = lubridate::ymd(substr(names(aggregated), 2, 7)),
+  datum = dates,
   rain = as.numeric(aggregated) / 10
 )
+
+str(structure(rain_df, units = list(rain = "mm/h")))
