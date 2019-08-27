@@ -47,8 +47,8 @@ get_radolan_urls_bucket <- function(
   request <- sprintf(
     "%s?from=%s&to=%s&time=%s",
     endpoint,
-    partial_date_string_to_date_string(from),
-    partial_date_string_to_date_string(to, to_first = FALSE),
+    partial_date_string_to_date_string(as.character(from)),
+    partial_date_string_to_date_string(as.character(to), to_first = FALSE),
     time
   )
 
