@@ -4,23 +4,16 @@ crop_area_from_radolan_stack <- function(area, radolan_stack)
   # Convert the area list structure to a matrix with columns "lon" and "lat"
   lonlat <- area_to_longitude_latitude_matrix(area)
 
-  # Define the coordinate reference system of the polygon coordinates
-  crs_polygon <- sp::CRS('+proj=longlat +datum=WGS84')
-
-  # Get the coordinate reference system of the radolan raster stack
-  crs_radolan <- as.character(raster::crs(radolan_stack))
-
-  # Create spatial polygon object from coordinates
-  polygons_spatial <- raster::spPolygons(lonlat, crs = crs_polygon)
-
-  # Convert spatial polygon object to simple feature object
-  polygons_sf <- sf::st_as_sf(polygons_spatial)
-
-  # Transform the coordinates of the simple feature object
-  polygons_transformed <- sf::st_transform(x = polygons_sf, crs = crs_radolan)
+  # Convert area structure given in coordinate reference system "crs_from"
+  # to polygons given in coordinate reference system "crs_to"
+  polygons <- coordinates_to_polygons(
+    lonlat = lonlat,
+    crs_from = sp::CRS('+proj=longlat +datum=WGS84'),
+    crs_to = as.character(raster::crs(radolan_stack))
+  )
 
   # Crop the polygon areas from the raster stack
-  raster::crop(x = radolan_stack, y = polygons_transformed)
+  raster::crop(x = radolan_stack, y = polygons)
 }
 
 # area_to_longitude_latitude_matrix --------------------------------------------
@@ -47,4 +40,17 @@ area_to_longitude_latitude_matrix <- function(area)
 
   # Return the matrix
   lonlat
+}
+
+# coordinates_to_polygons ------------------------------------------------------
+coordinates_to_polygons <- function(lonlat, crs_from, crs_to)
+{
+  # Create spatial polygon object from coordinates
+  polygons_spatial <- raster::spPolygons(lonlat, crs = crs_from)
+
+  # Convert spatial polygon object to simple feature object
+  polygons_sf <- sf::st_as_sf(polygons_spatial)
+
+  # Transform the coordinates of the simple feature object
+  sf::st_transform(x = polygons_sf, crs = crs_to)
 }

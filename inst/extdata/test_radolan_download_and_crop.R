@@ -1,4 +1,7 @@
-# MAIN -------------------------------------------------------------------------
+#
+# Read rain data of a time period, crop polygons and average over each cell
+#
+
 radolan_stack <- fhpredict:::read_radolan_raster_stack(
   start_year = 20170510,
   end_year = 20170515,
@@ -10,8 +13,7 @@ radolan_stack <- fhpredict:::read_radolan_raster_stack(
 plot(radolan_stack)
 
 # Select Kleine Badewiese
-spot_id <- 1441
-spot <- fhpredict::api_get_bathingspot(spot_id = spot_id)
+spot <- fhpredict::api_get_bathingspot(spot_id = 1441)
 spot$nameLong
 
 # Latitude and longitude are interchanged in the database!!!
@@ -20,17 +22,16 @@ spot$nameLong
 area_from_app <- rain_area
 area_from_db <- fhpredict:::convert_area_structure(spot_area = spot$area)
 
-area <- area_from_db
-
 str(area_from_app)
 str(area_from_db)
 
+#area <- area_from_db
+area <- area_from_app
+
 # Crop the polygons from each raster layer
-cropped <- fhpredict:::crop_area_from_radolan_stack(
-  area = area,
-  radolan_stack = radolan_stack,
-  stat_fun = mean
-)
+cropped <- fhpredict:::crop_area_from_radolan_stack(area, radolan_stack)
+
+plot(cropped, add = TRUE)
 
 # Get the mean over all layers for each point on the raster
 aggregated <- raster::cellStats(cropped, stat = mean)
