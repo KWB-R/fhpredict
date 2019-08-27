@@ -50,7 +50,7 @@ Suggests:
     knitr (>= 1.22),
     rmarkdown (>= 1.14)
 Remotes: 
-    github::kwb-r/kwb.dwd
+    github::kwb-r/kwb.dwd,
     github::kwb-r/kwb.utils
 Encoding: UTF-8
 LazyData: true
