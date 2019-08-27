@@ -2,20 +2,6 @@ language: r
 sudo: required
 cache: packages
 # from https://github.com/stan-dev/rstanarm/blob/master/.travis.yml
-before_install:
-- mkdir -p ~/.R/
-- echo "CXX14 = g++-7 -fPIC -flto=2" >> ~/.R/Makevars
-- echo "CXX14FLAGS = -mtune=native -march=native -Wno-unused-variable -Wno-unused-function -Wno-unused-local-typedefs -Wno-ignored-attributes -Wno-deprecated-declarations -Wno-attributes -O3" >> ~/.R/Makevars
-apt_packages:
-- libudunits2-dev
-- libgdal-dev
-- libspatialite-dev
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - g++-7
 r_packages:
 - remotes
 - covr
@@ -26,14 +12,14 @@ env:
 matrix:
   include:
     - r: devel
-   - r: release
-    after_success:
-    - Rscript -e 'covr::codecov()'
-    before_deploy:
-    - Rscript -e 'remotes::install_cran("pkgdown")'
-    deploy:
-      provider: script
-      script: Rscript -e 'pkgdown::deploy_site_github(verbose = TRUE)'
+    - r: release
+      after_success:
+      - Rscript -e 'covr::codecov()'
+      before_deploy:
+      - Rscript -e 'remotes::install_cran("pkgdown")'
+      deploy:
+        provider: script
+        script: Rscript -e 'pkgdown::deploy_site_github(verbose = TRUE)'
       skip_cleanup: 'true'
       on:
         branch: 
