@@ -5,10 +5,6 @@ cache: packages
 r_packages:
 - remotes
 - covr
-env:
-  global:
-    - MAKEFLAGS="-j 2"
-    - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 matrix:
   include:
     - r: devel
