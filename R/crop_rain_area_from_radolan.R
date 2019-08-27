@@ -7,14 +7,14 @@ crop_area_from_radolan_stack <- function(area, radolan_stack)
   # Define the coordinate reference system of the polygon coordinates
   crs_polygon <- sp::CRS('+proj=longlat +datum=WGS84')
 
-  # Create spatial polygon objects from coordinates
-  polygons_spatial <- raster::spPolygons(lonlat, crs = crs_polygon)
-
-  # Convert spatial polygon objects to simple feature objects
-  polygons_sf <- sf::st_as_sf(polygons_spatial)
-
   # Get the coordinate reference system of the radolan raster stack
   crs_radolan <- as.character(raster::crs(radolan_stack))
+
+  # Create spatial polygon object from coordinates
+  polygons_spatial <- raster::spPolygons(lonlat, crs = crs_polygon)
+
+  # Convert spatial polygon object to simple feature object
+  polygons_sf <- sf::st_as_sf(polygons_spatial)
 
   # Transform the coordinates of the simple feature object
   polygons_transformed <- sf::st_transform(x = polygons_sf, crs = crs_radolan)
