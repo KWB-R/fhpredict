@@ -1,39 +1,53 @@
-crop_rain_area_from_radolan <- function(area,
-                                        radolan_stack,
-                                        stat_fun
-)
+# crop_area_from_radolan_stack -------------------------------------------------
+crop_area_from_radolan_stack <- function(area, radolan_stack, stat_fun)
 {
-  # extracting and clean coords from area object
-  coord <- area$geometry$coordinates
-  names(coord[[1]]) <- paste0("point_", as.character(1:length(coord[[1]])))
-  coord <- bind_rows(coord)
+  # Convert the area list structure to a matrix with columns "lon" and "lat"
+  lonlat <- area_to_longitude_latitude_matrix(area)
 
-  for(i in names(coord))
-    names(coord[[i]]) <- c("lng", "lat")
+  # Define the coordinate reference system of the polygon coordinates
+  crs_polygon <- sp::CRS('+proj=longlat +datum=WGS84')
 
-  # defining coord vectors for polygon
-  lng <- c()
-  lat <- c()
+  # Create spatial polygon objects from coordinates
+  polygons_spatial <- raster::spPolygons(lonlat, crs = crs_polygon)
 
-  for(i in 1:length(names(coord)))
-  {
-    lng[i] <- coord[[i]][[1]]
-    lat[i] <- coord[[i]][[2]]
-  }
+  # Convert spatial polygon objects to simple feature objects
+  polygons_sf <- sf::st_as_sf(polygons_spatial)
 
-  lonlat <-cbind(lng, lat)
-  crdref <- CRS('+proj=longlat +datum=WGS84')
+  # Get the coordinate reference system of the radolan raster stack
+  crs_radolan <- as.character(raster::crs(radolan_stack))
 
-  pols <- spPolygons(lonlat, crs = crdref)
-  pols <- sf::st_as_sf(pols)
+  # Transform the coordinates of the simple feature object
+  polygons_transformed <- sf::st_transform(x = polygons_sf, crs = crs_radolan)
 
-  pols <- sf::st_transform(x = pols, crs = as.character(crs(radolan_stack)))
-  y <<- raster::crop(x = radolan_stack, y = pols)
+  # Crop the polygon areas from the raster stack
+  cropped <- raster::crop(x = radolan_stack, y = polygons_transformed)
 
-  x <- raster::cellStats(y, stat_fun)
-  data.frame(datum = lubridate::ymd(substr(names(x),
-                                           2, 7)), rain = as.numeric(x)/10)
+  # Aggregate the cells of each raster point using the statistics function
+  raster::cellStats(cropped, stat_fun)
+}
 
+# area_to_longitude_latitude_matrix --------------------------------------------
+area_to_longitude_latitude_matrix <- function(area)
+{
+  # Select the "geometry" element or stop
+  geometry <- kwb.utils::selectElements(area, "geometry")
 
+  # Select the "coordinates" element or stop
+  coordinates <- kwb.utils::selectElements(geometry, "coordinates")
 
+  # We expect the list of coordinates to have a length of one
+  stopifnot(length(coordinates) == 1)
+
+  # Get the first and only element of the list
+  coord <- coordinates[[1]]
+
+  # Convert the sublists into two-element vectors and rbind the vectors to a
+  # matrix
+  lonlat <- do.call(rbind, lapply(coord, function(x) c(x[[1]], x[[2]])))
+
+  # Set column names
+  colnames(lonlat) <- c("lon", "lat")
+
+  # Return the matrix
+  lonlat
 }

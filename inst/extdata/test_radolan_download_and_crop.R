@@ -1,5 +1,5 @@
 # MAIN -------------------------------------------------------------------------
-radolan_stack <- read_radolan_raster_stack(
+radolan_stack <- fhpredict:::read_radolan_raster_stack(
   start_year = 20170510,
   end_year = 20170515,
   bathing_season_only = TRUE,
@@ -18,15 +18,20 @@ spot$nameLong
 #select_relevant_rain_area(lng = spot$latitude, lat = spot$longitude)
 
 area_from_app <- rain_area
-area_from_db <- convert_area_structure(spot_area = spot$area)
+area_from_db <- fhpredict:::convert_area_structure(spot_area = spot$area)
 
 area <- area_from_db
 
 str(area_from_app)
 str(area_from_db)
 
-rain_df <- crop_rain_area_from_radolan(
+aggregated <- crop_area_from_radolan_stack(
   area = area,
   radolan_stack = radolan_stack,
   stat_fun = mean
+)
+
+rain_df <- data.frame(
+  datum = lubridate::ymd(substr(names(aggregated), 2, 7)),
+  rain = as.numeric(aggregated) / 10
 )
