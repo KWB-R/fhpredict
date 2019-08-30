@@ -1,10 +1,13 @@
 # path_bathingspot -------------------------------------------------------------
+
+#' Path to Bathing Spot API endpoint
+#'
 #' @keywords internal
 #' @examples
-#' path_bathingspot()
-#' path_bathingspot(spot_id = 3)
-#' path_bathingspot(user_id = 7)
-#' path_bathingspot(user_id = 22, spot_id = 33)
+#' fhpredict:::path_bathingspot()
+#' fhpredict:::path_bathingspot(spot_id = 3)
+#' fhpredict:::path_bathingspot(user_id = 7)
+#' fhpredict:::path_bathingspot(user_id = 22, spot_id = 33)
 path_bathingspot <- function(
   user_id = -1L, spot_id = -1L, limit = NULL, skip = NULL, sep = "/"
 )

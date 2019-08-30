@@ -259,3 +259,120 @@ purification_plants <- lapply(bathing_spots$id, function(spot_id) {
 sum(lengths(purification_plants) > 0)
 ```
 
+
+## Rains
+
+This chapter describes the following steps required to 
+
+- read binary rain data related to a given time interval from files on the 
+  Amazon File Server, 
+- spatially select and aggregate rain data that are related to a given bathing
+  spot
+- store the rain data in the Postgres database
+
+### Define bathing spot and reference time
+
+```{r}
+user_id <- 3
+spot_id <- 1441 # Kleine Badewiese
+from <- "20170510"
+to <- "20170515"
+sampling_time <- "1050"
+```
+
+### Read rain data from binary Radolan files
+
+```{r}
+# Read rain data for a certain time period
+radolan_stack <- fhpredict:::read_radolan_raster_stack(
+  start_year = from,
+  end_year = to,
+  bathing_season_only = TRUE,
+  sampling_time = sampling_time
+)
+
+# Show the raster images
+raster::plot(radolan_stack)
+```
+
+### Spacially select and aggregate rain data
+
+We want to use only the rain data that lie within a polygon around the bathing
+spot. This area is a piece of metadata that are stored in the Postgres database
+for each bathing spot. We first read all metadata about the bathing spot defined 
+above and provide the area information.
+
+```{r}
+# Get metadata about the current bathing spot
+spot <- fhpredict::api_get_bathingspot(spot_id = spot_id)
+
+# Check the name of the bathing spot
+spot$nameLong
+
+# Provide the polygon in the same structure as returned by
+# select_relevant_rain_area(), a function used by Wolfgang to define a polygon
+# using an R Shiny app
+area <- fhpredict:::convert_area_structure(spot_area = spot$area)
+
+# Show the structure of the area information (a recursive list)
+str(area, 2)
+```
+
+In the next step we use the area information to cut the area regions from the
+rain data that so far comprises whole Germany:
+
+```{r}
+# Crop the polygons from each raster layer
+cropped <- fhpredict:::crop_area_from_radolan_stack(area, radolan_stack)
+```
+
+We check the result by plotting the areas. **Important note**: It seems that not 
+the polygon is cut but the "extent", i.e. the smallest possible rectangle that 
+contains the polygon!
+
+```{r}
+raster::plot(cropped, add = TRUE)
+```
+
+We now calculate the average rain in each raster layer and provide a simple
+data frame:
+
+```{r}
+# Get the mean over all layers for each point on the raster
+aggregated <- raster::cellStats(cropped, stat = mean)
+
+# The day information can be restored from the names of the layers
+dates <- as.Date(substr(names(radolan_stack), 2, 9), format = "%Y%m%d")
+
+rain <- data.frame(
+  datum = dates,
+  rain = as.numeric(aggregated) / 10
+)
+```
+
+Let's have a look at the created data frame:
+
+```{r}
+rain
+```
+
+### Store the rain data in the Postgres database
+
+```{r}
+# Add rain data frame to the database
+rain_ids <- fhpredict::api_add_rain(user_id, spot_id, rain)
+
+# Read rain from database
+rain <- fhpredict::api_get_rain(user_id, spot_id)
+
+# What should we do with duplicates?
+sum(duplicated(kwb.utils::pasteColumns(rain, c("date", "dateTime"))))
+
+# Delete rain data with given rain record ids
+fhpredict::api_delete_rain(user_id, spot_id, rain_ids)
+
+# For simplicity reasons: delete all rain data before inserting new data
+fhpredict::api_delete_rain(user_id, spot_id)
+
+# TODO: Remove only the duplicates, keeping the most current values
+```
