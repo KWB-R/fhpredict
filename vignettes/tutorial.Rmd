@@ -12,7 +12,8 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width = 7
 )
 ```
 
@@ -262,21 +263,21 @@ sum(lengths(purification_plants) > 0)
 
 ## Rains
 
-This chapter describes the following steps required to 
+This chapter describes how to 
 
 - read binary rain data related to a given time interval from files on the 
   Amazon File Server, 
 - spatially select and aggregate rain data that are related to a given bathing
-  spot
-- store the rain data in the Postgres database
+  spot,
+- store the rain data in the Postgres database.
 
 ### Define bathing spot and reference time
 
 ```{r}
 user_id <- 3
 spot_id <- 1441 # Kleine Badewiese
-from <- "20170510"
-to <- "20170515"
+date_from <- "20170510"
+date_to <- "20170515"
 sampling_time <- "1050"
 ```
 
@@ -285,8 +286,8 @@ sampling_time <- "1050"
 ```{r}
 # Read rain data for a certain time period
 radolan_stack <- fhpredict:::read_radolan_raster_stack(
-  start_year = from,
-  end_year = to,
+  date_from = date_from,
+  date_to = date_to,
   bathing_season_only = TRUE,
   sampling_time = sampling_time
 )
@@ -331,7 +332,7 @@ the polygon is cut but the "extent", i.e. the smallest possible rectangle that
 contains the polygon!
 
 ```{r}
-raster::plot(cropped, add = TRUE)
+raster::plot(cropped)
 ```
 
 We now calculate the average rain in each raster layer and provide a simple

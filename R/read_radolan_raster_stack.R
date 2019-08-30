@@ -1,12 +1,12 @@
 # read_radolan_raster_stack ----------------------------------------------------
 read_radolan_raster_stack <- function(
-  start_year, end_year, bathing_season_only, sampling_time
+  date_from, date_to, bathing_season_only, sampling_time
 )
 {
   # Get URLs to Radolan files
   urls <- get_radolan_urls_bucket(
-    from = as.character(start_year),
-    to = as.character(end_year),
+    from = as.character(date_from),
+    to = as.character(date_to),
     time = sampling_time,
     bathing_season_only = bathing_season_only
   )

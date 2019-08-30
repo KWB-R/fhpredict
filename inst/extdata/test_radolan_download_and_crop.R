@@ -9,8 +9,8 @@ sampling_time <- "1050"
 # Read rain data (averaged over cells within  bathing spot related polygon) for
 # a certain time period
 radolan_stack <- fhpredict:::read_radolan_raster_stack(
-  start_year = 20170510,
-  end_year = 20170515,
+  date_from = 20170510,
+  date_to = 20170515,
   bathing_season_only = TRUE,
   sampling_time = sampling_time
 )
