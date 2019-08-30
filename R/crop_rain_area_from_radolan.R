@@ -6,14 +6,14 @@ crop_area_from_radolan_stack <- function(area, radolan_stack)
 
   # Convert area structure given in coordinate reference system "crs_from"
   # to polygons given in coordinate reference system "crs_to"
-  polygons <- coordinates_to_polygons(
+  polygon <- coordinates_to_polygon(
     lonlat = lonlat,
     crs_from = sp::CRS('+proj=longlat +datum=WGS84'),
     crs_to = as.character(raster::crs(radolan_stack))
   )
 
   # Crop the polygon areas from the raster stack
-  raster::crop(x = radolan_stack, y = polygons)
+  raster::crop(x = radolan_stack, y = polygon)
 }
 
 # area_to_longitude_latitude_matrix --------------------------------------------
@@ -42,8 +42,8 @@ area_to_longitude_latitude_matrix <- function(area)
   lonlat
 }
 
-# coordinates_to_polygons ------------------------------------------------------
-coordinates_to_polygons <- function(lonlat, crs_from, crs_to)
+# coordinates_to_polygon -------------------------------------------------------
+coordinates_to_polygon <- function(lonlat, crs_from, crs_to)
 {
   # Create spatial polygon object from coordinates
   polygons_spatial <- raster::spPolygons(lonlat, crs = crs_from)
