@@ -1,4 +1,5 @@
 # path_bathingspot -------------------------------------------------------------
+#' @keywords internal
 #' @examples
 #' path_bathingspot()
 #' path_bathingspot(spot_id = 3)
@@ -40,4 +41,16 @@ path_models <- function(user_id, spot_id, model_id = -1L)
   }
 
   sprintf("%s/%d", path, model_id)
+}
+
+# path_rains -------------------------------------------------------------------
+path_rains <- function(user_id, spot_id, rain_id = -1L)
+{
+  path <- paste0(path_bathingspot(user_id, spot_id), "/rains")
+
+  if (rain_id == -1L) {
+    return(path)
+  }
+
+  sprintf("%s/%d", path, rain_id)
 }
