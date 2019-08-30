@@ -30,7 +30,7 @@ if (FALSE)
     model = model,
     comment = paste(
       "Modell fuer die Kleine Badewiese, wie es im Paket ",
-      "kwb.flusshygiene.app gespeichert ist. Soso."
+      "kwb.flusshygiene.app gespeichert ist."
     )
   )
 
