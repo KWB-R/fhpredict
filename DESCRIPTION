@@ -35,7 +35,7 @@ Imports:
     fs (>= 1.2.6),
     httr (>= 1.4.0),
     jsonlite (>= 1.6),
-    kwb.dwd (>= 0.0.0.9000),
+    kwb.dwd (>= 0.1.0),
     kwb.utils (>= 0.4.2),
     lubridate (>= 1.7.4),
     magrittr (>= 1.5),
