@@ -4,6 +4,22 @@ assert_final_slash <- function(x)
   paste0(gsub("/+$", "", x), "/")
 }
 
+# clean_stop -------------------------------------------------------------------
+clean_stop <- function(...)
+{
+  stop(..., call. = FALSE)
+}
+
+# convert_time_columns ---------------------------------------------------------
+convert_time_columns <- function(df, columns = c("createdAt", "updatedAt"))
+{
+  stopifnot(is.data.frame(df))
+
+  df[columns] <- lapply(df[columns], iso_timestamp_to_local_posix)
+
+  df
+}
+
 # extract_flat_information -----------------------------------------------------
 extract_flat_information <- function(x, keep_null = FALSE)
 {
@@ -90,8 +106,12 @@ get_environment_var <- function(name)
   clean_stop(sprintf("Please set the environment variable '%s'", name))
 }
 
-# clean_stop -------------------------------------------------------------------
-clean_stop <- function(...)
+# iso_timestamp_to_local_posix -------------------------------------------------
+iso_timestamp_to_local_posix <- function(x, tzone = "Europe/Berlin")
 {
-  stop(..., call. = FALSE)
+  stopifnot(is.character(x))
+
+  times <- as.POSIXct(x, format = "%Y-%m-%dT%H:%M:%OSZ", tz = "UTC")
+
+  structure(times, tzone = tzone)
 }
