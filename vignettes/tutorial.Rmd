@@ -367,7 +367,7 @@ rain_ids <- fhpredict::api_add_rain(user_id, spot_id, rain)
 rain <- fhpredict::api_get_rain(user_id, spot_id)
 
 # What should we do with duplicates?
-sum(duplicated(kwb.utils::pasteColumns(rain, c("date", "dateTime"))))
+sum(duplicated(kwb.utils::selectColumns(rain, "dateTime")))
 
 # Delete rain data with given rain record ids
 fhpredict::api_delete_rain(user_id, spot_id, rain_ids)

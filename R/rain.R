@@ -100,9 +100,16 @@ api_get_rain <- function(user_id, spot_id)
     return(data.frame())
   }
 
-  kwb.utils::catAndRun("Converting time columns from text to POSIXct", {
-    convert_time_columns(rain)
+  rain <- kwb.utils::catAndRun("Converting time columns from text to POSIXct", {
+    rain <- convert_time_columns(rain)
+    rain$dateTime = as.POSIXct(
+      x = kwb.utils::pasteColumns(rain, c("date", "dateTime")),
+      tz = "Europe/Berlin"
+    )
+    rain
   })
+
+  kwb.utils::removeColumns(rain, c("date", "comment"))
 }
 
 # api_delete_rain --------------------------------------------------------------
