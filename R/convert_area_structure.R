@@ -1,5 +1,5 @@
 # convert_area_structure -------------------------------------------------------
-convert_area_structure <- function(spot_area, swap_lat_long = TRUE)
+convert_area_structure <- function(spot_area, swap_lat_long = FALSE)
 {
   # Extract the element "type"
   area_type <- kwb.utils::selectElements(spot_area, "type")
