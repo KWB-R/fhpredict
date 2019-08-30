@@ -1,9 +1,11 @@
 language: r
-before_install:
-  - sudo apt-get install -y libudunits2-dev libgdal1-dev gdal-bin libproj-dev proj-data proj-bin libgeos-dev
 sudo: required
 cache: packages
 # from https://github.com/stan-dev/rstanarm/blob/master/.travis.yml
+apt_packages:
+- libudunits2-dev
+- libgdal-dev
+- libspatialite-dev
 r_packages:
 - remotes
 - covr
