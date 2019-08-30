@@ -4,7 +4,8 @@
 \alias{api_add_rain}
 \title{Add Rain Data Frame to Postgres Database Via API}
 \usage{
-api_add_rain(user_id, spot_id, rain, time_string = "12:00:00")
+api_add_rain(user_id, spot_id, rain, time_string = "12:00:00",
+  comment = NULL)
 }
 \arguments{
 \item{user_id}{user id}

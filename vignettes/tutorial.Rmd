@@ -260,7 +260,6 @@ purification_plants <- lapply(bathing_spots$id, function(spot_id) {
 sum(lengths(purification_plants) > 0)
 ```
 
-
 ## Rains
 
 This chapter describes how to 
@@ -271,14 +270,37 @@ This chapter describes how to
   spot,
 - store the rain data in the Postgres database.
 
-### Define bathing spot and reference time
+Define bathing spot and reference time:
 
 ```{r}
 user_id <- 3
 spot_id <- 1441 # Kleine Badewiese
-date_from <- "20170510"
-date_to <- "20170515"
 sampling_time <- "1050"
+```
+
+There is a top-level function that can be used to perform all steps at once.
+For the single steps that are performed within this function, see below.
+
+In the following we reduce the range of days for which to load rain data to 
+three days. Setting `date_range` to `NULL` will instead load rain data for the
+whole range of dates for which measurements are available.
+
+```{r}
+# Function to be triggered by the user: Provide rain data for the bathing spot
+system.time(rain_ids <- fhpredict::provide_rain_data_for_bathing_spot(
+  user_id = 3, spot_id = 1441, sampling_time = "1050",
+  date_range = as.Date(c("2008-07-01", "2009-07-03")),
+  comment = "test-001"
+))
+```
+
+Check that the data arrived by reloading it from the database
+
+## Rains: Details
+
+```{r}
+date_from <- "20080701"
+date_to <- "20080703"
 ```
 
 ### Read rain data from binary Radolan files

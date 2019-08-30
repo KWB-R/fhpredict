@@ -8,6 +8,7 @@
 #'   \code{rain})
 #' @param time_string time to which rain data values relate, default:
 #'   \code{"12:00:00"}
+#' @param comment character string to be stored in database field "comment"
 #' @export
 #' @examples
 #' \dontrun{
@@ -28,7 +29,7 @@
 #' }
 #'
 api_add_rain <- function(
-  user_id, spot_id, rain, time_string = "12:00:00"
+  user_id, spot_id, rain, time_string = "12:00:00", comment = NULL
 )
 {
   stopifnot(is.data.frame(rain))
@@ -43,7 +44,8 @@ api_add_rain <- function(
       spot_id,
       date_string = date_strings[i],
       time_string = time_string,
-      value = values[i]
+      value = values[i],
+      comment = comment
     )
   })
 
@@ -53,7 +55,7 @@ api_add_rain <- function(
 
 # add_rain_datapoint_to_database -----------------------------------------------
 add_rain_datapoint_to_database <- function(
-  user_id, spot_id, date_string, time_string, value
+  user_id, spot_id, date_string, time_string, value, comment = NULL
 )
 {
   result <- postgres_post(
@@ -62,7 +64,7 @@ add_rain_datapoint_to_database <- function(
       value = value,
       dateTime = time_string,
       date = date_string,
-      comment = NULL
+      comment = comment
     )
   )
 

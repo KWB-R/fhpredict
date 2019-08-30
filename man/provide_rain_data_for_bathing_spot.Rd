@@ -5,7 +5,8 @@
 \title{Provide Rain Data for one Bathing Spot}
 \usage{
 provide_rain_data_for_bathing_spot(user_id, spot_id,
-  sampling_time = "1050", date_range = NULL)
+  sampling_time = "1050", date_range = NULL,
+  comment = paste("imported:", Sys.time()))
 }
 \arguments{
 \item{user_id}{user id}
@@ -19,6 +20,9 @@ corresponding Radolan files.}
 rain data to be loaded. If \code{NULL} (the default) the range of dates is
 determined from the range of dates for which water quality measurements are
 available.}
+
+\item{comment}{character string to be written to the field "comment" of the
+rain database table.}
 }
 \value{
 vector of integer containing the IDs of the records inserted into the

@@ -16,12 +16,15 @@
 #'   rain data to be loaded. If \code{NULL} (the default) the range of dates is
 #'   determined from the range of dates for which water quality measurements are
 #'   available.
+#' @param comment character string to be written to the field "comment" of the
+#'   rain database table.
 #' @return vector of integer containing the IDs of the records inserted into the
 #'   "rains" database table.
 #' @export
 #'
 provide_rain_data_for_bathing_spot <- function(
-  user_id, spot_id, sampling_time = "1050", date_range = NULL
+  user_id, spot_id, sampling_time = "1050", date_range = NULL,
+  comment = paste("imported:", Sys.time())
 )
 {
   # Get metadata about the current bathing spot
@@ -67,7 +70,8 @@ provide_rain_data_for_bathing_spot <- function(
   # Add rain data frame to the database
   fhpredict::api_add_rain(
     user_id, spot_id, rain,
-    time_string = sampling_time_to_time_string(sampling_time)
+    time_string = sampling_time_to_time_string(sampling_time),
+    comment = comment
   )
 }
 
