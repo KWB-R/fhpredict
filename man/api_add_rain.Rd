@@ -17,6 +17,8 @@ api_add_rain(user_id, spot_id, rain, time_string = "12:00:00",
 
 \item{time_string}{time to which rain data values relate, default:
 \code{"12:00:00"}}
+
+\item{comment}{character string to be stored in database field "comment"}
 }
 \description{
 Add Rain Data Frame to Postgres Database Via API

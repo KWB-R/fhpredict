@@ -289,12 +289,20 @@ whole range of dates for which measurements are available.
 # Function to be triggered by the user: Provide rain data for the bathing spot
 system.time(rain_ids <- fhpredict::provide_rain_data_for_bathing_spot(
   user_id = 3, spot_id = 1441, sampling_time = "1050",
-  date_range = as.Date(c("2008-07-01", "2009-07-03")),
-  comment = "test-001"
+  date_range = as.Date(c("2008-07-01", "2008-07-03")),
+  comment = "testdata-tutorial"
 ))
 ```
 
-Check that the data arrived by reloading it from the database
+Check that the data arrived by reloading them from the database:
+
+```{r}
+# Reload rain data from the database
+rain <- fhpredict::api_get_rain(user_id = 3, spot_id = 1441)
+
+# Show the first records of the rain data
+head(rain)
+```
 
 ## Rains: Details
 
@@ -395,7 +403,7 @@ sum(duplicated(kwb.utils::selectColumns(rain, "dateTime")))
 fhpredict::api_delete_rain(user_id, spot_id, rain_ids)
 
 # For simplicity reasons: delete all rain data before inserting new data
-fhpredict::api_delete_rain(user_id, spot_id)
+#fhpredict::api_delete_rain(user_id, spot_id)
 
 # TODO: Remove only the duplicates, keeping the most current values
 ```
