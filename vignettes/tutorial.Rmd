@@ -176,7 +176,7 @@ Use the model id to fetch a specific model from the database:
 
 ```{r}
 # Load model with id 27 from the database
-model <- fhpredict::api_get_model(user_id = 3, spot_id = 18, model_id = 27)
+model <- fhpredict::api_get_model(user_id = 3, spot_id = 18, model_id = 2)
 ```
 
 ```{r}
