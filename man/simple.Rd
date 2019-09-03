@@ -4,10 +4,12 @@
 \alias{simple}
 \title{A io function}
 \usage{
-simple(str = "{\\"foo\\":\\"bah\\"}")
+simple(a = "foo", b = "bah")
 }
 \arguments{
-\item{str}{A JSON string (optional)}
+\item{a}{string (optional)}
+
+\item{b}{string (optional)}
 }
 \description{
 simple function to test the opencpu API for the project

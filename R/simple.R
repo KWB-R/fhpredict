@@ -9,12 +9,12 @@
 #' \dontrun{simple()}
 simple <- function (a = 'foo', b = 'bah') {
   Sys.sleep(0.5)
-  nums = c(1,2,3)
+  nums = c(1, 2, 3)
   res <- list(
     body = list(
-      strArr = c(a,b),
+      strArr = c(a, b),
       numArr = nums
-  ),
+    ),
     str = 'baz',
     success = TRUE
   )
