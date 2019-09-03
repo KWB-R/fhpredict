@@ -1,0 +1,409 @@
+---
+title: "Tutorial: How to use fhpredict"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7
+)
+```
+
+## Install the package
+
+Install the package fhpredict from GitHub, using the package remotes. Install
+from the "dev" branch to get the latest version:
+
+```{r eval = FALSE}
+# install.packages(remotes)
+
+remotes::install_github("kwb-r/fhpredict@dev", build_vignettes = TRUE)
+```
+
+## Users
+
+In the data model of the app everything is assigned to a user identified by
+a unique identifier, the user id. To get an overview on available users and 
+their associated ids, run:
+
+```{r}
+# Get overview on available users in a data frame
+users <- fhpredict::api_get_users()
+
+# Print the data frame
+users
+```
+
+## Bathing Spots
+
+### Overview on available bathing spots
+
+Use the function `api_get_bathingspot()` to get an overview on the bathing spots
+that are stored in the postgres database. You need to specify the user to whom
+the bathing spots are associated. See above for how to get a list of available
+user ids.
+
+```{r}
+# Get overview on the first "limit" bathingspots associated to user with id 3
+bathing_spots <- fhpredict::api_get_bathingspot(user_id = 3)
+
+# Number of bathing spots returned
+nrow(bathing_spots)
+```
+
+By default, only the first `r nrow(bathing_spots)` bathing spots are considered
+in the returned data frame. Set the argument `limit` to a high number so that
+you get a list of all available bathing spots:
+
+```{r}
+# Get overview on all bathing spots associated to user with id 3
+all_bathing_spots <- fhpredict::api_get_bathingspot(user_id = 3, limit = 10000)
+
+# Number of bathing spots returned
+nrow(all_bathing_spots)
+```
+
+### Fetching data related to one bathing spot
+
+Use the overview as retrieved above to lookup the bathing spot id that you are 
+interested in. Then, call `api_get_bathingspot()` again, this time by setting 
+the argument `spot_id` accordingly:
+
+```{r}
+# Lookup bathing spots of interest by name
+all_bathing_spots[grep("AHLBECK", all_bathing_spots$name), c("id", "name")]
+
+# Lookup the bathing spot id and store it in a variable spot_id
+spot_id <- 1170
+
+# Load the data available for the corresponding bathing spot id
+spot <- fhpredict::api_get_bathingspot(user_id = 3, spot_id = spot_id)
+```
+
+It is also possible to get a bathing spot without specifying a user id:
+
+```{r}
+# It is also possible to get a bathing spot without specifying a user id
+spot_no_user <- fhpredict::api_get_bathingspot(spot_id = spot_id)
+
+# Is this the same as what we get when a user is specified?
+identical(spot, spot_no_user)
+```
+
+### Accessing the properties of a bathing spot
+
+The variable `spot` now contains a list of properties of the selected bathing
+spot. As the list contains a lot of `NULL` elements, we remove these elements 
+before looking at the overall structure of the list:
+
+```{r}
+# Look at the overall structure of the list omitting any NULL element
+str(kwb.utils::excludeNULL(spot), 1)
+```
+
+Use the `$` operator to access the different properties of the bathing spot:
+
+```{r}
+spot$id
+spot$nameLong
+```
+
+#### Polygon defining the "catchment area"
+
+We are especially interested in the coordinates of the polygon that defines the
+area over which to average the rain data that is assumed to influence the
+water quality of the bathing spot. This information is stored in the list 
+element `area`. It can be transformed into a GeoJSON string using the function
+`toJSON()` from the jsonlite package. There is also a list element 
+`area_coordinates` that contains the same coordinates in the form of a two
+column data frame.
+
+```{r}
+# Polygon coordinates as a GeoJSON string
+jsonlite::toJSON(spot$area)
+
+# Polygon coordinates as a data frame
+head(spot$area_coordinates)
+```
+
+#### Water quality measurements
+
+The `spot` object contains the results of water quality measurements in its list
+element `measurements`. Use the (non-exported) function `flatten_recursive_list`
+to convert the corresponding recursive list into a data frame.
+
+```{r}
+# Provide the measurements related to the bathing spot
+measurements <- fhpredict:::flatten_recursive_list(spot$measurements)
+
+# Have a look at the first measurements (after removing empty columns)
+head(kwb.utils::removeEmptyColumns(measurements))
+```
+
+## Models
+
+### Overview on available models
+
+Use the function `api_get_model()` to get an overview on the models that are
+stored in the postgres database. You need to pass the user id (here: 3) and
+the id of the bathing spot (here: 18) to the function.
+
+```{r}
+# Read all models that are stored for one bathing spot of one user
+model_info <- fhpredict::api_get_model(user_id = 3, spot_id = 18)
+```
+
+The function returns a data frame with one row per available model:
+
+```{r}
+# Show meta information on the models
+model_info
+```
+
+Use this overview on available models to lookup the id of the model that you 
+actually want to fetch from the database. 
+
+### Fetching a model
+
+Use the model id to fetch a specific model from the database:
+
+```{r}
+# Load model with id 27 from the database
+model <- fhpredict::api_get_model(user_id = 3, spot_id = 18, model_id = 2)
+```
+
+```{r}
+# Show the (rstan) model
+print(model)
+```
+
+### Saving a model
+
+For testing purposes we store a simple, small object instead of a STAN model.
+We use the `cars` dataset that is shipped with "base R". Use the function 
+`api_add_model()` to add the "model" to the database:
+
+```{r}
+# Look at the head of the cars dataset
+head(cars)
+
+# Add the cars dataset to the database
+model_id <- fhpredict:::api_add_model(
+  user_id = 3, spot_id = 18, model = cars, comment = "Cars in R"
+)
+```
+
+The function returns the id of the model that was given by the database. We
+stored the id in the variable `model_id`. To check if the model arrived in the
+database we read it back, again using `api_get_model()`
+
+```{r}
+# Read the "model" back
+my_cars <- fhpredict::api_get_model(3, 18, model_id)
+```
+
+We convince ourselves that what we get is identical to what we stored:
+
+```{r}
+# Nothing should have changed!
+identical(cars, my_cars)
+```
+
+### Deleting a model
+
+Use the function `api_delete_model()` to remove a model from the database. 
+Let's delete the model that we just added. Its id is given in the variable
+`model_id`.
+
+```{r}
+# Delete the model with the id given in "model_id"
+fhpredict::api_delete_model(3, 18, model_id)
+```
+
+## Purification Plants
+
+Use the following script to check if there are any purification plants defined.
+As there are many bathing spots, the script takes quite a long time and is not
+run here so that you do not see any outputs.
+
+```{r eval = FALSE}
+# Get meta information on all bathing spots
+bathing_spots <- fhpredict::api_get_bathingspot(user_id = 3, limit = 10000)
+
+# Number of bathing spots
+nrow(bathing_spots)
+
+# Access the "purificationPlants" endpoint for each bathing spot
+purification_plants <- lapply(bathing_spots$id, function(spot_id) {
+  
+  message("spot id = ", spot_id)
+  
+  result <- fhpredict::postgres_get(path = sprintf(
+    "%s/purificationPlants", 
+    fhpredict:::path_bathingspot(user_id = 3, spot_id = spot_id)
+  ))
+  
+  fhpredict:::stop_on_request_failure(result)
+  
+  result$data
+})
+
+# How many bathing spots have purification plants?
+sum(lengths(purification_plants) > 0)
+```
+
+## Rains
+
+This chapter describes how to 
+
+- read binary rain data related to a given time interval from files on the 
+  Amazon File Server, 
+- spatially select and aggregate rain data that are related to a given bathing
+  spot,
+- store the rain data in the Postgres database.
+
+Define bathing spot and reference time:
+
+```{r}
+user_id <- 3
+spot_id <- 1441 # Kleine Badewiese
+sampling_time <- "1050"
+```
+
+There is a top-level function that can be used to perform all steps at once.
+For the single steps that are performed within this function, see below.
+
+In the following we reduce the range of days for which to load rain data to 
+three days. Setting `date_range` to `NULL` will instead load rain data for the
+whole range of dates for which measurements are available.
+
+```{r}
+# Function to be triggered by the user: Provide rain data for the bathing spot
+system.time(rain_ids <- fhpredict::provide_rain_data_for_bathing_spot(
+  user_id = 3, spot_id = 1441, sampling_time = "1050",
+  date_range = as.Date(c("2008-07-01", "2008-07-03")),
+  comment = "testdata-tutorial"
+))
+```
+
+Check that the data arrived by reloading them from the database:
+
+```{r}
+# Reload rain data from the database
+rain <- fhpredict::api_get_rain(user_id = 3, spot_id = 1441)
+
+# Show the first records of the rain data
+head(rain)
+```
+
+## Rains: Details
+
+```{r}
+date_from <- "20080701"
+date_to <- "20080703"
+```
+
+### Read rain data from binary Radolan files
+
+```{r}
+# Read rain data for a certain time period
+radolan_stack <- fhpredict:::read_radolan_raster_stack(
+  date_from = date_from,
+  date_to = date_to,
+  bathing_season_only = TRUE,
+  sampling_time = sampling_time
+)
+
+# Show the raster images
+raster::plot(radolan_stack)
+```
+
+### Spacially select and aggregate rain data
+
+We want to use only the rain data that lie within a polygon around the bathing
+spot. This area is a piece of metadata that are stored in the Postgres database
+for each bathing spot. We first read all metadata about the bathing spot defined 
+above and provide the area information.
+
+```{r}
+# Get metadata about the current bathing spot
+spot <- fhpredict::api_get_bathingspot(spot_id = spot_id)
+
+# Check the name of the bathing spot
+spot$nameLong
+
+# Provide the polygon in the same structure as returned by
+# select_relevant_rain_area(), a function used by Wolfgang to define a polygon
+# using an R Shiny app
+area <- fhpredict:::convert_area_structure(spot_area = spot$area)
+
+# Show the structure of the area information (a recursive list)
+str(area, 2)
+```
+
+In the next step we use the area information to cut the area regions from the
+rain data that so far comprises whole Germany:
+
+```{r}
+# Crop the polygons from each raster layer
+cropped <- fhpredict:::crop_area_from_radolan_stack(area, radolan_stack)
+```
+
+We check the result by plotting the areas. **Important note**: It seems that not 
+the polygon is cut but the "extent", i.e. the smallest possible rectangle that 
+contains the polygon!
+
+```{r}
+raster::plot(cropped)
+```
+
+We now calculate the average rain in each raster layer and provide a simple
+data frame:
+
+```{r}
+# Get the mean over all layers for each point on the raster
+aggregated <- raster::cellStats(cropped, stat = mean)
+
+# The day information can be restored from the names of the layers
+dates <- as.Date(substr(names(radolan_stack), 2, 9), format = "%Y%m%d")
+
+rain <- data.frame(
+  datum = dates,
+  rain = as.numeric(aggregated) / 10
+)
+```
+
+Let's have a look at the created data frame:
+
+```{r}
+rain
+```
+
+### Store the rain data in the Postgres database
+
+```{r}
+# Add rain data frame to the database
+rain_ids <- fhpredict::api_add_rain(user_id, spot_id, rain)
+
+# Read rain from database
+rain <- fhpredict::api_get_rain(user_id, spot_id)
+
+# What should we do with duplicates?
+sum(duplicated(kwb.utils::selectColumns(rain, "dateTime")))
+
+# Delete rain data with given rain record ids
+fhpredict::api_delete_rain(user_id, spot_id, rain_ids)
+
+# For simplicity reasons: delete all rain data before inserting new data
+#fhpredict::api_delete_rain(user_id, spot_id)
+
+# TODO: Remove only the duplicates, keeping the most current values
+```
