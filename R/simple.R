@@ -1,13 +1,22 @@
 #' A io function
 #'
 #' simple function to test the opencpu API for the project
-#' @param str A JSON string (optional)
+#' @param a string (optional)
+#' @param b string (optional)
 #' @export
 #' @keywords simple
 #' @examples
 #' \dontrun{simple()}
-simple <- function (str = '{"foo":"bah"}') {
+simple <- function (a = 'foo', b = 'bah') {
   Sys.sleep(0.5)
-
-  jsonlite::toJSON(jsonlite::fromJSON(str), auto_unbox = TRUE)
+  nums = c(1,2,3)
+  res <- list(
+    body = list(
+      strArr = c(a,b),
+      numArr = nums
+  ),
+    str = 'baz',
+    success = TRUE
+  )
+  jsonlite::toJSON(res, auto_unbox = TRUE)
 }
