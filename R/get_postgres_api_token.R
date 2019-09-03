@@ -11,7 +11,9 @@
 #'
 get_postgres_api_token <- function(dbg = FALSE)
 {
-  file <- ".postgres_api_token"
+  extdata_path <- system.file("extdata", package = "fhpredict")
+
+  file <- file.path(extdata_path, ".postgres_api_token")
 
   read_token <- function() kwb.utils::catAndRun(
     sprintf("Reading access token from '%s'", file),
