@@ -3,6 +3,8 @@
 [![codecov](https://codecov.io/github/KWB-R/fhpredict/branch/master/graphs/badge.svg)](https://codecov.io/github/KWB-R/fhpredict)
 [![Project Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/fhpredict)]()
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3386817.svg)](https://doi.org/10.5281/zenodo.3386817)
+
 
 # fhpredict
 
