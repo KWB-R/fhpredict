@@ -11,18 +11,18 @@ r_packages:
 - covr
 matrix:
   include:
-    - r: devel
-    - r: release
-      after_success:
-      - Rscript -e 'covr::codecov()'
-      before_deploy:
-      - Rscript -e 'remotes::install_cran("pkgdown")'
-      deploy:
-        provider: script
-        script: Rscript -e 'pkgdown::deploy_site_github(verbose = TRUE)'
+  - r: devel
+  - r: release
+    after_success:
+    - Rscript -e 'covr::codecov()'
+    before_deploy:
+    - Rscript -e 'remotes::install_cran("pkgdown")'
+    deploy:
+      provider: script
+      script: Rscript -e 'pkgdown::deploy_site_github(verbose = TRUE)'
       skip_cleanup: 'true'
       on:
         branch: 
         - master
         - dev
-    - r: oldrel
+  - r: oldrel
