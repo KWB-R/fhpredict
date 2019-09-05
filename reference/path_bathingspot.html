@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • fhpredict</title>
+<title>Path to Bathing Spot API endpoint — path_bathingspot • fhpredict</title>
 
 
 <!-- jquery -->
@@ -41,7 +41,9 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Path to Bathing Spot API endpoint — path_bathingspot" />
+<meta property="og:description" content="Path to Bathing Spot API endpoint" />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -60,7 +62,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -128,144 +130,31 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Path to Bathing Spot API endpoint</h1>
+    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/api_paths.R'><code>R/api_paths.R</code></a></small>
+    <div class="hidden name"><code>path_bathingspot.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Path to Bathing Spot API endpoint</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>path_bathingspot</span>(<span class='kw'>user_id</span> <span class='kw'>=</span> -<span class='fl'>1L</span>, <span class='kw'>spot_id</span> <span class='kw'>=</span> -<span class='fl'>1L</span>, <span class='kw'>limit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>skip</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>"/"</span>)</pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="api_add_model.html">api_add_model()</a></code> </p>
-        </td>
-        <td><p>Add a Model to the Database</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="api_add_rain.html">api_add_rain()</a></code> </p>
-        </td>
-        <td><p>Add Rain Data Frame to Postgres Database Via API</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="api_delete_model.html">api_delete_model()</a></code> </p>
-        </td>
-        <td><p>Delete a Model from the Database</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="api_delete_rain.html">api_delete_rain()</a></code> </p>
-        </td>
-        <td><p>Delete Rain Data from Postgres Database Via API</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="api_get_bathingspot.html">api_get_bathingspot()</a></code> </p>
-        </td>
-        <td><p>Get Bathing Spot(s)</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="api_get_model.html">api_get_model()</a></code> </p>
-        </td>
-        <td><p>Read a Model from the Database</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="api_get_rain.html">api_get_rain()</a></code> </p>
-        </td>
-        <td><p>Get Rain Data from the Postgres Database Via API</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="api_get_users.html">api_get_users()</a></code> </p>
-        </td>
-        <td><p>Get Overview on Available Users</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="download_radolan.html">download_radolan()</a></code> </p>
-        </td>
-        <td><p>Download Radolan Files on DWD Server</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_area_coordinates.html">get_area_coordinates()</a></code> </p>
-        </td>
-        <td><p>Return the coordinates of area assigned to bathing spot</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_postgres_api_token.html">get_postgres_api_token()</a></code> </p>
-        </td>
-        <td><p>Get a Valid Token to Access the Postgres API</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_radolan_urls.html">get_radolan_urls()</a></code> </p>
-        </td>
-        <td><p>Get URLs to Available Radolan Files on DWD Server</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_radolan_urls_bucket.html">get_radolan_urls_bucket()</a></code> </p>
-        </td>
-        <td><p>Get URLs to Binary Radolan Filed From Flusshygiene's Amazon Bucket</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="postgres_delete.html">postgres_delete()</a></code> </p>
-        </td>
-        <td><p>Send DELETE Request to Postgres API</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="postgres_get.html">postgres_get()</a></code> </p>
-        </td>
-        <td><p>Send GET Request to Postgres API</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="postgres_post.html">postgres_post()</a></code> </p>
-        </td>
-        <td><p>Send POST Request to Postgres API</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="provide_rain_data_for_bathing_spot.html">provide_rain_data_for_bathing_spot()</a></code> </p>
-        </td>
-        <td><p>Provide Rain Data for one Bathing Spot</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="simple.html">simple()</a></code> </p>
-        </td>
-        <td><p>A io function</p></td>
-      </tr>
-    </tbody>
-    </table>
+
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw pkg'>fhpredict</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/fhpredict/man/path_bathingspot.html'>path_bathingspot</a></span>()</div><div class='output co'>#&gt; [1] "bathingspots"</div><div class='input'><span class='kw pkg'>fhpredict</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/fhpredict/man/path_bathingspot.html'>path_bathingspot</a></span>(<span class='kw'>spot_id</span> <span class='kw'>=</span> <span class='fl'>3</span>)</div><div class='output co'>#&gt; [1] "bathingspots/3"</div><div class='input'><span class='kw pkg'>fhpredict</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/fhpredict/man/path_bathingspot.html'>path_bathingspot</a></span>(<span class='kw'>user_id</span> <span class='kw'>=</span> <span class='fl'>7</span>)</div><div class='output co'>#&gt; [1] "users/7/bathingspots"</div><div class='input'><span class='kw pkg'>fhpredict</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/fhpredict/man/path_bathingspot.html'>path_bathingspot</a></span>(<span class='kw'>user_id</span> <span class='kw'>=</span> <span class='fl'>22</span>, <span class='kw'>spot_id</span> <span class='kw'>=</span> <span class='fl'>33</span>)</div><div class='output co'>#&gt; [1] "users/22/bathingspots/33"</div></pre>
   </div>
-
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
+
   </div>
 </div>
 

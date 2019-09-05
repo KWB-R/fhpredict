@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • fhpredict</title>
+<title>Get URLs to Binary Radolan Filed From Flusshygiene's Amazon Bucket — get_radolan_urls_bucket • fhpredict</title>
 
 
 <!-- jquery -->
@@ -41,7 +41,14 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Get URLs to Binary Radolan Filed From Flusshygiene's Amazon Bucket — get_radolan_urls_bucket" />
+<meta property="og:description" content="This function requires two environment variables to be set:
+&quot;ENDPOINT_PROD&quot;: Endpoint to the service that returns URLs to Radolan
+files, &quot;TOKEN_PROD&quot;: token that is required to access the endpoint. Use
+usethis::edit_r_environ() to open the .Renviron file in your home
+directory and add two lines &quot;ENDPOINT_PROD=...&quot; and &quot;TOKEN_PROD=...&quot; where
+... is replaced with the corresponding values." />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -60,7 +67,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -128,144 +135,78 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Get URLs to Binary Radolan Filed From Flusshygiene's Amazon Bucket</h1>
+    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/get_radolan_urls_bucket.R'><code>R/get_radolan_urls_bucket.R</code></a></small>
+    <div class="hidden name"><code>get_radolan_urls_bucket.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>This function requires two environment variables to be set:
+"ENDPOINT_PROD": Endpoint to the service that returns URLs to Radolan
+files, "TOKEN_PROD": token that is required to access the endpoint. Use
+<code>usethis::edit_r_environ()</code> to open the .Renviron file in your home
+directory and add two lines "ENDPOINT_PROD=..." and "TOKEN_PROD=..." where
+... is replaced with the corresponding values.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>get_radolan_urls_bucket</span>(<span class='kw'>from</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>() - <span class='fl'>1</span>, <span class='st'>"%Y%m%d"</span>),
+  <span class='kw'>to</span> <span class='kw'>=</span> <span class='no'>from</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>bathing_season_only</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="api_add_model.html">api_add_model()</a></code> </p>
-        </td>
-        <td><p>Add a Model to the Database</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="api_add_rain.html">api_add_rain()</a></code> </p>
-        </td>
-        <td><p>Add Rain Data Frame to Postgres Database Via API</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="api_delete_model.html">api_delete_model()</a></code> </p>
-        </td>
-        <td><p>Delete a Model from the Database</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="api_delete_rain.html">api_delete_rain()</a></code> </p>
-        </td>
-        <td><p>Delete Rain Data from Postgres Database Via API</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="api_get_bathingspot.html">api_get_bathingspot()</a></code> </p>
-        </td>
-        <td><p>Get Bathing Spot(s)</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="api_get_model.html">api_get_model()</a></code> </p>
-        </td>
-        <td><p>Read a Model from the Database</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="api_get_rain.html">api_get_rain()</a></code> </p>
-        </td>
-        <td><p>Get Rain Data from the Postgres Database Via API</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="api_get_users.html">api_get_users()</a></code> </p>
-        </td>
-        <td><p>Get Overview on Available Users</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="download_radolan.html">download_radolan()</a></code> </p>
-        </td>
-        <td><p>Download Radolan Files on DWD Server</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_area_coordinates.html">get_area_coordinates()</a></code> </p>
-        </td>
-        <td><p>Return the coordinates of area assigned to bathing spot</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_postgres_api_token.html">get_postgres_api_token()</a></code> </p>
-        </td>
-        <td><p>Get a Valid Token to Access the Postgres API</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_radolan_urls.html">get_radolan_urls()</a></code> </p>
-        </td>
-        <td><p>Get URLs to Available Radolan Files on DWD Server</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_radolan_urls_bucket.html">get_radolan_urls_bucket()</a></code> </p>
-        </td>
-        <td><p>Get URLs to Binary Radolan Filed From Flusshygiene's Amazon Bucket</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="postgres_delete.html">postgres_delete()</a></code> </p>
-        </td>
-        <td><p>Send DELETE Request to Postgres API</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="postgres_get.html">postgres_get()</a></code> </p>
-        </td>
-        <td><p>Send GET Request to Postgres API</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="postgres_post.html">postgres_post()</a></code> </p>
-        </td>
-        <td><p>Send POST Request to Postgres API</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="provide_rain_data_for_bathing_spot.html">provide_rain_data_for_bathing_spot()</a></code> </p>
-        </td>
-        <td><p>Provide Rain Data for one Bathing Spot</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="simple.html">simple()</a></code> </p>
-        </td>
-        <td><p>A io function</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>from</th>
+      <td><p>first day considered in format yyyymmdd, e.g. "20190625".
+Default: string representing "yesterday". If only the year and the month
+or only the year are given, the first day of the month and the first day
+of the year, respectively, are assumed.</p></td>
+    </tr>
+    <tr>
+      <th>to</th>
+      <td><p>last day considered in format yyyymmdd, e.g. "20190625". Default:
+same day as given in <code>from</code>. If only the year and the month
+or only the year are given, the last day of the month and the last day
+of the year, respectively, are assumed.</p></td>
+    </tr>
+    <tr>
+      <th>time</th>
+      <td><p>considered, given in format HHMM, e.g. "1050". Default: "", i.e.
+URLs are not filtered by time</p></td>
+    </tr>
+    <tr>
+      <th>bathing_season_only</th>
+      <td><p>= FALSE if <code>TRUE</code> (the default is
+<code>FALSE</code>), only URLs related to days between May 1 and September 30 are
+returned</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>vector of character containing the URLs to the radolan files. The
+  date and time to which the data in the files relate are encoded in the
+  names of the returned vector elements in the format "yyyymmddHHMM".</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='co'># Get URLs to available files for 2019-06-25, 10:50</span>
+<span class='no'>urls</span> <span class='kw'>&lt;-</span> <span class='fu'>get_radolan_urls_bucket</span>(<span class='kw'>from</span> <span class='kw'>=</span> <span class='st'>"20190625"</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>"1050"</span>)
+
+<span class='co'># Read the first file (there should be only one such file!)</span>
+<span class='no'>raster_rain</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>kwb.dwd</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/kwb.dwd/man/read_binary_radolan_file.html'>read_binary_radolan_file</a></span>(<span class='no'>urls</span>[<span class='fl'>1</span>])
+}</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
+
   </div>
 </div>
 
