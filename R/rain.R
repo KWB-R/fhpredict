@@ -25,7 +25,7 @@
 #' rain_ids
 #'
 #' # Delete the fake rain data
-#' api_delete_rain(user_id = 3, spot_id = 1441, rain_ids = rain_ids)
+#' api_delete_rain(user_id = 3, spot_id = 1441, ids = rain_ids)
 #' }
 #'
 api_add_rain <- function(
@@ -39,43 +39,18 @@ api_add_rain <- function(
   values <- kwb.utils::selectColumns(rain, "rain")
 
   result <- lapply(seq_along(values), function(i) {
-    add_rain_datapoint_to_database(
-      user_id,
-      spot_id,
+    add_timeseries_point_to_database(
+      path = path_rains(user_id, spot_id),
       date_string = date_strings[i],
       time_string = time_string,
       value = values[i],
-      comment = comment
+      comment = comment,
+      subject = "rain"
     )
   })
 
   # Return the ids of the rain data records
   unlist(result)
-}
-
-# add_rain_datapoint_to_database -----------------------------------------------
-add_rain_datapoint_to_database <- function(
-  user_id, spot_id, date_string, time_string, value, comment = NULL
-)
-{
-  result <- postgres_post(
-    path = path_rains(user_id, spot_id),
-    body = list(
-      value = value,
-      dateTime = time_string,
-      date = date_string,
-      comment = comment
-    )
-  )
-
-  stop_on_request_failure(result)
-
-  rain_id <- result$data[[1]]$id
-
-  message("A rain data record with id = ", rain_id, " has been inserted.")
-
-  # Return the id of the added record
-  rain_id
 }
 
 # api_get_rain -----------------------------------------------------------------
@@ -88,30 +63,10 @@ add_rain_datapoint_to_database <- function(
 #'
 api_get_rain <- function(user_id, spot_id)
 {
-  rain <- kwb.utils::catAndRun("Reading rain data from database", {
-
-    result <- postgres_get(path = path_rains(user_id, spot_id))
-
-    stop_on_request_failure(result)
-
-    flatten_recursive_list(result$data)
-  })
-
-  if (is.null(rain)) {
-
-    return(data.frame())
-  }
-
-  rain <- kwb.utils::catAndRun("Converting time columns from text to POSIXct", {
-    rain <- convert_time_columns(rain)
-    rain$dateTime = as.POSIXct(
-      x = kwb.utils::pasteColumns(rain, c("date", "dateTime")),
-      tz = "Europe/Berlin"
-    )
-    rain
-  })
-
-  kwb.utils::removeColumns(rain, c("date", "comment"))
+  api_get_timeseries(
+    path = path_rains(user_id, spot_id),
+    subject = "rain"
+  )
 }
 
 # api_delete_rain --------------------------------------------------------------
@@ -120,43 +75,18 @@ api_get_rain <- function(user_id, spot_id)
 #'
 #' @param user_id user id
 #' @param spot_id bathing spot id
-#' @param rain_ids optional. Vector of rain ids. If not given or \code{NULL}
-#'   (the default) all rain data for the bathing spot are deleted!
+#' @param ids optional. Vector of rain ids. If not given or \code{NULL} (the
+#'   default) all rain data for the bathing spot are deleted!
 #' @param dbg if \code{TRUE} debug messages are shown
 #' @export
 #'
-api_delete_rain <- function(user_id, spot_id, rain_ids = NULL, dbg = TRUE)
+api_delete_rain <- function(user_id, spot_id, ids = NULL, dbg = TRUE)
 {
-  # Get all available rain ids if no ids are given
-  if (is.null(rain_ids)) {
-
-    rain <- api_get_rain(user_id, spot_id)
-
-    if (nrow(rain) == 0) {
-
-      message(
-        sprintf(
-          "No rain data available for user_id = %d, spot_id = %d. ",
-          user_id, spot_id
-        ),
-        "Nothing to delete."
-      )
-
-      return()
-    }
-
-    rain_ids <- kwb.utils::selectColumns(rain, "id")
-  }
-
-  # Delete all records given their rain ids
-  for (rain_id in rain_ids) {
-
-    kwb.utils::catAndRun(
-      paste("Deleting rain data point with id", rain_id),
-      dbg = dbg, {
-        result <- postgres_delete(path = path_rains(user_id, spot_id, rain_id))
-        stop_on_request_failure(result)
-      }
-    )
-  }
+  api_delete_timeseries(
+    user_id,
+    spot_id,
+    ids = ids,
+    path_function = path_rains,
+    subject = "rain"
+  )
 }
