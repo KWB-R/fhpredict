@@ -407,3 +407,27 @@ fhpredict::api_delete_rain(user_id, spot_id, rain_ids)
 
 # TODO: Remove only the duplicates, keeping the most current values
 ```
+## Discharge data
+
+```{r}
+# Get existing discharge data
+discharge_db <- fhpredict::api_get_discharge(user_id, spot_id)
+
+# Show the first records
+head(discharge_db)
+
+# Provide discharge test data
+discharge <- data.frame(
+  dateTime = as.POSIXct(tz = "Europe/Berlin", c(
+    "2019-09-09 16:02:00", "2019-09-09 16:03:00"
+  )),
+  discharge = c(1.0, 1.1)
+)
+
+# Add discharge test data to database
+ids <- fhpredict:::api_add_discharge(user_id, spot_id, discharge)
+
+# Delete the records that have just been added. Omitting the IDs will remove
+# all discharge data related to the bathing spot
+fhpredict::api_delete_discharge(user_id, spot_id, ids = ids)
+```
