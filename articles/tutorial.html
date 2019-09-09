@@ -293,12 +293,12 @@
 <p>Use the model id to fetch a specific model from the database:</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co"># Load model with id 27 from the database</span></a>
 <a class="sourceLine" id="cb13-2" data-line-number="2">model &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_get_model.html">api_get_model</a></span>(<span class="dt">user_id =</span> <span class="dv">3</span>, <span class="dt">spot_id =</span> <span class="dv">18</span>, <span class="dt">model_id =</span> <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb13-3" data-line-number="3"><span class="co">#&gt; Reading model with id = 2 from the database ... ok. (0.85s) </span></a>
+<a class="sourceLine" id="cb13-3" data-line-number="3"><span class="co">#&gt; Reading model with id = 2 from the database ... ok. (1.69s) </span></a>
 <a class="sourceLine" id="cb13-4" data-line-number="4"><span class="co">#&gt; Converting text to model object ...</span></a>
 <a class="sourceLine" id="cb13-5" data-line-number="5"><span class="co">#&gt; Registered S3 method overwritten by 'xts':</span></a>
 <a class="sourceLine" id="cb13-6" data-line-number="6"><span class="co">#&gt;   method     from</span></a>
 <a class="sourceLine" id="cb13-7" data-line-number="7"><span class="co">#&gt;   as.zoo.xts zoo</span></a>
-<a class="sourceLine" id="cb13-8" data-line-number="8"><span class="co">#&gt; ok. (3.63s)</span></a></code></pre></div>
+<a class="sourceLine" id="cb13-8" data-line-number="8"><span class="co">#&gt; ok. (3.53s)</span></a></code></pre></div>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="co"># Show the (rstan) model</span></a>
 <a class="sourceLine" id="cb14-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(model)</a>
 <a class="sourceLine" id="cb14-3" data-line-number="3"><span class="co">#&gt; </span></a>
@@ -347,11 +347,11 @@
 <a class="sourceLine" id="cb15-13" data-line-number="13">  <span class="dt">user_id =</span> <span class="dv">3</span>, <span class="dt">spot_id =</span> <span class="dv">18</span>, <span class="dt">model =</span> cars, <span class="dt">comment =</span> <span class="st">"Cars in R"</span></a>
 <a class="sourceLine" id="cb15-14" data-line-number="14">)</a>
 <a class="sourceLine" id="cb15-15" data-line-number="15"><span class="co">#&gt; Converting model object to text ... ok. (0.00s)</span></a>
-<a class="sourceLine" id="cb15-16" data-line-number="16"><span class="co">#&gt; The model has been stored in the database. It has been given the id 178.</span></a></code></pre></div>
+<a class="sourceLine" id="cb15-16" data-line-number="16"><span class="co">#&gt; The model has been stored in the database. It has been given the id 194.</span></a></code></pre></div>
 <p>The function returns the id of the model that was given by the database. We stored the id in the variable <code>model_id</code>. To check if the model arrived in the database we read it back, again using <code><a href="../reference/api_get_model.html">api_get_model()</a></code></p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="co"># Read the "model" back</span></a>
 <a class="sourceLine" id="cb16-2" data-line-number="2">my_cars &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_get_model.html">api_get_model</a></span>(<span class="dv">3</span>, <span class="dv">18</span>, model_id)</a>
-<a class="sourceLine" id="cb16-3" data-line-number="3"><span class="co">#&gt; Reading model with id = 178 from the database ... ok. (0.24s)</span></a>
+<a class="sourceLine" id="cb16-3" data-line-number="3"><span class="co">#&gt; Reading model with id = 194 from the database ... ok. (0.25s)</span></a>
 <a class="sourceLine" id="cb16-4" data-line-number="4"><span class="co">#&gt; Warning: This does not look like a model:</span></a>
 <a class="sourceLine" id="cb16-5" data-line-number="5"><span class="co">#&gt; &gt;&gt;&gt;RDA3</span></a>
 <a class="sourceLine" id="cb16-6" data-line-number="6"><span class="co">#&gt; A</span></a>
@@ -371,7 +371,7 @@
 <p>Use the function <code><a href="../reference/api_delete_model.html">api_delete_model()</a></code> to remove a model from the database. Let’s delete the model that we just added. Its id is given in the variable <code>model_id</code>.</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="co"># Delete the model with the id given in "model_id"</span></a>
 <a class="sourceLine" id="cb18-2" data-line-number="2">fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_delete_model.html">api_delete_model</a></span>(<span class="dv">3</span>, <span class="dv">18</span>, model_id)</a>
-<a class="sourceLine" id="cb18-3" data-line-number="3"><span class="co">#&gt; The model with id 178 (Cars in R) was deleted.</span></a></code></pre></div>
+<a class="sourceLine" id="cb18-3" data-line-number="3"><span class="co">#&gt; The model with id 194 (Cars in R) was deleted.</span></a></code></pre></div>
 </div>
 </div>
 <div id="purification-plants" class="section level2">
@@ -426,26 +426,29 @@
 <a class="sourceLine" id="cb21-7" data-line-number="7"><span class="co">#&gt; Reading https://flusshygiene-radolan-sf-data.s3.eu-central-1.amazonaws.com/08/07/01/raa01-sf_10000-0807011050-dwd---bin</span></a>
 <a class="sourceLine" id="cb21-8" data-line-number="8"><span class="co">#&gt; Reading https://flusshygiene-radolan-sf-data.s3.eu-central-1.amazonaws.com/08/07/02/raa01-sf_10000-0807021050-dwd---bin</span></a>
 <a class="sourceLine" id="cb21-9" data-line-number="9"><span class="co">#&gt; Reading https://flusshygiene-radolan-sf-data.s3.eu-central-1.amazonaws.com/08/07/03/raa01-sf_10000-0807031050-dwd---bin</span></a>
-<a class="sourceLine" id="cb21-10" data-line-number="10"><span class="co">#&gt; A rain data record with id = 1560 has been inserted.</span></a>
-<a class="sourceLine" id="cb21-11" data-line-number="11"><span class="co">#&gt; A rain data record with id = 1561 has been inserted.</span></a>
-<a class="sourceLine" id="cb21-12" data-line-number="12"><span class="co">#&gt; A rain data record with id = 1562 has been inserted.</span></a>
-<a class="sourceLine" id="cb21-13" data-line-number="13"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb21-14" data-line-number="14"><span class="co">#&gt;   1.613   0.060   8.779</span></a></code></pre></div>
+<a class="sourceLine" id="cb21-10" data-line-number="10"><span class="co">#&gt; Reading rain data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb21-11" data-line-number="11"><span class="co">#&gt; Converting time columns from text to POSIXct ... ok. (0.00s) </span></a>
+<a class="sourceLine" id="cb21-12" data-line-number="12"><span class="co">#&gt; Deleting rain data point with id 1723 ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb21-13" data-line-number="13"><span class="co">#&gt; Deleting rain data point with id 1724 ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb21-14" data-line-number="14"><span class="co">#&gt; Deleting rain data point with id 1725 ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb21-15" data-line-number="15"><span class="co">#&gt; Deleting rain data point with id 1726 ... ok. (0.32s)</span></a>
+<a class="sourceLine" id="cb21-16" data-line-number="16"><span class="co">#&gt; A rain data record with id = 1736 has been inserted.</span></a>
+<a class="sourceLine" id="cb21-17" data-line-number="17"><span class="co">#&gt; A rain data record with id = 1737 has been inserted.</span></a>
+<a class="sourceLine" id="cb21-18" data-line-number="18"><span class="co">#&gt; A rain data record with id = 1738 has been inserted.</span></a>
+<a class="sourceLine" id="cb21-19" data-line-number="19"><span class="co">#&gt;    user  system elapsed </span></a>
+<a class="sourceLine" id="cb21-20" data-line-number="20"><span class="co">#&gt;   1.758   0.048  10.362</span></a></code></pre></div>
 <p>Check that the data arrived by reloading them from the database:</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="co"># Reload rain data from the database</span></a>
 <a class="sourceLine" id="cb22-2" data-line-number="2">rain &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_get_rain.html">api_get_rain</a></span>(<span class="dt">user_id =</span> <span class="dv">3</span>, <span class="dt">spot_id =</span> <span class="dv">1441</span>)</a>
-<a class="sourceLine" id="cb22-3" data-line-number="3"><span class="co">#&gt; Reading rain data from database ... ok. (0.49s) </span></a>
+<a class="sourceLine" id="cb22-3" data-line-number="3"><span class="co">#&gt; Reading rain data from database ... ok. (0.25s) </span></a>
 <a class="sourceLine" id="cb22-4" data-line-number="4"><span class="co">#&gt; Converting time columns from text to POSIXct ... ok. (0.00s)</span></a>
 <a class="sourceLine" id="cb22-5" data-line-number="5"></a>
 <a class="sourceLine" id="cb22-6" data-line-number="6"><span class="co"># Show the first records of the rain data</span></a>
 <a class="sourceLine" id="cb22-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(rain)</a>
-<a class="sourceLine" id="cb22-8" data-line-number="8"><span class="co">#&gt;    id           createdAt           updatedAt            dateTime value</span></a>
-<a class="sourceLine" id="cb22-9" data-line-number="9"><span class="co">#&gt; 1 801 2019-09-03 12:07:46 2019-09-03 12:07:46 2008-07-01 10:50:00 0.007</span></a>
-<a class="sourceLine" id="cb22-10" data-line-number="10"><span class="co">#&gt; 2 802 2019-09-03 12:07:46 2019-09-03 12:07:46 2008-07-02 10:50:00 0.073</span></a>
-<a class="sourceLine" id="cb22-11" data-line-number="11"><span class="co">#&gt; 3 803 2019-09-03 12:07:46 2019-09-03 12:07:46 2008-07-03 10:50:00 0.137</span></a>
-<a class="sourceLine" id="cb22-12" data-line-number="12"><span class="co">#&gt; 4 833 2019-09-03 13:01:01 2019-09-03 13:01:01 2008-07-03 10:50:00 0.137</span></a>
-<a class="sourceLine" id="cb22-13" data-line-number="13"><span class="co">#&gt; 5 909 2019-09-03 13:51:21 2019-09-03 13:51:21 2008-07-01 10:50:00 0.007</span></a>
-<a class="sourceLine" id="cb22-14" data-line-number="14"><span class="co">#&gt; 6 910 2019-09-03 13:51:22 2019-09-03 13:51:22 2008-07-02 10:50:00 0.073</span></a></code></pre></div>
+<a class="sourceLine" id="cb22-8" data-line-number="8"><span class="co">#&gt;     id           createdAt           updatedAt            dateTime value</span></a>
+<a class="sourceLine" id="cb22-9" data-line-number="9"><span class="co">#&gt; 1 1736 2019-09-09 17:50:03 2019-09-09 17:50:03 2008-07-01 10:50:00 0.007</span></a>
+<a class="sourceLine" id="cb22-10" data-line-number="10"><span class="co">#&gt; 2 1737 2019-09-09 17:50:03 2019-09-09 17:50:03 2008-07-02 10:50:00 0.073</span></a>
+<a class="sourceLine" id="cb22-11" data-line-number="11"><span class="co">#&gt; 3 1738 2019-09-09 17:50:03 2019-09-09 17:50:03 2008-07-03 10:50:00 0.137</span></a></code></pre></div>
 </div>
 <div id="rains-details" class="section level2">
 <h2 class="hasAnchor">
@@ -521,30 +524,63 @@
 <a href="#store-the-rain-data-in-the-postgres-database" class="anchor"></a>Store the rain data in the Postgres database</h3>
 <div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="co"># Add rain data frame to the database</span></a>
 <a class="sourceLine" id="cb30-2" data-line-number="2">rain_ids &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_add_rain.html">api_add_rain</a></span>(user_id, spot_id, rain)</a>
-<a class="sourceLine" id="cb30-3" data-line-number="3"><span class="co">#&gt; A rain data record with id = 1563 has been inserted.</span></a>
-<a class="sourceLine" id="cb30-4" data-line-number="4"><span class="co">#&gt; A rain data record with id = 1564 has been inserted.</span></a>
-<a class="sourceLine" id="cb30-5" data-line-number="5"><span class="co">#&gt; A rain data record with id = 1565 has been inserted.</span></a>
+<a class="sourceLine" id="cb30-3" data-line-number="3"><span class="co">#&gt; A rain data record with id = 1739 has been inserted.</span></a>
+<a class="sourceLine" id="cb30-4" data-line-number="4"><span class="co">#&gt; A rain data record with id = 1740 has been inserted.</span></a>
+<a class="sourceLine" id="cb30-5" data-line-number="5"><span class="co">#&gt; A rain data record with id = 1741 has been inserted.</span></a>
 <a class="sourceLine" id="cb30-6" data-line-number="6"></a>
 <a class="sourceLine" id="cb30-7" data-line-number="7"><span class="co"># Read rain from database</span></a>
 <a class="sourceLine" id="cb30-8" data-line-number="8">rain &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_get_rain.html">api_get_rain</a></span>(user_id, spot_id)</a>
-<a class="sourceLine" id="cb30-9" data-line-number="9"><span class="co">#&gt; Reading rain data from database ... ok. (0.49s) </span></a>
+<a class="sourceLine" id="cb30-9" data-line-number="9"><span class="co">#&gt; Reading rain data from database ... ok. (0.25s) </span></a>
 <a class="sourceLine" id="cb30-10" data-line-number="10"><span class="co">#&gt; Converting time columns from text to POSIXct ... ok. (0.00s)</span></a>
 <a class="sourceLine" id="cb30-11" data-line-number="11"></a>
 <a class="sourceLine" id="cb30-12" data-line-number="12"><span class="co"># What should we do with duplicates?</span></a>
 <a class="sourceLine" id="cb30-13" data-line-number="13"><span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/duplicated.html">duplicated</a></span>(kwb.utils<span class="op">::</span><span class="kw">selectColumns</span>(rain, <span class="st">"dateTime"</span>)))</a>
-<a class="sourceLine" id="cb30-14" data-line-number="14"><span class="co">#&gt; [1] 384</span></a>
+<a class="sourceLine" id="cb30-14" data-line-number="14"><span class="co">#&gt; [1] 0</span></a>
 <a class="sourceLine" id="cb30-15" data-line-number="15"></a>
 <a class="sourceLine" id="cb30-16" data-line-number="16"><span class="co"># Delete rain data with given rain record ids</span></a>
 <a class="sourceLine" id="cb30-17" data-line-number="17">fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_delete_rain.html">api_delete_rain</a></span>(user_id, spot_id, rain_ids)</a>
-<a class="sourceLine" id="cb30-18" data-line-number="18"><span class="co">#&gt; Deleting rain data point with id 1563 ... ok. (0.26s) </span></a>
-<a class="sourceLine" id="cb30-19" data-line-number="19"><span class="co">#&gt; Deleting rain data point with id 1564 ... ok. (0.26s) </span></a>
-<a class="sourceLine" id="cb30-20" data-line-number="20"><span class="co">#&gt; Deleting rain data point with id 1565 ... ok. (0.25s)</span></a>
+<a class="sourceLine" id="cb30-18" data-line-number="18"><span class="co">#&gt; Deleting rain data point with id 1739 ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb30-19" data-line-number="19"><span class="co">#&gt; Deleting rain data point with id 1740 ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb30-20" data-line-number="20"><span class="co">#&gt; Deleting rain data point with id 1741 ... ok. (0.25s)</span></a>
 <a class="sourceLine" id="cb30-21" data-line-number="21"></a>
 <a class="sourceLine" id="cb30-22" data-line-number="22"><span class="co"># For simplicity reasons: delete all rain data before inserting new data</span></a>
 <a class="sourceLine" id="cb30-23" data-line-number="23"><span class="co">#fhpredict::api_delete_rain(user_id, spot_id)</span></a>
 <a class="sourceLine" id="cb30-24" data-line-number="24"></a>
 <a class="sourceLine" id="cb30-25" data-line-number="25"><span class="co"># </span><span class="al">TODO</span><span class="co">: Remove only the duplicates, keeping the most current values</span></a></code></pre></div>
 </div>
+</div>
+<div id="discharge-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#discharge-data" class="anchor"></a>Discharge data</h2>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="co"># Get existing discharge data</span></a>
+<a class="sourceLine" id="cb31-2" data-line-number="2">discharge_db &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_get_discharge.html">api_get_discharge</a></span>(user_id, spot_id)</a>
+<a class="sourceLine" id="cb31-3" data-line-number="3"><span class="co">#&gt; Reading discharge data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb31-4" data-line-number="4"><span class="co">#&gt; Converting time columns from text to POSIXct ... ok. (0.00s)</span></a>
+<a class="sourceLine" id="cb31-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb31-6" data-line-number="6"><span class="co"># Show the first records</span></a>
+<a class="sourceLine" id="cb31-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(discharge_db)</a>
+<a class="sourceLine" id="cb31-8" data-line-number="8"><span class="co">#&gt;   id           createdAt           updatedAt            dateTime value</span></a>
+<a class="sourceLine" id="cb31-9" data-line-number="9"><span class="co">#&gt; 1  8 2019-09-09 16:41:31 2019-09-09 16:41:31 2019-09-09 16:02:00   1.0</span></a>
+<a class="sourceLine" id="cb31-10" data-line-number="10"><span class="co">#&gt; 2  9 2019-09-09 16:41:31 2019-09-09 16:41:31 2019-09-09 16:03:00   1.1</span></a>
+<a class="sourceLine" id="cb31-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb31-12" data-line-number="12"><span class="co"># Provide discharge test data</span></a>
+<a class="sourceLine" id="cb31-13" data-line-number="13">discharge &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
+<a class="sourceLine" id="cb31-14" data-line-number="14">  <span class="dt">dateTime =</span> <span class="kw"><a href="https://rdrr.io/r/base/as.POSIXlt.html">as.POSIXct</a></span>(<span class="dt">tz =</span> <span class="st">"Europe/Berlin"</span>, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(</a>
+<a class="sourceLine" id="cb31-15" data-line-number="15">    <span class="st">"2019-09-09 16:02:00"</span>, <span class="st">"2019-09-09 16:03:00"</span></a>
+<a class="sourceLine" id="cb31-16" data-line-number="16">  )),</a>
+<a class="sourceLine" id="cb31-17" data-line-number="17">  <span class="dt">discharge =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1.0</span>, <span class="fl">1.1</span>)</a>
+<a class="sourceLine" id="cb31-18" data-line-number="18">)</a>
+<a class="sourceLine" id="cb31-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb31-20" data-line-number="20"><span class="co"># Add discharge test data to database</span></a>
+<a class="sourceLine" id="cb31-21" data-line-number="21">ids &lt;-<span class="st"> </span>fhpredict<span class="op">:::</span><span class="kw">api_add_discharge</span>(user_id, spot_id, discharge)</a>
+<a class="sourceLine" id="cb31-22" data-line-number="22"><span class="co">#&gt; A discharge data record with id = 40 has been inserted.</span></a>
+<a class="sourceLine" id="cb31-23" data-line-number="23"><span class="co">#&gt; A discharge data record with id = 41 has been inserted.</span></a>
+<a class="sourceLine" id="cb31-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb31-25" data-line-number="25"><span class="co"># Delete the records that have just been added. Omitting the IDs will remove</span></a>
+<a class="sourceLine" id="cb31-26" data-line-number="26"><span class="co"># all discharge data related to the bathing spot</span></a>
+<a class="sourceLine" id="cb31-27" data-line-number="27">fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_delete_discharge.html">api_delete_discharge</a></span>(user_id, spot_id, <span class="dt">ids =</span> ids)</a>
+<a class="sourceLine" id="cb31-28" data-line-number="28"><span class="co">#&gt; Deleting discharge data point with id 40 ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb31-29" data-line-number="29"><span class="co">#&gt; Deleting discharge data point with id 41 ... ok. (0.25s)</span></a></code></pre></div>
 </div>
   </div>
 
@@ -561,6 +597,7 @@
       <li><a href="#purification-plants">Purification Plants</a></li>
       <li><a href="#rains">Rains</a></li>
       <li><a href="#rains-details">Rains: Details</a></li>
+      <li><a href="#discharge-data">Discharge data</a></li>
       </ul>
 </div>
       </div>
