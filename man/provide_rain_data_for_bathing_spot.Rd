@@ -33,5 +33,6 @@ The function considers (i) the "catchment" area that is defined for the
 bathing spot and (ii) the date range that is taken from the range of dates
 for which measurements are available. Rain data are read from binary Radolan
 files, cropped around the "catchment" area and and averaged over all layears
-for each raster cell.
+for each raster cell. The resulting rain data are then stored in the Postgres
+database. IMPORTANT: Existing rain data will be overwritten in the database!
 }

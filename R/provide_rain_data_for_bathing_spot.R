@@ -6,7 +6,8 @@
 #' bathing spot and (ii) the date range that is taken from the range of dates
 #' for which measurements are available. Rain data are read from binary Radolan
 #' files, cropped around the "catchment" area and and averaged over all layears
-#' for each raster cell.
+#' for each raster cell. The resulting rain data are then stored in the Postgres
+#' database. IMPORTANT: Existing rain data will be overwritten in the database!
 #'
 #' @param user_id user id
 #' @param spot_id bathing spot id
@@ -66,6 +67,9 @@ provide_rain_data_for_bathing_spot <- function(
     datum = dates,
     rain = as.numeric(aggregated) / 10
   )
+
+  # Clear existing rain from the database
+  fhpredict::api_delete_rain(user_id, spot_id)
 
   # Add rain data frame to the database
   fhpredict::api_add_rain(
