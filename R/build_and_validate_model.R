@@ -48,15 +48,20 @@ build_and_validate_model <- function(river_data, river)
     pattern = "(i_mean|q_mean|r_mean|ka_mean)"
   )
 
-  names(fb) <- sprintf(paste0(river, "model_%02d"), seq_along(fb))
+  names(fb) <- sprintf("%smodel_%02d", river, seq_along(fb))
 
   ################ Validation ########################
 
   # calculate statistical tests for residuals: Normality and s2 = const
   # shapiro-wilk test and breusch-pagan test
   get_stat_tests <- function(model) {
-    c(N = shapiro.test(model$residuals)$p.value, lmtest::bptest(model)$p.value,
-      R2 = summary(model)[["adj.r.squared"]], n_obs = length(model$residuals))
+
+    c(
+      N = shapiro.test(model$residuals)$p.value,
+      lmtest::bptest(model)$p.value,
+      R2 = summary(model)[["adj.r.squared"]],
+      n_obs = length(model$residuals)
+    )
   }
 
   # Eliminieren von modelled die doppelt vorkommen, da forward selection früher
@@ -178,7 +183,7 @@ stepwise <- function (riverdata, pattern)
   # variables for interaction get replaced by q_new (remove q_old)
   vars1 <- (
     riverdata[-1] %>%
-      unroll_physical_data() %>%
+      kwb.flusshygiene::unroll_physical_data() %>%
       lapply(names) %>%
       unlist() %>%
       unique()
