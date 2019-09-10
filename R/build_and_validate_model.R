@@ -261,9 +261,10 @@ update_stat_tests <- function(
 {
   for (model_name in names(fb)) {
 
-    model_data <- as.data.frame(fb[[model_name]]$model)
+    model <- kwb.utils::selectElements(fb, model_name)
+    model_data <- as.data.frame(kwb.utils::selectElements(model, "model"))
 
-    selected <- stat_tests$model == model_name
+    selected <- kwb.utils::selectColumns(stat_tests, "model") == model_name
 
     for (rows in train_rows) {
 
@@ -272,7 +273,7 @@ update_stat_tests <- function(
       training <- model_data[  row_indices, ]
       test     <- model_data[- row_indices, ]
 
-      fit <- rstanarm::stan_glm(get_formula(fs[[model_name]]), data = training)
+      fit <- rstanarm::stan_glm(formula = get_formula(model), data = training)
 
       prediction <- rstanarm::posterior_predict(fit, newdata = test)
 
