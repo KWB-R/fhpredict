@@ -103,10 +103,16 @@ build_and_validate_model <- function(river_data, river, n_folds = 5)
 
   for (i in names(fb)) {
 
-    for (j in 1:5) {
+    model_data <- as.data.frame(fb[[i]]$model)
 
-      training <- as.data.frame(fb[[i]]$model)[c(train_rows[[j]]),]
-      test <- as.data.frame(fb[[i]]$model)[-c(train_rows[[j]]),]
+    selected <- river_stat_tests$model == i
+
+    for (rows in train_rows) {
+
+      row_indices <- c(rows)
+
+      training <- model_data[  row_indices, ]
+      test     <- model_data[- row_indices, ]
 
       fit <- rstanarm::stan_glm(formulas[[i]], data = training)
 
@@ -122,8 +128,6 @@ build_and_validate_model <- function(river_data, river, n_folds = 5)
           within95 = log_e.coli < `97.5%` & log_e.coli > `2.5%`,
           within50 = log_e.coli < `75%` & log_e.coli > `25%`,
         )
-
-      selected <- river_stat_tests$model == i
 
       river_stat_tests$in95[selected] <- river_stat_tests$in95[selected] +
         test_beta(is_true = df$within95, percentile = 0.95)
