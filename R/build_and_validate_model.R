@@ -64,17 +64,25 @@ build_and_validate_model <- function(river_data, river)
     dplyr::bind_rows(.id = "river") %>%
     dplyr::mutate(stat_correct = N > .05 & BP > .05)
 
-  # creating list of independent training rows
+  # Define shortcut to selectElements()
+  get <- kwb.utils::selectElements
+
+  # Define the name of the model to be selected from "fb"
+  model_name <- paste0(river, "model_01")
+
+  # Create list of independent training rows
   train_rows <- caret::createFolds(
-    1:nrow(fb[[paste0(river, "model_01")]]$model),
-    k = 5, list = T, returnTrain = TRUE
+    seq_len(nrow(get(get(fb, model_name), "model"))),
+    k = 5,
+    list = TRUE,
+    returnTrain = TRUE
   )
 
-  fmla <- list()
+  # Provide model formulas
+  formulas <- lapply(fb, function(model) {
 
-  for (i in names(fb)) {
-    fmla[[i]] <- as.list(fb[[i]]$call)$formula
-  }
+    get(as.list(get(model, "call")), "formula")
+  })
 
   test_beta <- function(true, false, percentile) {
 
@@ -96,7 +104,7 @@ build_and_validate_model <- function(river_data, river)
       training <- as.data.frame(fb[[i]]$model)[c(train_rows[[j]]),]
       test <- as.data.frame(fb[[i]]$model)[-c(train_rows[[j]]),]
 
-      fit <- rstanarm::stan_glm(fmla[[i]], data = training)
+      fit <- rstanarm::stan_glm(formulas[[i]], data = training)
 
       df <- apply(
         X = rstanarm::posterior_predict(fit, newdata = test),
@@ -154,7 +162,7 @@ build_and_validate_model <- function(river_data, river)
   best_valid_model <- fb[[best_valid_model_stats$model]]
 
   stanfit <- rstanarm::stan_glm(
-    formula = fmla[[best_valid_model_stats$model]],
+    formula = formulas[[best_valid_model_stats$model]],
     data = best_valid_model$model
   )
 
