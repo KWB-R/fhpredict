@@ -56,11 +56,15 @@ build_and_validate_model <- function(river_data, river)
   # shapiro-wilk test and breusch-pagan test
   get_stat_tests <- function(model) {
 
+    get <- kwb.utils::selectElements
+
+    residuals <- get(model, "residuals")
+
     c(
-      N = shapiro.test(model$residuals)$p.value,
-      lmtest::bptest(model)$p.value,
-      R2 = summary(model)[["adj.r.squared"]],
-      n_obs = length(model$residuals)
+      N = get(stats::shapiro.test(residuals), "p.value"),
+      get(lmtest::bptest(model), "p.value"),
+      R2 = get(summary(model), "adj.r.squared"),
+      n_obs = length(residuals)
     )
   }
 
