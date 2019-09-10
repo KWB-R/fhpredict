@@ -101,11 +101,11 @@ build_and_validate_model <- function(river_data, river, n_folds = 5)
 
   probs <- c(0.025, 0.25, 0.75, 0.9, 0.95, 0.975)
 
-  for (i in names(fb)) {
+  for (model_name in names(fb)) {
 
-    model_data <- as.data.frame(fb[[i]]$model)
+    model_data <- as.data.frame(fb[[model_name]]$model)
 
-    selected <- river_stat_tests$model == i
+    selected <- river_stat_tests$model == model_name
 
     for (rows in train_rows) {
 
@@ -114,7 +114,7 @@ build_and_validate_model <- function(river_data, river, n_folds = 5)
       training <- model_data[  row_indices, ]
       test     <- model_data[- row_indices, ]
 
-      fit <- rstanarm::stan_glm(formulas[[i]], data = training)
+      fit <- rstanarm::stan_glm(formulas[[model_name]], data = training)
 
       prediction <- rstanarm::posterior_predict(fit, newdata = test)
 
