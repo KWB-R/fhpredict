@@ -200,7 +200,6 @@ stepwise <- function (riverdata, pattern)
   nsteps <- min(round(nrow(data) / 10), 10)
 
   selection <- list()
-  fmla <- list()
 
   # Creating list of candidate models with 1 ...n predictors
   for (i in 1:nsteps) {
@@ -212,8 +211,6 @@ stepwise <- function (riverdata, pattern)
       list(lower = null, upper = full),
       steps = i
     )
-
-    fmla[[i]] <- as.list(selection[[i]]$call)$formula
   }
 
   selection
