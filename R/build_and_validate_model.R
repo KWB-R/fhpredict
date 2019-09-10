@@ -84,9 +84,13 @@ build_and_validate_model <- function(river_data, river)
     get(as.list(get(model, "call")), "formula")
   })
 
-  test_beta <- function(true, false, percentile) {
+  test_beta <- function(is_true, percentile) {
 
-    pbeta(q = percentile, shape1 = true + 1, shape2 = false + 1) > 0.05
+    stats::pbeta(
+      q = percentile,
+      shape1 = sum(is_true) + 1,
+      shape2 = sum(! is_true) + 1
+    ) > 0.05
   }
 
   # Initialise columns
@@ -125,32 +129,16 @@ build_and_validate_model <- function(river_data, river)
       selected <- river_stat_tests$model == i
 
       river_stat_tests$in95[selected] <- river_stat_tests$in95[selected] +
-        test_beta(
-          true = sum(df$within95),
-          false = sum(!df$within95),
-          percentile = .95
-        )
+        test_beta(is_true = df$within95, percentile = 0.95)
 
       river_stat_tests$below95[selected] <- river_stat_tests$below95[selected] +
-        test_beta(
-          true = sum(df$below95),
-          false = sum(!df$below95),
-          percentile = .95
-        )
+        test_beta(is_true = df$below95, percentile = 0.95)
 
       river_stat_tests$below90[selected] <- river_stat_tests$below90[selected] +
-        test_beta(
-          true = sum(df$below90),
-          false = sum(!df$below90),
-          percentile = .90
-        )
+        test_beta(is_true = df$below90, percentile = 0.90)
 
       river_stat_tests$in50[selected] <- river_stat_tests$in50[selected] +
-        test_beta(
-          true = sum(df$within50),
-          false = sum(!df$within50),
-          .5
-        )
+        test_beta(is_true = df$within50, percentile = 0.50)
     }
   }
 
