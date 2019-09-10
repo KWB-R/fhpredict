@@ -197,21 +197,18 @@ stepwise <- function (riverdata, pattern)
   full <- lm(log_e.coli ~ .^2, data = data)
 
   # Definition maximum number of steps. 10 at maximum
-  nsteps <- min(round(nrow(data) / 10), 10)
+  max_steps <- min(round(nrow(data) / 10), 10)
 
-  # Creating list of candidate models with 1 ...n predictors
-  lapply(
-    X = 1:nsteps,
-    FUN = function(i) {
-      stats::step(
-        object = null,
-        scope = list(upper = full, lower = null),
-        direction = "forward",
-        steps = i,
-        data = data
-      )
-    }
-  )
+  # Creating list of candidate models with 1 ... max_steps predictors
+  lapply(X = seq_len(max_steps), FUN = function(steps) {
+    stats::step(
+      object = null,
+      scope = list(upper = full, lower = null),
+      direction = "forward",
+      steps = steps,
+      data = data
+    )
+  })
 }
 
 # calc_t -----------------------------------------------------------------------
