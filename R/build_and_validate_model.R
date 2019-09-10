@@ -43,20 +43,17 @@ build_and_validate_model <- function(river_data, river)
 
   # step through, forward and backward selection
   # order of pattern, q_old and q_new is important!
-  fb <- stepwise(
-    riverdata = river_data_ts[[river]],
-    pattern = "(i_mean|q_mean|r_mean|ka_mean)"
-  )
+  pattern <- "(i_mean|q_mean|r_mean|ka_mean)"
+
+  fb <- stepwise(riverdata = river_data_ts[[river]], pattern = pattern)
 
   names(fb) <- sprintf("%smodel_%02d", river, seq_along(fb))
 
   ################ Validation ########################
 
-  # Eliminieren von modelled die doppelt vorkommen, da forward selection früher
-  #fertig als n steps
-
-  unique_index <- length(unique(fb))
-  fb <- fb[1:unique_index]
+  # Eliminieren von modelled die doppelt vorkommen, da forward selection frueher
+  # fertig als n steps
+  fb <- fb[seq_along(unique(fb))]
 
   # testing for classical statistical model assumtions, normality of residuals and
   # heteroskelasdicity
