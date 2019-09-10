@@ -199,21 +199,19 @@ stepwise <- function (riverdata, pattern)
   # Definition maximum number of steps. 10 at maximum
   nsteps <- min(round(nrow(data) / 10), 10)
 
-  selection <- list()
-
   # Creating list of candidate models with 1 ...n predictors
-  for (i in 1:nsteps) {
-
-    selection[[i]] <- step(
-      null,
-      data = data,
-      direction = "forward",
-      list(lower = null, upper = full),
-      steps = i
-    )
-  }
-
-  selection
+  lapply(
+    X = 1:nsteps,
+    FUN = function(i) {
+      stats::step(
+        object = null,
+        scope = list(upper = full, lower = null),
+        direction = "forward",
+        steps = i,
+        data = data
+      )
+    }
+  )
 }
 
 # calc_t -----------------------------------------------------------------------
