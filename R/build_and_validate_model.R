@@ -84,15 +84,6 @@ build_and_validate_model <- function(river_data, river, n_folds = 5)
     get(as.list(get(model, "call")), "formula")
   })
 
-  test_beta <- function(is_true, percentile) {
-
-    stats::pbeta(
-      q = percentile,
-      shape1 = sum(is_true) + 1,
-      shape2 = sum(! is_true) + 1
-    ) > 0.05
-  }
-
   # Initialise columns
   river_stat_tests$in95 <- 0
   river_stat_tests$below95 <- 0
@@ -156,6 +147,15 @@ build_and_validate_model <- function(river_data, river, n_folds = 5)
   )
 
   list(sorted_modellist, best_valid_model, stanfit)
+}
+
+# test_beta --------------------------------------------------------------------
+test_beta <- function(is_true, percentile)
+{
+  stats::pbeta(q = percentile,
+    shape1 = sum(is_true) + 1,
+    shape2 = sum(! is_true) + 1
+  ) > 0.05
 }
 
 # get_stat_tests ---------------------------------------------------------------
