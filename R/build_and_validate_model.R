@@ -17,7 +17,7 @@ if (FALSE)
 }
 
 # build_and_validate_model -----------------------------------------------------
-build_and_validate_model <- function(river_data, river)
+build_and_validate_model <- function(river_data, river, n_folds = 5)
 {
   ### Anwenden von calc_t() auf Inputliste
   river_data_ts <- lapply(river_data, function(river_list) {
@@ -73,7 +73,7 @@ build_and_validate_model <- function(river_data, river)
   # Create list of independent training rows
   train_rows <- caret::createFolds(
     seq_len(nrow(get(get(fb, model_name), "model"))),
-    k = 5,
+    k = n_folds,
     list = TRUE,
     returnTrain = TRUE
   )
