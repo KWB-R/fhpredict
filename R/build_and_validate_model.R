@@ -41,10 +41,7 @@ build_and_validate_model <- function(river_data, river, n_folds = 5)
   )
 
   # Provide model formulas
-  formulas <- lapply(fb, function(model) {
-
-    get(as.list(get(model, "call")), "formula")
-  })
+  formulas <- lapply(fb, get_formula)
 
   river_stat_tests <- update_river_stat_tests(
     river_stat_tests, fb, train_rows, formulas
@@ -251,6 +248,14 @@ get_training_rows <- function(model_object, n_folds)
     k = n_folds,
     list = TRUE,
     returnTrain = TRUE
+  )
+}
+
+# get_formula ------------------------------------------------------------------
+get_formula <- function(model)
+{
+  kwb.utils::selectElements(
+    as.list(kwb.utils::selectElements(model, "call")), "formula"
   )
 }
 
