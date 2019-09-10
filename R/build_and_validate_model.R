@@ -129,6 +129,71 @@ prepare_river_data <- function(river_list)
   river_ts
 }
 
+# calc_t -----------------------------------------------------------------------
+calc_t <- function(datalist)
+{
+  # Filter for summer months in the hygienic data
+  hygienic <- kwb.utils::selectElements(datalist, "hygiene")
+
+  # Data frames with non-hygienic data
+  non_hygienics <- datalist[setdiff(names(datalist), "hygiene")]
+
+  # Filter hygienic measurements for months in summer (May to September)
+  hygienic_summer <- filter_for_months(hygienic, 5:9)
+
+  # Filter non-hygienic measurements for months in summer (April to September)
+  non_hygienics_summer <- lapply(non_hygienics, filter_for_months, 4:9)
+
+  # z-transform the data frames with non-hygienic data
+  non_hygienics_z <- lapply(non_hygienics_summer, transform_z)
+
+  # Recompose the list of hygienic and non-hygienic data and set original names
+  stats::setNames(c(list(hygienic), non_hygienics_z), names(datalist))
+}
+
+# filter_for_months ------------------------------------------------------------
+
+# Helper function to filter for month numbers
+filter_for_months <- function(df, month_numbers)
+{
+  dates <- kwb.utils::selectColumns(df, "datum")
+
+  df[lubridate::month(dates) %in% month_numbers, ]
+}
+
+# transform_z ------------------------------------------------------------------
+transform_z <- function(df)
+{
+  # Are the columns rain columns?
+  is_rain_column <- grepl("^r_.*", names(df))
+
+  # Transform rain columns: log-transformed and 1/sigma2 (?)
+  df[is_rain_column] <- lapply(df[is_rain_column], function(x) log(x + 1))
+
+  # Return the data frame with rain columns being transformed
+  df
+}
+
+# add_meancol ------------------------------------------------------------------
+add_meancol <- function(df)
+{
+  # for rain and i #edit: + ka #2ndedit: + q
+  for (prefix in get_value_column_prefixes(df)) {
+
+    values <- df[, startsWith(names(df), prefix), drop = FALSE]
+
+    df[, paste0(prefix,"_mean")] <- rowMeans(values, na.rm = TRUE)
+  }
+
+  df
+}
+
+# get_value_column_prefixes ----------------------------------------------------
+get_value_column_prefixes <- function(df)
+{
+  unique(sub("([a-z])_.*", "\\1", names(df)[-1]))
+}
+
 # get_forward_backward ---------------------------------------------------------
 get_forward_backward <- function(river_data_ts, river)
 {
@@ -141,59 +206,6 @@ get_forward_backward <- function(river_data_ts, river)
   # Eliminieren von modelled die doppelt vorkommen, da forward selection frueher
   # fertig als n steps
   fb[seq_along(unique(fb))]
-}
-
-# get_stat_tests_data ----------------------------------------------------------
-get_stat_tests_data <- function(fb)
-{
-  sapply(fb, get_stat_tests) %>%
-    t() %>%
-    dplyr::as_tibble(rownames = "model")  %>%
-    dplyr::bind_rows(.id = "river") %>%
-    dplyr::mutate(stat_correct = N > 0.05 & BP > 0.05)
-}
-
-# get_training_rows ------------------------------------------------------------
-get_training_rows <- function(model_object, n_folds)
-{
-  # Create list of independent training rows
-  caret::createFolds(
-    seq_len(nrow(kwb.utils::selectElements(model_object, "model"))),
-    k = n_folds,
-    list = TRUE,
-    returnTrain = TRUE
-  )
-}
-
-# test_beta --------------------------------------------------------------------
-test_beta <- function(is_true, percentile)
-{
-  stats::pbeta(q = percentile,
-    shape1 = sum(is_true) + 1,
-    shape2 = sum(! is_true) + 1
-  ) > 0.05
-}
-
-# get_stat_tests ---------------------------------------------------------------
-
-#' Calculate Statistical Tests for Residuals
-#'
-#' Normality and s2 = const shapiro-wilk test and breusch-pagan test
-#'
-#' @param model model object
-#'
-get_stat_tests <- function(model)
-{
-  get <- kwb.utils::selectElements
-
-  residuals <- get(model, "residuals")
-
-  c(
-    N = get(stats::shapiro.test(residuals), "p.value"),
-    get(lmtest::bptest(model), "p.value"),
-    R2 = get(summary(model), "adj.r.squared"),
-    n_obs = length(residuals)
-  )
 }
 
 # stepwise ---------------------------------------------------------------------
@@ -236,59 +248,57 @@ stepwise <- function (riverdata, pattern)
   })
 }
 
-# calc_t -----------------------------------------------------------------------
-calc_t <- function(datalist)
+# get_stat_tests_data ----------------------------------------------------------
+get_stat_tests_data <- function(fb)
 {
-  # Helper function to filter for month numbers
-  filter_for_months <- function(df, month_numbers) {
-    dates <- kwb.utils::selectColumns(df, "datum")
-    df[lubridate::month(dates) %in% month_numbers, ]
-  }
-
-  # Filter for summer months in the hygienic data
-  hygienic <- kwb.utils::selectElements(datalist, "hygiene")
-
-  # Data frames with non-hygienic data
-  non_hygienics <- datalist[setdiff(names(datalist), "hygiene")]
-
-  # Filter hygienic measurements for months in summer (May to September)
-  hygienic_summer <- filter_for_months(hygienic, 5:9)
-
-  # Filter non-hygienic measurements for months in summer (April to September)
-  non_hygienics_summer <- lapply(non_hygienics, filter_for_months, 4:9)
-
-  # z-transform the data frames with non-hygienic data
-  non_hygienics_z <- lapply(non_hygienics_summer, transform_z)
-
-  # Recompose the list of hygienic and non-hygienic data and set original names
-  stats::setNames(c(list(hygienic), non_hygienics_z), names(datalist))
+  sapply(fb, get_stat_tests) %>%
+    t() %>%
+    dplyr::as_tibble(rownames = "model")  %>%
+    dplyr::bind_rows(.id = "river") %>%
+    dplyr::mutate(stat_correct = N > 0.05 & BP > 0.05)
 }
 
-# transform_z ------------------------------------------------------------------
-transform_z <- function(df)
+# get_stat_tests ---------------------------------------------------------------
+
+#' Calculate Statistical Tests for Residuals
+#'
+#' Normality and s2 = const shapiro-wilk test and breusch-pagan test
+#'
+#' @param model model object
+#'
+get_stat_tests <- function(model)
 {
-  # Are the columns rain columns?
-  is_rain_column <- grepl("^r_.*", names(df))
+  get <- kwb.utils::selectElements
 
-  # Transform rain columns: log-transformed and 1/sigma2 (?)
-  df[is_rain_column] <- lapply(df[is_rain_column], function(x) log(x + 1))
+  residuals <- get(model, "residuals")
 
-  # Return the data frame with rain columns being transformed
-  df
+  c(
+    N = get(stats::shapiro.test(residuals), "p.value"),
+    get(lmtest::bptest(model), "p.value"),
+    R2 = get(summary(model), "adj.r.squared"),
+    n_obs = length(residuals)
+  )
 }
 
-# add_meancol ------------------------------------------------------------------
-add_meancol <- function(df)
+# get_training_rows ------------------------------------------------------------
+get_training_rows <- function(model_object, n_folds)
 {
-  # for rain and i #edit: + ka #2ndedit: + q
-  for (prefix in get_value_column_prefixes(df)) {
+  # Create list of independent training rows
+  caret::createFolds(
+    seq_len(nrow(kwb.utils::selectElements(model_object, "model"))),
+    k = n_folds,
+    list = TRUE,
+    returnTrain = TRUE
+  )
+}
 
-    values <- df[, startsWith(names(df), prefix), drop = FALSE]
-
-    df[, paste0(prefix,"_mean")] <- rowMeans(values, na.rm = TRUE)
-  }
-
-  df
+# test_beta --------------------------------------------------------------------
+test_beta <- function(is_true, percentile)
+{
+  stats::pbeta(q = percentile,
+    shape1 = sum(is_true) + 1,
+    shape2 = sum(! is_true) + 1
+  ) > 0.05
 }
 
 # add_sumcol -------------------------------------------------------------------
@@ -305,10 +315,4 @@ add_sumcol <- function (df)
   }
 
   df
-}
-
-# get_value_column_prefixes ----------------------------------------------------
-get_value_column_prefixes <- function(df)
-{
-  unique(sub("([a-z])_.*", "\\1", names(df)[-1]))
 }
