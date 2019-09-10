@@ -30,9 +30,9 @@ build_and_validate_model <- function(river_data, river, n_folds = 5)
 
   ### Validation ###
 
-  # testing for classical statistical model assumtions, normality of residuals
+  # Test for classical statistical model assumptions, normality of residuals
   # and heteroskelasdicity
-  river_stat_tests <- init_stat_tests_data(fb)
+  stat_tests <- init_stat_tests_data(fb)
 
   # Create list of independent training rows
   train_rows <- get_training_rows(
@@ -40,24 +40,17 @@ build_and_validate_model <- function(river_data, river, n_folds = 5)
     n_folds = n_folds
   )
 
-  # Provide model formulas
-  formulas <- lapply(fb, get_formula)
+  stat_tests <- update_stat_tests(stat_tests, fb, train_rows)
 
-  river_stat_tests <- update_river_stat_tests(
-    river_stat_tests, fb, train_rows, formulas
-  )
-
-  sorted_models <- river_stat_tests %>%
+  sorted_models <- stat_tests %>%
     dplyr::filter(.data$below95 == 5 & .data$below90 == 5 & .data$in50 == 5) %>%
     dplyr::arrange(dplyr::desc(.data$R2))
 
-  # Name of the best model
-  model_name <- sorted_models$model[1]
-
-  best_model <- kwb.utils::selectElements(fb, model_name)
+  # Select the best model from fb
+  best_model <- kwb.utils::selectElements(fb, sorted_models$model[1])
 
   stanfit <- rstanarm::stan_glm(
-    formula = kwb.utils::selectElements(formulas, model_name),
+    formula = get_formula(best_model),
     data = kwb.utils::selectElements(best_model, "model")
   )
 
@@ -259,19 +252,18 @@ get_formula <- function(model)
   )
 }
 
-# update_river_stat_tests ------------------------------------------------------
+# update_stat_tests ------------------------------------------------------------
 #' @importFrom rlang .data
 #' @keywords internal
-update_river_stat_tests <- function(
-  river_stat_tests, fb, train_rows, formulas,
-  probs = c(0.025, 0.25, 0.75, 0.9, 0.95, 0.975)
+update_stat_tests <- function(
+  stat_tests, fb, train_rows, probs = c(0.025, 0.25, 0.75, 0.9, 0.95, 0.975)
 )
 {
   for (model_name in names(fb)) {
 
     model_data <- as.data.frame(fb[[model_name]]$model)
 
-    selected <- river_stat_tests$model == model_name
+    selected <- stat_tests$model == model_name
 
     for (rows in train_rows) {
 
@@ -280,7 +272,7 @@ update_river_stat_tests <- function(
       training <- model_data[  row_indices, ]
       test     <- model_data[- row_indices, ]
 
-      fit <- rstanarm::stan_glm(formulas[[model_name]], data = training)
+      fit <- rstanarm::stan_glm(get_formula(fs[[model_name]]), data = training)
 
       prediction <- rstanarm::posterior_predict(fit, newdata = test)
 
@@ -299,21 +291,21 @@ update_river_stat_tests <- function(
             .data$log_e.coli > .data$`25%`,
         )
 
-      river_stat_tests$in95[selected] <- river_stat_tests$in95[selected] +
+      stat_tests$in95[selected] <- stat_tests$in95[selected] +
         test_beta(is_true = df$within95, percentile = 0.95)
 
-      river_stat_tests$below95[selected] <- river_stat_tests$below95[selected] +
+      stat_tests$below95[selected] <- stat_tests$below95[selected] +
         test_beta(is_true = df$below95, percentile = 0.95)
 
-      river_stat_tests$below90[selected] <- river_stat_tests$below90[selected] +
+      stat_tests$below90[selected] <- stat_tests$below90[selected] +
         test_beta(is_true = df$below90, percentile = 0.90)
 
-      river_stat_tests$in50[selected] <- river_stat_tests$in50[selected] +
+      stat_tests$in50[selected] <- stat_tests$in50[selected] +
         test_beta(is_true = df$within50, percentile = 0.50)
     }
   }
 
-  river_stat_tests
+  stat_tests
 }
 
 # test_beta --------------------------------------------------------------------
