@@ -17,6 +17,9 @@ if (FALSE)
 }
 
 # build_and_validate_model -----------------------------------------------------
+
+#' @importFrom rlang .data
+#' @keywords internal
 build_and_validate_model <- function(river_data, river, n_folds = 5)
 {
   ### Anwenden von calc_t() auf Inputliste
@@ -48,8 +51,8 @@ build_and_validate_model <- function(river_data, river, n_folds = 5)
   )
 
   sorted_models <- river_stat_tests %>%
-    filter(below95 == 5 & below90 == 5 & in50 == 5) %>%
-    dplyr::arrange(desc(R2))
+    dplyr::filter(.data$below95 == 5 & .data$below90 == 5 & .data$in50 == 5) %>%
+    dplyr::arrange(dplyr::desc(.data$R2))
 
   # Name of the best model
   model_name <- sorted_models$model[1]
@@ -183,11 +186,11 @@ stepwise <- function (riverdata, pattern)
   data <- kwb.flusshygiene::process_model_riverdata(
     riverdata, variables = c("log_e.coli", vars1)
   ) %>%
-    dplyr::select(-datum)
+    dplyr::select(- .data$datum)
 
   # Definition of null and full models
-  null <- lm(log_e.coli ~ 1, data = data)
-  full <- lm(log_e.coli ~ .^2, data = data)
+  null <- stats::lm(log_e.coli ~ 1, data = data)
+  full <- stats::lm(log_e.coli ~ .^2, data = data)
 
   # Definition maximum number of steps. 10 at maximum
   max_steps <- min(round(nrow(data) / 10), 10)
@@ -204,14 +207,16 @@ stepwise <- function (riverdata, pattern)
   })
 }
 
-# init_stat_tests_data ----------------------------------------------------------
+# init_stat_tests_data ---------------------------------------------------------
+#' @importFrom rlang .data
+#' @keywords internal
 init_stat_tests_data <- function(fb)
 {
   sapply(fb, get_stat_tests) %>%
     t() %>%
     dplyr::as_tibble(rownames = "model")  %>%
     dplyr::bind_rows(.id = "river") %>%
-    dplyr::mutate(stat_correct = N > 0.05 & BP > 0.05) %>%
+    dplyr::mutate(stat_correct = .data$N > 0.05 & .data$BP > 0.05) %>%
     dplyr::mutate(in95 = 0, below95 = 0, below90 = 0, in50 = 0)
 }
 
@@ -250,6 +255,8 @@ get_training_rows <- function(model_object, n_folds)
 }
 
 # update_river_stat_tests ------------------------------------------------------
+#' @importFrom rlang .data
+#' @keywords internal
 update_river_stat_tests <- function(
   river_stat_tests, fb, train_rows, formulas,
   probs = c(0.025, 0.25, 0.75, 0.9, 0.95, 0.975)
@@ -272,15 +279,19 @@ update_river_stat_tests <- function(
 
       prediction <- rstanarm::posterior_predict(fit, newdata = test)
 
-      df <- apply(prediction, 2, quantile, probs = probs) %>%
+      df <- apply(prediction, 2, stats::quantile, probs = probs) %>%
         t() %>%
         as.data.frame() %>%
         dplyr::mutate(
           log_e.coli = test$log_e.coli,
-          below95 = log_e.coli < `95%`,
-          below90 = log_e.coli < `90%`,
-          within95 = log_e.coli < `97.5%` & log_e.coli > `2.5%`,
-          within50 = log_e.coli < `75%` & log_e.coli > `25%`,
+          below95 = .data$log_e.coli < .data$`95%`,
+          below90 = .data$log_e.coli < .data$`90%`,
+          within95 =
+            .data$log_e.coli < .data$`97.5%` &
+            .data$log_e.coli > .data$`2.5%`,
+          within50 =
+            .data$log_e.coli < .data$`75%` &
+            .data$log_e.coli > .data$`25%`,
         )
 
       river_stat_tests$in95[selected] <- river_stat_tests$in95[selected] +
