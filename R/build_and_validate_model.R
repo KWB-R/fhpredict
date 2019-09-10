@@ -23,40 +23,24 @@ build_and_validate_model <- function(river_data, river, n_folds = 5)
   river_data_ts <- lapply(river_data, prepare_river_data)
 
   # step through, forward and backward selection
-  # order of pattern, q_old and q_new is important!
-  pattern <- "(i_mean|q_mean|r_mean|ka_mean)"
+  fb <- get_forward_backward(river_data_ts, river)
 
-  fb <- stepwise(riverdata = river_data_ts[[river]], pattern = pattern)
-
-  names(fb) <- sprintf("%smodel_%02d", river, seq_along(fb))
-
-  ################ Validation ########################
-
-  # Eliminieren von modelled die doppelt vorkommen, da forward selection frueher
-  # fertig als n steps
-  fb <- fb[seq_along(unique(fb))]
+  ### Validation ###
 
   # testing for classical statistical model assumtions, normality of residuals and
   # heteroskelasdicity
+  river_stat_tests <- get_stat_tests_data(fb)
 
-  river_stat_tests <- sapply(fb, get_stat_tests) %>%
-    t() %>%
-    dplyr::as_tibble(rownames = "model")  %>%
-    dplyr::bind_rows(.id = "river") %>%
-    dplyr::mutate(stat_correct = N > .05 & BP > .05)
-
-  # Define shortcut to selectElements()
-  get <- kwb.utils::selectElements
-
-  # Define the name of the model to be selected from "fb"
-  model_name <- paste0(river, "model_01")
+  # Initialise further columns
+  river_stat_tests$in95 <- 0
+  river_stat_tests$below95 <- 0
+  river_stat_tests$below90 <- 0
+  river_stat_tests$in50 <- 0
 
   # Create list of independent training rows
-  train_rows <- caret::createFolds(
-    seq_len(nrow(get(get(fb, model_name), "model"))),
-    k = n_folds,
-    list = TRUE,
-    returnTrain = TRUE
+  train_rows <- get_training_rows(
+    model_object = kwb.utils::selectElements(fb, paste0(river, "model_01")),
+    n_folds = n_folds
   )
 
   # Provide model formulas
@@ -64,12 +48,6 @@ build_and_validate_model <- function(river_data, river, n_folds = 5)
 
     get(as.list(get(model, "call")), "formula")
   })
-
-  # Initialise columns
-  river_stat_tests$in95 <- 0
-  river_stat_tests$below95 <- 0
-  river_stat_tests$below90 <- 0
-  river_stat_tests$in50 <- 0
 
   probs <- c(0.025, 0.25, 0.75, 0.9, 0.95, 0.975)
 
@@ -149,6 +127,42 @@ prepare_river_data <- function(river_list)
   river_ts[is_rain]      <- lapply(river_ts[is_rain],      add_meancol)
 
   river_ts
+}
+
+# get_forward_backward ---------------------------------------------------------
+get_forward_backward <- function(river_data_ts, river)
+{
+  riverdata <- kwb.utils::selectElements(river_data_ts, river)
+
+  fb <- stepwise(riverdata, pattern = "(i_mean|q_mean|r_mean|ka_mean)")
+
+  names(fb) <- sprintf("%smodel_%02d", river, seq_along(fb))
+
+  # Eliminieren von modelled die doppelt vorkommen, da forward selection frueher
+  # fertig als n steps
+  fb[seq_along(unique(fb))]
+}
+
+# get_stat_tests_data ----------------------------------------------------------
+get_stat_tests_data <- function(fb)
+{
+  sapply(fb, get_stat_tests) %>%
+    t() %>%
+    dplyr::as_tibble(rownames = "model")  %>%
+    dplyr::bind_rows(.id = "river") %>%
+    dplyr::mutate(stat_correct = N > 0.05 & BP > 0.05)
+}
+
+# get_training_rows ------------------------------------------------------------
+get_training_rows <- function(model_object, n_folds)
+{
+  # Create list of independent training rows
+  caret::createFolds(
+    seq_len(nrow(kwb.utils::selectElements(model_object, "model"))),
+    k = n_folds,
+    list = TRUE,
+    returnTrain = TRUE
+  )
 }
 
 # test_beta --------------------------------------------------------------------
