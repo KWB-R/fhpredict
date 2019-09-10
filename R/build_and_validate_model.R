@@ -172,7 +172,7 @@ build_and_validate_model <- function(river_data, river)
 }
 
 # stepwise ---------------------------------------------------------------------
-stepwise <- function (riverdata, pattern)#, q_old, q_new)
+stepwise <- function (riverdata, pattern)
 {
   # prepare variables out of all cominations (given by pattern)
   # variables for interaction get replaced by q_new (remove q_old)
@@ -187,15 +187,17 @@ stepwise <- function (riverdata, pattern)#, q_old, q_new)
   vars2 <- vars1[stringr::str_detect(vars1, pattern)]
 
   # prepare formulas
-  data <- process_model_riverdata(riverdata, c("log_e.coli", vars1)) %>%
+  data <- kwb.flusshygiene::process_model_riverdata(
+    riverdata, variables = c("log_e.coli", vars1)
+  ) %>%
     dplyr::select(-datum)
 
   # Definition of null and full models
   null <- lm(log_e.coli ~ 1, data = data)
   full <- lm(log_e.coli ~ .^2, data = data)
 
-  # Definition maximum number of steps
-  nsteps <- ifelse(round(nrow(data)/10) < 10, round(nrow(data)/10), 10)
+  # Definition maximum number of steps. 10 at maximum
+  nsteps <- min(round(nrow(data) / 10), 10)
 
   selection <- list()
   fmla <- list()
