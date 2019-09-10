@@ -28,15 +28,15 @@ build_and_validate_model <- function(river_data, river)
     # Names of list elements
     elements <- names(river_ts)
 
-    is_discharge <- grepl("^q", elements)
+    is_discharge <- grepl("^q",  elements)
     is_treatment <- grepl("^ka", elements)
-    is_i <- grepl("^i", elements)
-    is_rain <- grepl("^r", elements)
+    is_i         <- grepl("^i",  elements)
+    is_rain      <- grepl("^r",  elements)
 
     river_ts[is_discharge] <- lapply(river_ts[is_discharge], add_meancol)
     river_ts[is_treatment] <- lapply(river_ts[is_treatment], add_meancol)
-    river_ts[is_i] <- lapply(river_ts[is_i], add_meancol)
-    river_ts[is_rain] <- lapply(river_ts[is_rain], add_meancol)
+    river_ts[is_i]         <- lapply(river_ts[is_i],         add_meancol)
+    river_ts[is_rain]      <- lapply(river_ts[is_rain],      add_meancol)
 
     river_ts
   })
@@ -101,29 +101,26 @@ build_and_validate_model <- function(river_data, river)
 
   probs <- c(0.025, 0.25, 0.75, 0.9, 0.95, 0.975)
 
-  for(i in names(fb)) {
+  for (i in names(fb)) {
 
-    for(j in 1:5) {
+    for (j in 1:5) {
 
       training <- as.data.frame(fb[[i]]$model)[c(train_rows[[j]]),]
       test <- as.data.frame(fb[[i]]$model)[-c(train_rows[[j]]),]
 
       fit <- rstanarm::stan_glm(formulas[[i]], data = training)
 
-      df <- apply(
-        X = rstanarm::posterior_predict(fit, newdata = test),
-        MARGIN = 2,
-        FUN = quantile,
-        probs = probs
-      ) %>%
+      prediction <- rstanarm::posterior_predict(fit, newdata = test)
+
+      df <- apply(prediction, 2, quantile, probs = probs) %>%
         t() %>%
         as.data.frame() %>%
         dplyr::mutate(
           log_e.coli = test$log_e.coli,
           below95 = log_e.coli < `95%`,
           below90 = log_e.coli < `90%`,
-          within95 = log_e.coli < `97.5%`& log_e.coli > `2.5%`,
-          within50 = log_e.coli < `75%`& log_e.coli > `25%`,
+          within95 = log_e.coli < `97.5%` & log_e.coli > `2.5%`,
+          within50 = log_e.coli < `75%` & log_e.coli > `25%`,
         )
 
       selected <- river_stat_tests$model == i
