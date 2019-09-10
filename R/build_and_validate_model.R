@@ -20,26 +20,7 @@ if (FALSE)
 build_and_validate_model <- function(river_data, river, n_folds = 5)
 {
   ### Anwenden von calc_t() auf Inputliste
-  river_data_ts <- lapply(river_data, function(river_list) {
-
-    # use function
-    river_ts <- calc_t(river_list)
-
-    # Names of list elements
-    elements <- names(river_ts)
-
-    is_discharge <- grepl("^q",  elements)
-    is_treatment <- grepl("^ka", elements)
-    is_i         <- grepl("^i",  elements)
-    is_rain      <- grepl("^r",  elements)
-
-    river_ts[is_discharge] <- lapply(river_ts[is_discharge], add_meancol)
-    river_ts[is_treatment] <- lapply(river_ts[is_treatment], add_meancol)
-    river_ts[is_i]         <- lapply(river_ts[is_i],         add_meancol)
-    river_ts[is_rain]      <- lapply(river_ts[is_rain],      add_meancol)
-
-    river_ts
-  })
+  river_data_ts <- lapply(river_data, prepare_river_data)
 
   # step through, forward and backward selection
   # order of pattern, q_old and q_new is important!
@@ -147,6 +128,27 @@ build_and_validate_model <- function(river_data, river, n_folds = 5)
   )
 
   list(sorted_modellist, best_valid_model, stanfit)
+}
+
+# prepare_river_data -----------------------------------------------------------
+prepare_river_data <- function(river_list)
+{
+  river_ts <- calc_t(river_list)
+
+  # Names of list elements
+  elements <- names(river_ts)
+
+  is_discharge <- grepl("^q",  elements)
+  is_treatment <- grepl("^ka", elements)
+  is_i         <- grepl("^i",  elements)
+  is_rain      <- grepl("^r",  elements)
+
+  river_ts[is_discharge] <- lapply(river_ts[is_discharge], add_meancol)
+  river_ts[is_treatment] <- lapply(river_ts[is_treatment], add_meancol)
+  river_ts[is_i]         <- lapply(river_ts[is_i],         add_meancol)
+  river_ts[is_rain]      <- lapply(river_ts[is_rain],      add_meancol)
+
+  river_ts
 }
 
 # test_beta --------------------------------------------------------------------
