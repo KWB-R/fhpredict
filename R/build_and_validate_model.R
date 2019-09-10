@@ -42,10 +42,8 @@ build_and_validate_model <- function(river_data, river)
   })
 
   # step through, forward and backward selection
-  stepwise <- function (river, pattern)#, q_old, q_new)
+  stepwise <- function (riverdata, pattern)#, q_old, q_new)
   {
-    riverdata <- river_data_ts[[river]]
-
     # prepare variables out of all cominations (given by pattern)
     # variables for interaction get replaced by q_new (remove q_old)
     vars1 <- (
@@ -90,7 +88,10 @@ build_and_validate_model <- function(river_data, river)
   }
 
   # order of pattern, q_old and q_new is important!
-  fb <- stepwise(river = river, pattern = "(i_mean|q_mean|r_mean|ka_mean)")
+  fb <- stepwise(
+    riverdata = river_data_ts[[river]],
+    pattern = "(i_mean|q_mean|r_mean|ka_mean)"
+  )
 
   names(fb) <- sprintf(paste0(river, "model_%02d"), seq_along(fb))
 
