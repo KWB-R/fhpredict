@@ -27,8 +27,8 @@ build_and_validate_model <- function(river_data, river, n_folds = 5)
 
   ### Validation ###
 
-  # testing for classical statistical model assumtions, normality of residuals and
-  # heteroskelasdicity
+  # testing for classical statistical model assumtions, normality of residuals
+  # and heteroskelasdicity
   river_stat_tests <- get_stat_tests_data(fb)
 
   # Initialise further columns
@@ -93,19 +93,21 @@ build_and_validate_model <- function(river_data, river, n_folds = 5)
     }
   }
 
-  sorted_modellist <- river_stat_tests %>%
-    filter( below95 == 5 & below90 == 5& in50==5) %>%
+  sorted_models <- river_stat_tests %>%
+    filter(below95 == 5 & below90 == 5 & in50 == 5) %>%
     dplyr::arrange(desc(R2))
 
-  best_valid_model_stats <- sorted_modellist[1, ]
-  best_valid_model <- fb[[best_valid_model_stats$model]]
+  # Name of the best model
+  model_name <- sorted_models$model[1]
+
+  best_model <- kwb.utils::selectElements(fb, model_name)
 
   stanfit <- rstanarm::stan_glm(
-    formula = formulas[[best_valid_model_stats$model]],
-    data = best_valid_model$model
+    formula = kwb.utils::selectElements(formulas, model_name),
+    data = kwb.utils::selectElements(best_model, "model")
   )
 
-  list(sorted_modellist, best_valid_model, stanfit)
+  list(sorted_models, best_model, stanfit)
 }
 
 # prepare_river_data -----------------------------------------------------------
