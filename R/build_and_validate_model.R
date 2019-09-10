@@ -52,22 +52,6 @@ build_and_validate_model <- function(river_data, river)
 
   ################ Validation ########################
 
-  # calculate statistical tests for residuals: Normality and s2 = const
-  # shapiro-wilk test and breusch-pagan test
-  get_stat_tests <- function(model) {
-
-    get <- kwb.utils::selectElements
-
-    residuals <- get(model, "residuals")
-
-    c(
-      N = get(stats::shapiro.test(residuals), "p.value"),
-      get(lmtest::bptest(model), "p.value"),
-      R2 = get(summary(model), "adj.r.squared"),
-      n_obs = length(residuals)
-    )
-  }
-
   # Eliminieren von modelled die doppelt vorkommen, da forward selection früher
   #fertig als n steps
 
@@ -178,6 +162,28 @@ build_and_validate_model <- function(river_data, river)
   )
 
   list(sorted_modellist, best_valid_model, stanfit)
+}
+
+# get_stat_tests ---------------------------------------------------------------
+
+#' Calculate Statistical Tests for Residuals
+#'
+#' Normality and s2 = const shapiro-wilk test and breusch-pagan test
+#'
+#' @param model model object
+#'
+get_stat_tests <- function(model)
+{
+  get <- kwb.utils::selectElements
+
+  residuals <- get(model, "residuals")
+
+  c(
+    N = get(stats::shapiro.test(residuals), "p.value"),
+    get(lmtest::bptest(model), "p.value"),
+    R2 = get(summary(model), "adj.r.squared"),
+    n_obs = length(residuals)
+  )
 }
 
 # stepwise ---------------------------------------------------------------------
