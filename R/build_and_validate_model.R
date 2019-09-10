@@ -42,51 +42,6 @@ build_and_validate_model <- function(river_data, river)
   })
 
   # step through, forward and backward selection
-  stepwise <- function (riverdata, pattern)#, q_old, q_new)
-  {
-    # prepare variables out of all cominations (given by pattern)
-    # variables for interaction get replaced by q_new (remove q_old)
-    vars1 <- (
-      riverdata[-1] %>%
-        unroll_physical_data() %>%
-        lapply(names) %>%
-        unlist() %>%
-        unique()
-    )[-1]
-
-    vars2 <- vars1[stringr::str_detect(vars1, pattern)]
-
-    # prepare formulas
-    data <- process_model_riverdata(riverdata, c("log_e.coli", vars1)) %>%
-      dplyr::select(-datum)
-
-    # Definition of null and full models
-    null <- lm(log_e.coli ~ 1, data = data)
-    full <- lm(log_e.coli ~ .^2, data = data)
-
-    # Definition maximum number of steps
-    nsteps <- ifelse(round(nrow(data)/10) < 10, round(nrow(data)/10), 10)
-
-    selection <- list()
-    fmla <- list()
-
-    # Creating list of candidate models with 1 ...n predictors
-    for (i in 1:nsteps) {
-
-      selection[[i]] <- step(
-        null,
-        data = data,
-        direction = "forward",
-        list(lower = null, upper = full),
-        steps = i
-      )
-
-      fmla[[i]] <- as.list(selection[[i]]$call)$formula
-    }
-
-    selection
-  }
-
   # order of pattern, q_old and q_new is important!
   fb <- stepwise(
     riverdata = river_data_ts[[river]],
@@ -214,6 +169,52 @@ build_and_validate_model <- function(river_data, river)
   )
 
   list(sorted_modellist, best_valid_model, stanfit)
+}
+
+# stepwise ---------------------------------------------------------------------
+stepwise <- function (riverdata, pattern)#, q_old, q_new)
+{
+  # prepare variables out of all cominations (given by pattern)
+  # variables for interaction get replaced by q_new (remove q_old)
+  vars1 <- (
+    riverdata[-1] %>%
+      unroll_physical_data() %>%
+      lapply(names) %>%
+      unlist() %>%
+      unique()
+  )[-1]
+
+  vars2 <- vars1[stringr::str_detect(vars1, pattern)]
+
+  # prepare formulas
+  data <- process_model_riverdata(riverdata, c("log_e.coli", vars1)) %>%
+    dplyr::select(-datum)
+
+  # Definition of null and full models
+  null <- lm(log_e.coli ~ 1, data = data)
+  full <- lm(log_e.coli ~ .^2, data = data)
+
+  # Definition maximum number of steps
+  nsteps <- ifelse(round(nrow(data)/10) < 10, round(nrow(data)/10), 10)
+
+  selection <- list()
+  fmla <- list()
+
+  # Creating list of candidate models with 1 ...n predictors
+  for (i in 1:nsteps) {
+
+    selection[[i]] <- step(
+      null,
+      data = data,
+      direction = "forward",
+      list(lower = null, upper = full),
+      steps = i
+    )
+
+    fmla[[i]] <- as.list(selection[[i]]$call)$formula
+  }
+
+  selection
 }
 
 # calc_t -----------------------------------------------------------------------
