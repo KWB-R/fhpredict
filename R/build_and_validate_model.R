@@ -82,10 +82,13 @@ prepare_river_data <- function(river_list)
 calc_t <- function(datalist)
 {
   # Filter for summer months in the hygienic data
-  hygienic <- kwb.utils::selectElements(datalist, "hygiene")
+  hygiene_element <- grep("hygiene", names(datalist), value = TRUE)
+  stopifnot(length(hygiene_element) == 1)
+
+  hygienic <- kwb.utils::selectElements(datalist, hygiene_element)
 
   # Data frames with non-hygienic data
-  non_hygienics <- datalist[setdiff(names(datalist), "hygiene")]
+  non_hygienics <- datalist[setdiff(names(datalist), hygiene_element)]
 
   # Filter hygienic measurements for months in summer (May to September)
   hygienic_summer <- filter_for_months(hygienic, 5:9)
@@ -97,7 +100,7 @@ calc_t <- function(datalist)
   non_hygienics_z <- lapply(non_hygienics_summer, transform_z)
 
   # Recompose the list of hygienic and non-hygienic data and set original names
-  stats::setNames(c(list(hygienic), non_hygienics_z), names(datalist))
+  stats::setNames(c(list(hygienic_summer), non_hygienics_z), names(datalist))
 }
 
 # filter_for_months ------------------------------------------------------------
