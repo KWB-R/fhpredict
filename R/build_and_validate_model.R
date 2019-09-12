@@ -210,7 +210,7 @@ init_stat_tests_data <- function(fb)
     dplyr::as_tibble(rownames = "model")  %>%
     dplyr::bind_rows(.id = "river") %>%
     dplyr::mutate(stat_correct = .data$N > 0.05 & .data$BP > 0.05) %>%
-    dplyr::mutate(in95 = 0, below95 = 0, below90 = 0, in50 = 0)
+    dplyr::mutate(in50 = 0, below90 = 0, below95 = 0, in95 = 0)
 }
 
 # get_stat_tests ---------------------------------------------------------------
