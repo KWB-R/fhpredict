@@ -60,7 +60,7 @@ build_and_validate_model <- function(river_data, river, n_folds = 5)
 # prepare_river_data -----------------------------------------------------------
 prepare_river_data <- function(river_list)
 {
-  river_ts <- calc_t(river_list)
+  river_ts <- calc_t(datalist = river_list)
 
   # Names of list elements
   elements <- names(river_ts)
