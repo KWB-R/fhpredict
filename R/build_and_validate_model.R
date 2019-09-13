@@ -48,7 +48,11 @@ build_and_validate_model <- function(
     data = kwb.utils::selectElements(best_model, "model")
   )
 
-  list(sorted_models, best_model, stanfit)
+  list(
+    sorted_models = sorted_models,
+    best_model = best_model,
+    stanfit = stanfit
+  )
 }
 
 # check_args_build_and_validate ------------------------------------------------
