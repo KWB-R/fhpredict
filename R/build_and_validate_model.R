@@ -79,16 +79,18 @@ check_args_build_and_validate <- function(river_data, river, spot_data)
 # stepwise ---------------------------------------------------------------------
 stepwise <- function (riverdata, pattern = "", dbg = TRUE)
 {
-  # prepare variables out of all cominations (given by pattern)
-  # variables for interaction get replaced by q_new (remove q_old)
-  variables <- (
-    riverdata[-1] %>%
-      kwb.flusshygiene::unroll_physical_data() %>%
-      lapply(names) %>%
-      unlist() %>%
-      unique()
-  )[-1]
+  unrolled_data <- riverdata %>%
+    remove_hygiene_data() %>%
+    kwb.flusshygiene::unroll_physical_data()
 
+  # Prepare variables out of all combinations (given by pattern)
+  # Variables for interaction get replaced by q_new (remove q_old)
+  all_columns <- lapply(unrolled_data, names)
+
+  # Determine variable names: all different column names except "datum"
+  variables <- setdiff(unique(unlist(all_columns)), "datum")
+
+  # Filter for variables matching the pattern
   if (nzchar(pattern)) {
 
     variables <- kwb.utils::catAndRun(
@@ -102,15 +104,25 @@ stepwise <- function (riverdata, pattern = "", dbg = TRUE)
   }
 
   kwb.utils::catIf(dbg, sprintf(
-    "Using %d variables:\n -%s",
+    "Using %d variables:\n- %s",
     length(variables), kwb.utils::stringList(variables, collapse = "\n- ")
   ))
 
-  # prepare formulas
-  data <- kwb.flusshygiene::process_model_riverdata(
-    riverdata, variables = c("log_e.coli", variables)
-  ) %>%
+  variables <- c("log_e.coli", variables)
+
+  # Prepare formulas
+  data <- kwb.flusshygiene::process_model_riverdata(riverdata, variables) %>%
     dplyr::select(- .data$datum)
+
+  if (nrow(data) == 0) {
+
+    str(riverdata)
+
+    clean_stop(
+      "kwb.flusshygiene::process_model_riverdata() returned an empty data ",
+      "frame! See the structure of 'riverdata' above."
+    )
+  }
 
   # Definition of null and full models
   null <- stats::lm(log_e.coli ~ 1, data = data)
@@ -119,15 +131,36 @@ stepwise <- function (riverdata, pattern = "", dbg = TRUE)
   # Definition maximum number of steps. 10 at maximum
   max_steps <- min(round(nrow(data) / 10), 10)
 
+  if (max_steps == 0) {
+
+    clean_stop(
+      "max_steps = 0 in stepwise() -> Not enough data points available!"
+    )
+  }
+
   # Creating list of candidate models with 1 ... max_steps predictors
-  lapply(X = seq_len(max_steps), FUN = function(steps) {
-    stats::step(
+  result <- lapply(X = seq_len(max_steps), FUN = function(steps) {
+    try(stats::step(
       object = null,
       scope = list(upper = full, lower = null),
       direction = "forward",
       steps = steps
-    )
+    ))
   })
+
+  failed <- sapply(result, inherits, "try-error")
+
+  if (any(failed)) {
+
+    fhpredict:::clean_stop(
+      "stat::step() failed for the following step numbers:\n",
+      sprintf(
+        "step = %d: %s", which(failed), sapply(result[failed], as.character)
+      )
+    )
+  }
+
+  result
 }
 
 # init_stat_tests_data ---------------------------------------------------------
