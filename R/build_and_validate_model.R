@@ -200,9 +200,9 @@ stepwise <- function (riverdata, pattern = "", dbg = TRUE)
 # init_stat_tests_data ---------------------------------------------------------
 #' @importFrom rlang .data
 #' @keywords internal
-init_stat_tests_data <- function(fb)
+init_stat_tests_data <- function(models)
 {
-  sapply(fb, get_stat_tests) %>%
+  sapply(models, get_stat_tests) %>%
     t() %>%
     dplyr::as_tibble(rownames = "model")  %>%
     dplyr::bind_rows(.id = "river") %>%
@@ -256,12 +256,12 @@ get_formula <- function(model)
 #' @importFrom rlang .data
 #' @keywords internal
 update_stat_tests <- function(
-  stat_tests, fb, train_rows, probs = c(0.025, 0.25, 0.75, 0.9, 0.95, 0.975)
+  stat_tests, models, train_rows, probs = c(0.025, 0.25, 0.75, 0.9, 0.95, 0.975)
 )
 {
-  for (model_name in names(fb)) {
+  for (model_name in names(models)) {
 
-    model <- kwb.utils::selectElements(fb, model_name)
+    model <- kwb.utils::selectElements(models, model_name)
     model_data <- as.data.frame(kwb.utils::selectElements(model, "model"))
 
     selected <- kwb.utils::selectColumns(stat_tests, "model") == model_name
