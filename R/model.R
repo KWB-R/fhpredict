@@ -21,7 +21,7 @@ text_to_model <- function(text)
 
   text_lines <- strsplit(text, "\t")[[1]]
 
-  if (text_lines[[1]] != "RDA2") {
+  if (! grepl("^RDA[23]$", text_lines[[1]])) {
 
     warning(
       "This does not look like a model:\n>>>",
