@@ -26,10 +26,10 @@ calc_t <- function(datalist)
   hygiene_element <- grep("hygiene", names(datalist), value = TRUE)
   stopifnot(length(hygiene_element) == 1)
 
-  hygienic <- kwb.utils::selectElements(datalist, hygiene_element)
+  hygienic <- select_hygiene_data(datalist)
 
   # Data frames with non-hygienic data
-  non_hygienics <- datalist[setdiff(names(datalist), hygiene_element)]
+  non_hygienics <- remove_hygiene_data(datalist)
 
   # Filter hygienic measurements for months in summer (May to September)
   hygienic_summer <- filter_for_months(hygienic, 5:9)
@@ -42,6 +42,39 @@ calc_t <- function(datalist)
 
   # Recompose the list of hygienic and non-hygienic data and set original names
   stats::setNames(c(list(hygienic_summer), non_hygienics_z), names(datalist))
+}
+
+# select_hygiene_data ----------------------------------------------------------
+select_hygiene_data <- function(datalist)
+{
+  hygiene_element <- grep_hygiene_name(datalist)
+
+  kwb.utils::selectElements(datalist, hygiene_element)
+}
+
+# grep_hygiene_name ------------------------------------------------------------
+grep_hygiene_name <- function(datalist)
+{
+  stopifnot(is.list(datalist))
+  stopifnot(all(sapply(datalist, is.data.frame)))
+
+  hygiene_element <- grep("^hygiene", names(datalist), value = TRUE)
+  stopifnot(length(hygiene_element) == 1)
+
+  hygiene_element
+}
+
+# remove_hygiene_data ----------------------------------------------------------
+remove_hygiene_data <- function(datalist)
+{
+  hygiene_element <- grep_hygiene_name(datalist)
+
+  result <- kwb.utils::catAndRun(
+    sprintf("Removing element '%s' from list of data frames", hygiene_element),
+    datalist[setdiff(names(datalist), hygiene_element)]
+  )
+
+  result
 }
 
 # filter_for_months: filter for month numbers ----------------------------------

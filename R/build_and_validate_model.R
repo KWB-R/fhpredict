@@ -6,6 +6,8 @@ build_and_validate_model <- function(
   river_data = NULL, river = NULL, spot_data, prefix = "", n_folds = 5
 )
 {
+  #kwb.utils::assignPackageObjects("fhpredict")
+
   # Check the arguments and stop if anything is not ok
   check_args_build_and_validate(river_data, river, spot_data)
 
