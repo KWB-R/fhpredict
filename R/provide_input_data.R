@@ -14,12 +14,7 @@ provide_input_data <- function(user_id, spot_id)
   get <- kwb.utils::selectColumns
 
   # Prepare the result data structure
-  result <- list(
-    hygiene = data.frame(),
-    ka = data.frame(),
-    q = data.frame(),
-    r = data.frame()
-  )
+  result <- list()
 
   # Define the end of possible error messages
   no_data_suffix <- sprintf(
@@ -34,7 +29,9 @@ provide_input_data <- function(user_id, spot_id)
   if (nrow(measurements)) {
 
     result$hygiene <- data.frame(
-      datum = iso_timestamp_to_local_posix(get(measurements, "date")),
+      datum = reset_time(
+        iso_timestamp_to_local_posix(get(measurements, "date"))
+      ),
       e.coli = get(measurements, "conc_ec")
     )
 
@@ -50,7 +47,7 @@ provide_input_data <- function(user_id, spot_id)
   if (nrow(rain)) {
 
     result$r <- data.frame(
-      datum = get(rain, "dateTime"),
+      datum = reset_time(get(rain, "dateTime")),
       r_radolan = get(rain, "value")
     )
 
@@ -66,7 +63,7 @@ provide_input_data <- function(user_id, spot_id)
   # Add discharges to the result if there are any discharges
   if (nrow(discharge)) {
     result$q <- data.frame(
-      datum = get(discharge, "dateTime"),
+      datum = reset_time(get(discharge, "dateTime")),
       discharge = get(discharge, "value")
     )
   }
@@ -75,4 +72,12 @@ provide_input_data <- function(user_id, spot_id)
 
   # Return the result data structure
   result
+}
+
+# reset_time -------------------------------------------------------------------
+reset_time <- function(x)
+{
+  stopifnot(inherits(x, "POSIXct"))
+
+  as.POSIXct(substr(as.character(x), 1, 10), tz = attr(x, "tzone"))
 }
