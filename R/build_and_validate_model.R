@@ -22,6 +22,7 @@ build_and_validate_model <- function(river_data, river, n_folds = 5)
     n_folds = n_folds
   )
 
+  # Fill the test columns in data frame "stat_tests"
   stat_tests <- update_stat_tests(stat_tests, fb, train_rows)
 
   sorted_models <- stat_tests %>%
@@ -143,11 +144,11 @@ get_forward_backward <- function(river_data_ts, river)
 }
 
 # stepwise ---------------------------------------------------------------------
-stepwise <- function (riverdata, pattern)
+stepwise <- function (riverdata, pattern = "", dbg = TRUE)
 {
   # prepare variables out of all cominations (given by pattern)
   # variables for interaction get replaced by q_new (remove q_old)
-  vars1 <- (
+  variables <- (
     riverdata[-1] %>%
       kwb.flusshygiene::unroll_physical_data() %>%
       lapply(names) %>%
@@ -155,11 +156,26 @@ stepwise <- function (riverdata, pattern)
       unique()
   )[-1]
 
-  vars2 <- vars1[stringr::str_detect(vars1, pattern)]
+  if (nzchar(pattern)) {
+
+    variables <- kwb.utils::catAndRun(
+      dbg = dbg,
+      messageText = sprintf(
+        "Filtering %d variables for those matching '%s'",
+        length(variables), pattern
+      ),
+      expr = grep(pattern, variables, value = TRUE)
+    )
+  }
+
+  kwb.utils::catIf(dbg, sprintf(
+    "Using %d variables:\n -%s",
+    length(variables), kwb.utils::stringList(variables, collapse = "\n- ")
+  ))
 
   # prepare formulas
   data <- kwb.flusshygiene::process_model_riverdata(
-    riverdata, variables = c("log_e.coli", vars1)
+    riverdata, variables = c("log_e.coli", variables)
   ) %>%
     dplyr::select(- .data$datum)
 
@@ -176,8 +192,7 @@ stepwise <- function (riverdata, pattern)
       object = null,
       scope = list(upper = full, lower = null),
       direction = "forward",
-      steps = steps,
-      data = data
+      steps = steps
     )
   })
 }
