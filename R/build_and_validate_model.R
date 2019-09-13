@@ -1,21 +1,3 @@
-if (FALSE)
-{
-  library(magrittr)
-  library(tidyverse)
-  library(kwb.flusshygiene)
-
-  #### Laden von Testdaten ###################
-  rivers <- c("havel")
-  river_paths <- kwb.flusshygiene::get_paths()[paste0(rivers, "data")]
-  river_data <- lapply(river_paths, kwb.flusshygiene::import_riverdata)
-  river <- "havel"
-  names(river_data) <- rivers
-
-
-  #### Anwenden der Hauptfunktion ###################
-  results <- build_and_validate_model(river_data = river_data, river = "havel")
-}
-
 # build_and_validate_model -----------------------------------------------------
 
 #' @importFrom rlang .data
