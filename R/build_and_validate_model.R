@@ -2,35 +2,62 @@
 
 #' @importFrom rlang .data
 #' @keywords internal
-build_and_validate_model <- function(river_data, river, n_folds = 5)
+build_and_validate_model <- function(
+  river_data = NULL, river = NULL, spot_data, prefix = "", n_folds = 5
+)
 {
-  ### Anwenden von calc_t() auf Inputliste
-  river_data_ts <- lapply(river_data, prepare_river_data)
+  if (! is.null(river_data)) {
+    clean_stop(
+      "The argument 'river_data' is not supported any more. Please use the ",
+      "new argument 'spot_data' to pass a list of data frames related to ONE ",
+      "bathing spot ONLY."
+    )
+  }
 
-  # step through, forward and backward selection
-  fb <- get_forward_backward(river_data_ts, river)
+  if (! is.null(river)) {
+    clean_stop(
+      "The argument 'river' is not supported any more. You may use the ",
+      "new argument 'prefix' to prefix the names of the returned models."
+    )
+  }
+
+  if (! all(sapply(spot_data, is.data.frame))) {
+    clean_stop(
+      "spot_data is expected to be a list of data frames!"
+    )
+  }
+
+  # Prepare all data frames, among others by calling calc_t()
+  riverdata <- prepare_river_data(spot_data)
+
+  # Step through, forward and backward selection
+  models <- stepwise(riverdata, pattern = "(i_mean|q_mean|r_mean|ka_mean)")
+
+  # Number the models
+  names(models) <- sprintf("%smodel_%02d", prefix, seq_along(models))
+
+  # Remove duplicates in the list of models (may occur if forward selection
+  # stops before n steps are gone)
+  models <- models[seq_along(unique(models))]
 
   ### Validation ###
 
   # Test for classical statistical model assumptions, normality of residuals
   # and heteroskelasdicity
-  stat_tests <- init_stat_tests_data(fb)
+  stat_tests <- init_stat_tests_data(models)
 
   # Create list of independent training rows
-  train_rows <- get_training_rows(
-    model_object = kwb.utils::selectElements(fb, paste0(river, "model_01")),
-    n_folds = n_folds
-  )
+  train_rows <- get_training_rows(model_object = models[[1]], n_folds = n_folds)
 
   # Fill the test columns in data frame "stat_tests"
-  stat_tests <- update_stat_tests(stat_tests, fb, train_rows)
+  stat_tests <- update_stat_tests(stat_tests, models, train_rows)
 
   sorted_models <- stat_tests %>%
     dplyr::filter(.data$below95 == 5 & .data$below90 == 5 & .data$in50 == 5) %>%
     dplyr::arrange(dplyr::desc(.data$R2))
 
-  # Select the best model from fb
-  best_model <- kwb.utils::selectElements(fb, sorted_models$model[1])
+  # Select the best model from models
+  best_model <- kwb.utils::selectElements(models, sorted_models$model[1])
 
   stanfit <- rstanarm::stan_glm(
     formula = get_formula(best_model),
@@ -127,20 +154,6 @@ add_meancol <- function(df)
 get_value_column_prefixes <- function(df)
 {
   unique(sub("([a-z])_.*", "\\1", names(df)[-1]))
-}
-
-# get_forward_backward ---------------------------------------------------------
-get_forward_backward <- function(river_data_ts, river)
-{
-  riverdata <- kwb.utils::selectElements(river_data_ts, river)
-
-  fb <- stepwise(riverdata, pattern = "(i_mean|q_mean|r_mean|ka_mean)")
-
-  names(fb) <- sprintf("%smodel_%02d", river, seq_along(fb))
-
-  # Eliminieren von modelled die doppelt vorkommen, da forward selection frueher
-  # fertig als n steps
-  fb[seq_along(unique(fb))]
 }
 
 # stepwise ---------------------------------------------------------------------
