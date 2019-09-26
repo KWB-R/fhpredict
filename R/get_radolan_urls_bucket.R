@@ -67,9 +67,23 @@ get_radolan_urls_bucket <- function(
     urls <- urls[mmdd > "0430" & mmdd < "1001"]
   }
 
+  if (length(urls) == 0) {
+    return(character())
+  }
+
   date_strings <- kwb.utils::extractSubstring("-(\\d{10})-", basename(urls), 1)
 
   stats::setNames(urls, paste0("20", date_strings))
+}
+
+# is_in_bathing_season ---------------------------------------------------------
+is_in_bathing_season <- function(dates)
+{
+  stopifnot(inherits(dates, "Date"))
+
+  month_day_strings <- format(dates, "%m%d")
+
+  month_day_strings > "0430" & month_day_strings < "1001"
 }
 
 # partial_date_string_to_date_string -------------------------------------------
