@@ -16,7 +16,9 @@ api_add_model(user_id, spot_id, model, comment = "any comment?")
 \item{comment}{description of the model. Default: "any comment?"}
 }
 \value{
-This function returns the ID of the added model.
+This function returns the ID of the added model. The URL to the
+  uploaded binary file is returned in attribute "model_url". From there,
+  the model can be read back with \code{\link{readRDS}}.
 }
 \description{
 Add a Model to the Database

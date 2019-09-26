@@ -6,7 +6,9 @@
 #' @param spot_id bathing spot ID
 #' @param model model object
 #' @param comment description of the model. Default: "any comment?"
-#' @return This function returns the ID of the added model.
+#' @return This function returns the ID of the added model. The URL to the
+#'   uploaded binary file is returned in attribute "model_url". From there,
+#'   the model can be read back with \code{\link{readRDS}}.
 #' @export
 api_add_model <- function(user_id, spot_id, model, comment = "any comment?")
 {
@@ -14,7 +16,8 @@ api_add_model <- function(user_id, spot_id, model, comment = "any comment?")
   result <- postgres_post(
     path = path_models(user_id, spot_id),
     body = body_model(
-      rmodel = model_to_text(model),
+      rmodel = "Deprecated. Binary model file has been uploaded.",
+               #model_to_text(model),
       comment = comment
     )
   )
@@ -29,13 +32,36 @@ api_add_model <- function(user_id, spot_id, model, comment = "any comment?")
   # Get the ID of the newly created model
   model_id <- kwb.utils::selectElements(model_data[[1]], "id")
 
+  # Now that the model ID is available, upload the model object to a binary file
+  model_url <- upload_model(user_id, spot_id, model_id, model)
+
   message(
     "The model has been stored in the database. It has been given the id ",
     model_id, "."
   )
 
   # Return the model ID
-  model_id
+  structure(model_id, model_url = model_url)
+}
+
+# upload_model -----------------------------------------------------------------
+upload_model <- function(user_id, spot_id, model_id, model)
+{
+  # Set path to local file where to store the model
+  model_file <- file.path(tempdir(), "model.rds")
+
+  # Save the model to a local file
+  saveRDS(model, model_file)
+
+  # Upload the model file using the "upload" endpoint
+  result <- postgres_post(
+    path = paste0(path_models(user_id, spot_id, model_id), "/upload"),
+    body = list(upload = httr::upload_file(model_file)),
+    encode = "multipart"
+  )
+
+  # Return the URL to the uploaded file
+  result$data[[1]]$url
 }
 
 # api_get_model ----------------------------------------------------------------
@@ -88,8 +114,38 @@ api_get_model <- function(user_id, spot_id, model_id = -1L)
   # There should be exactly one element in the list of models
   stopifnot(length(models) == 1)
 
+  # Get information on the files that have been uploaded for this model
+  model_files <- kwb.utils::selectElements(models[[1]], "rmodelfiles")
+
+  # Number of uploaded files
+  n_files <- length(model_files)
+
+  if (n_files == 0) {
+
+    clean_stop("No model file has yet been uploaded for model_id = ", model_id)
+  }
+
+  # Get the URL to the uploaded model file
+  model_url <- model_files[[n_files]]$url
+
+  # Read the model file from the URL
+  download_model(model_url)
+
   # Convert the first list element to text
-  text_to_model(text = kwb.utils::selectElements(models[[1]], "rmodel"))
+  #text_to_model(text = kwb.utils::selectElements(models[[1]], "rmodel"))
+}
+
+# download_model ---------------------------------------------------------------
+download_model <- function(model_url)
+{
+  # Set path to local file where to put the downloaded model file
+  model_file_downloaded <- file.path(tempdir(), basename(model_url))
+
+  # Download the model to the local file
+  download.file(model_url, model_file_downloaded, mode = "wb")
+
+  # Read the model from the downloaded file
+  readRDS(model_file_downloaded)
 }
 
 # api_delete_model -------------------------------------------------------------

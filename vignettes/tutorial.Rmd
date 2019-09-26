@@ -179,7 +179,7 @@ Use the model id to fetch a specific model from the database:
 
 ```{r}
 # Load model with id 27 from the database
-model <- fhpredict::api_get_model(user_id = 3, spot_id = 18, model_id = 1)
+model <- fhpredict::api_get_model(user_id = 3, spot_id = 18, model_id = 3)
 ```
 
 ```{r}
@@ -225,7 +225,7 @@ Use the function `api_delete_model()` to remove a model from the database.
 Let's delete the model that we just added. Its id is given in the variable
 `model_id`.
 
-```{r}
+```{r error = TRUE}
 # Delete the model with the id given in "model_id"
 fhpredict::api_delete_model(3, 18, model_id)
 ```
