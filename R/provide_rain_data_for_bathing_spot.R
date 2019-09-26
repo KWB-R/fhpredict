@@ -28,6 +28,8 @@ provide_rain_data_for_bathing_spot <- function(
   comment = paste("imported:", Sys.time())
 )
 {
+  #kwb.utils::assignPackageObjects("fhpredict")
+
   # Get metadata about the current bathing spot
   spot <- api_get_bathingspot(spot_id = spot_id)
 
@@ -40,7 +42,7 @@ provide_rain_data_for_bathing_spot <- function(
   # are available.
   date_range <- kwb.utils::defaultIfNULL(
     date_range,
-    get_date_range_of_measurements(user_id, spot_id)
+    range(get_unique_measurement_dates(user_id, spot_id))
   )
 
   to_text_range <- function(x) as.character(gsub("-", "", x))
@@ -79,14 +81,24 @@ provide_rain_data_for_bathing_spot <- function(
   )
 }
 
-# get_date_range_of_measurements -----------------------------------------------
-get_date_range_of_measurements <- function(user_id, spot_id)
+# get_unique_measurement_dates -------------------------------------------------
+get_unique_measurement_dates <- function(user_id, spot_id)
 {
   measurements <- api_measurements_spot(user_id, spot_id)
 
+  if (is.null(measurements)) {
+
+    message(sprintf(
+      "No measurements available for user_id = %d and spot_id = %d.",
+      user_id, spot_id
+    ))
+
+    return()
+  }
+
   timestamps <- kwb.utils::selectColumns(measurements, "date")
 
-  range(as.Date(iso_timestamp_to_local_posix(timestamps)))
+  unique(as.Date(iso_timestamp_to_local_posix(timestamps)))
 }
 
 # sampling_time_to_time_string -------------------------------------------------
