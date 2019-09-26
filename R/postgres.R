@@ -23,15 +23,17 @@ postgres_get <- function(path)
 #'   to create a generic input for bathing spot of user 3 with ID 18
 #' @param body list with the fields to be set as \code{key = value} pairs, e.g.
 #'   \code{list(name = "lirum larum")}
+#' @param encode passed to \code{\link[httr]{POST}}. Default: "json". Set to
+#'   "multipart" for uploading files!
 #' @return In case of success this function returns what
 #'   \code{httr::content(response, as = "parsed")} returns. In case of failure
 #'   an empty list with attribute \code{response} (containing the response
 #'   object returned by \code{\link[httr]{POST}}) is returned.
 #' @export
 #'
-postgres_post <- function(path, body = NULL)
+postgres_post <- function(path, body = NULL, encode = "json")
 {
-  postgres_request(path, "POST", body)
+  postgres_request(path, "POST", body, encode = encode)
 }
 
 # postgres_delete --------------------------------------------------------------
@@ -52,7 +54,7 @@ postgres_delete <- function(path)
 }
 
 # postgres_request -------------------------------------------------------------
-postgres_request <- function(path, type = "GET", body = NULL)
+postgres_request <- function(path, type = "GET", body = NULL, ...)
 {
   stopifnot(type %in% c("GET", "POST", "DELETE"))
 
@@ -64,15 +66,15 @@ postgres_request <- function(path, type = "GET", body = NULL)
 
   response <- if (type == "GET") {
 
-    httr::GET(url, config = config)
+    httr::GET(url, config = config, ...)
 
   } else if (type == "DELETE") {
 
-    httr::DELETE(url, config = config)
+    httr::DELETE(url, config = config, ...)
 
   } else if (type == "POST") {
 
-    httr::POST(url, config = config, body = body, encode = "json")
+    httr::POST(url, config = config, body = body, ...)
   }
 
   status <- httr::http_status(response)
