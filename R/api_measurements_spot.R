@@ -1,7 +1,7 @@
 # api_measurements_spot --------------------------------------------------------
 api_measurements_spot <- function(user_id = -1, spot_id = -1)
 {
-  run_cached(name = "measurements_spot", {
+  #run_cached(name = "measurements_spot", {
 
     path <- path_measurements(user_id, spot_id)
 
@@ -12,5 +12,5 @@ api_measurements_spot <- function(user_id = -1, spot_id = -1)
     }))
 
     kwb.utils::removeColumns(measurements, pattern = "At$")
-  })
+  #})
 }
