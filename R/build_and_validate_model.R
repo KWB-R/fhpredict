@@ -120,7 +120,7 @@ stepwise <- function (riverdata, pattern = "", dbg = TRUE)
 
   if (nrow(data) == 0) {
 
-    str(riverdata)
+    utils::str(riverdata)
 
     clean_stop(
       "kwb.flusshygiene::process_model_riverdata() returned an empty data ",
@@ -156,7 +156,7 @@ stepwise <- function (riverdata, pattern = "", dbg = TRUE)
 
   if (any(failed)) {
 
-    fhpredict:::clean_stop(
+    clean_stop(
       "stat::step() failed for the following step numbers:\n",
       sprintf(
         "step = %d: %s", which(failed), sapply(result[failed], as.character)
