@@ -1,6 +1,6 @@
 # get_radolan_urls_bucket ------------------------------------------------------
 
-#' Get URLs to Binary Radolan Filed From Flusshygiene's Amazon Bucket
+#' Get URLs to Binary Radolan Files From Flusshygiene's Amazon Bucket
 #'
 #' This function requires two environment variables to be set:
 #' "ENDPOINT_PROD": Endpoint to the service that returns URLs to Radolan

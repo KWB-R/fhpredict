@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_radolan_urls_bucket.R
 \name{get_radolan_urls_bucket}
 \alias{get_radolan_urls_bucket}
-\title{Get URLs to Binary Radolan Filed From Flusshygiene's Amazon Bucket}
+\title{Get URLs to Binary Radolan Files From Flusshygiene's Amazon Bucket}
 \usage{
 get_radolan_urls_bucket(from = format(Sys.Date() - 1, "\%Y\%m\%d"),
   to = from, time = "", bathing_season_only = FALSE)
