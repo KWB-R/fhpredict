@@ -11,7 +11,7 @@ if (FALSE)
   model_info <- fhpredict::api_get_model(user_id, spot_id)
 
   # Set a model ID
-  model_id <- 3 # max(model_info$id)
+  model_id <- 13 # max(model_info$id)
 
   fhpredict::api_get_model(user_id, spot_id, model_id)
 
@@ -19,7 +19,7 @@ if (FALSE)
   model <- kwb.flusshygiene.app:::model_grunewaldturm
 
   # Get the URL to the uploaded file
-  model_url <- fhpredict:::upload_model(user_id, spot_id, model)
+  model_url <- fhpredict:::upload_model(user_id, spot_id, model_id, model)
 
   # Get metadata on available models (again)
   model_info <- fhpredict::api_get_model(user_id, spot_id)

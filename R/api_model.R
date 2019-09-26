@@ -138,14 +138,16 @@ api_get_model <- function(user_id, spot_id, model_id = -1L)
 # download_model ---------------------------------------------------------------
 download_model <- function(model_url)
 {
-  # Set path to local file where to put the downloaded model file
-  model_file_downloaded <- file.path(tempdir(), basename(model_url))
+  readRDS(file(model_url, open = "rb"))
 
-  # Download the model to the local file
-  download.file(model_url, model_file_downloaded, mode = "wb")
-
-  # Read the model from the downloaded file
-  readRDS(model_file_downloaded)
+  # # Set path to local file where to put the downloaded model file
+  # model_file_downloaded <- file.path(tempdir(), basename(model_url))
+  #
+  # # Download the model to the local file
+  # download.file(model_url, model_file_downloaded, mode = "wb")
+  #
+  # # Read the model from the downloaded file
+  # readRDS(model_file_downloaded)
 }
 
 # api_delete_model -------------------------------------------------------------
