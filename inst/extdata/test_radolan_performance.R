@@ -33,13 +33,13 @@ if (FALSE)
   })
 
   (spot_ids <- spots$id[lengths(measurements) > 0])
+
+  #lapply(spot_ids, fhpredict:::get_unique_measurement_dates, user_id = user_id)
 }
 
-# Rest -------------------------------------------------------------------------
+# Test the performance of getting Radolan URLs in different range "slices" -----
 if (FALSE)
 {
-  #lapply(spot_ids, fhpredict:::get_unique_measurement_dates, user_id = user_id)
-
   spot_id <- 41
 
   # Get the dates for which E. coli measurements are available
@@ -56,38 +56,43 @@ if (FALSE)
   length(dates)
   length(dates_5d_before)
 
-  # Build groups of consecutive dates with a maximum gap within each group
-  gaps <- seq_len(as.integer(diff(range(dates_5d_before))))
+  # Test the performance of calling fhpredict::get_radolan_urls_bucket()
+  fhpredict:::test_performance_get_radolan_urls(dates = dates_5d_before)
 
-  date_ranges_list <- unique(lapply(
-    X = gaps,
-    FUN = fhpredict:::group_dates_by_diff,
-    dates = dates_5d_before
-  ))
+  # Get URLs to related Radolan files
+  urls <- fhpredict:::get_radolan_urls_for_days(dates_5d_before)
 
-  # Get URLs by calling get_radolan_urls_bucket() a different number of times
-  lapply(date_ranges_list, function(date_ranges) {
-    message("Getting URLs for ", nrow(date_ranges), " date ranges")
-    system.time(fhpredict:::get_radolan_urls_in_date_ranges(date_ranges))
-  })
+  remove_dash <- function(x) gsub("-", "", x)
 
-  urls <- unlist(url_list)
+  # URLs determined with the original approach
+  urls_old <- fhpredict:::get_radolan_urls_bucket(
+    from = remove_dash(min(dates_5d_before)),
+    to = remove_dash(max(dates_5d_before)),
+    time = "1050",
+    bathing_season_only = TRUE
+  )
 
-  stopifnot(! any(duplicated(urls)))
+  # Number of Radolan files that will be downloaded with the new approach
+  length(urls)
 
-  stopifnot(length(urls) > 0)
+  # Number of Radolan files that were downloaded with the original approach
+  length(urls_old)
 
-  dates_available <- as.Date(substr(names(urls), 1, 8), format = "%Y%m%d")
+  # Expected gain in performance
+  kwb.utils::percentage(length(urls), length(urls_old))
+}
+
+# Rest -------------------------------------------------------------------------
+if (FALSE)
+{
 
   head(dates_available)
-
 
   length(urls)
   length(dates)
 
   head(substr(names(urls), 1, 8))
   head(sort(dates))
-
 
   for (date_range in date_ranges) {
 
@@ -104,7 +109,6 @@ if (FALSE)
   diff(date_ranges[[1]])
 
   stopifnot(length(dates) == 6)
-
 
   # Get data in the format that is required by build_and_validate_model()
   spot_data <- fhpredict::provide_input_data(user_id, spot_id)
