@@ -82,6 +82,8 @@ provide_rain_data_for_bathing_spot <- function(
 }
 
 # get_unique_measurement_dates -------------------------------------------------
+
+#' Sorted Unique Dates of Measurments
 get_unique_measurement_dates <- function(user_id, spot_id)
 {
   measurements <- api_measurements_spot(user_id, spot_id)
@@ -98,7 +100,7 @@ get_unique_measurement_dates <- function(user_id, spot_id)
 
   timestamps <- kwb.utils::selectColumns(measurements, "date")
 
-  unique(as.Date(iso_timestamp_to_local_posix(timestamps)))
+  sort(unique(as.Date(iso_timestamp_to_local_posix(timestamps))))
 }
 
 # sampling_time_to_time_string -------------------------------------------------
