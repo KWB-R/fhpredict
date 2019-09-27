@@ -13,11 +13,12 @@ if (FALSE)
 if (FALSE)
 {
   system.time(stack <- fhpredict:::read_radolan_raster_stack(
-    date_from = "20110701",
-    date_to = "20110706",
+    date_from = "20110101",
+    date_to = "20120101",
     sampling_time = "1050",
     bathing_season_only = TRUE
   ))
+  # 1 year (bathing season) -> ca. 3 min
 }
 
 #date_from = "20190701";date_to = "20190706";sampling_time = "1050";bathing_season_only = TRUE
@@ -43,7 +44,6 @@ if (FALSE)
 
   # Get the dates for which E. coli measurements are available
   dates_all <- fhpredict:::get_unique_measurement_dates(user_id, spot_id)
-  head(dates_all)
 
   # Reduce to dates within the bathing season
   dates <- dates_all[fhpredict:::is_in_bathing_season(dates_all)]
@@ -52,11 +52,12 @@ if (FALSE)
   dates_5d_before <- fhpredict:::add_days_before(dates, 5)
 
   # Show number of dates in each vector
+  length(dates_all)
   length(dates)
   length(dates_5d_before)
 
   # Build groups of consecutive dates with a maximum gap within each group
-  gaps <- 1:365
+  gaps <- seq_len(as.integer(diff(range(dates_5d_before))))
 
   date_ranges_list <- unique(lapply(
     X = gaps,
@@ -64,11 +65,10 @@ if (FALSE)
     dates = dates_5d_before
   ))
 
-  date_ranges <- date_ranges_list[[1]]
-
+  # Get URLs by calling get_radolan_urls_bucket() a different number of times
   lapply(date_ranges_list, function(date_ranges) {
     message("Getting URLs for ", nrow(date_ranges), " date ranges")
-    system.time(fhpredict:::get_radolan_urls_in_date_ranges(date_ranges)  )
+    system.time(fhpredict:::get_radolan_urls_in_date_ranges(date_ranges))
   })
 
   urls <- unlist(url_list)
