@@ -51,11 +51,6 @@ if (FALSE)
   # Add up to five days before each date
   dates_5d_before <- fhpredict:::add_days_before(dates, 5)
 
-  # Show number of dates in each vector
-  length(dates_all)
-  length(dates)
-  length(dates_5d_before)
-
   # Test the performance of calling fhpredict::get_radolan_urls_bucket()
   fhpredict:::test_performance_get_radolan_urls(dates = dates_5d_before)
 
@@ -72,14 +67,22 @@ if (FALSE)
     bathing_season_only = TRUE
   )
 
-  # Number of Radolan files that will be downloaded with the new approach
-  length(urls)
+  # Show number of dates in each vector
+  numbers <- t(data.frame(
+    n_days_all = length(dates_all),
+    n_days_bathing_season = length(dates),
+    n_days_in_5day_ranges = length(dates_5d_before),
+    # Number of Radolan files that will be downloaded with the new approach
+    n_radolan_files_new = length(urls),
+    # Number of Radolan files that were downloaded with the original approach
+    n_radolan_files_old = length(urls_old)
+  ))
 
-  # Number of Radolan files that were downloaded with the original approach
-  length(urls_old)
+  # Print the numbers
+  numbers
 
   # Expected gain in performance
-  kwb.utils::percentage(length(urls), length(urls_old))
+  unname(numbers["n_radolan_files_new", ] / numbers["n_radolan_files_old", ])
 }
 
 # Rest -------------------------------------------------------------------------
