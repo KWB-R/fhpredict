@@ -12,7 +12,7 @@ get_radolan_urls_in_date_ranges <- function(date_ranges, time = "1050")
       sprintf(
         "Getting URLs to files between %s and %s", dates_from[i], dates_to[i]
       ),
-      fhpredict::get_radolan_urls_bucket(
+      get_radolan_urls_bucket(
         from = yyyymmdd(dates_from[i]),
         to = yyyymmdd(dates_to[i]),
         time = time

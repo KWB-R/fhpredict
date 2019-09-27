@@ -71,10 +71,10 @@ provide_rain_data_for_bathing_spot <- function(
   )
 
   # Clear existing rain from the database
-  fhpredict::api_delete_rain(user_id, spot_id)
+  api_delete_rain(user_id, spot_id)
 
   # Add rain data frame to the database
-  fhpredict::api_add_rain(
+  api_add_rain(
     user_id, spot_id, rain,
     time_string = sampling_time_to_time_string(sampling_time),
     comment = comment
@@ -84,6 +84,8 @@ provide_rain_data_for_bathing_spot <- function(
 # get_unique_measurement_dates -------------------------------------------------
 
 #' Sorted Unique Dates of Measurments
+#'
+#' @keywords internal
 get_unique_measurement_dates <- function(user_id, spot_id)
 {
   measurements <- api_measurements_spot(user_id, spot_id)
