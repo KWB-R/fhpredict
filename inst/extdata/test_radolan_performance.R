@@ -43,33 +43,44 @@ if (FALSE)
 
   # Get the dates for which E. coli measurements are available
   dates_all <- fhpredict:::get_unique_measurement_dates(user_id, spot_id)
+  head(dates_all)
 
+  # Reduce to dates within the bathing season
+  dates <- dates_all[fhpredict:::is_in_bathing_season(dates_all)]
+
+  # Add up to five days before each date
+  dates_5d_before <- fhpredict:::add_days_before(dates, 5)
+
+  # Show number of dates in each vector
+  length(dates)
+  length(dates_5d_before)
+
+  # Build groups of consecutive dates with a maximum gap within each group
+  gaps <- 1:365
+
+  date_ranges_list <- unique(lapply(
+    X = gaps,
+    FUN = fhpredict:::group_dates_by_diff,
+    dates = dates_5d_before
+  ))
+
+  date_ranges <- date_ranges_list[[1]]
+
+  lapply(date_ranges_list, function(date_ranges) {
+    message("Getting URLs for ", nrow(date_ranges), " date ranges")
+    system.time(fhpredict:::get_radolan_urls_in_date_ranges(date_ranges)  )
+  })
+
+  urls <- unlist(url_list)
+
+  stopifnot(! any(duplicated(urls)))
 
   stopifnot(length(urls) > 0)
 
   dates_available <- as.Date(substr(names(urls), 1, 8), format = "%Y%m%d")
 
-  head(dates_all)
   head(dates_available)
 
-  # Reduce to dates within the bathing season
-  dates <- dates_all[fhpredict:::is_in_bathing_season(dates_all)]
-
-  # Determine ranges of non-overlapping day sequences that contain all days
-  # within five-day periods before the days of measurement
-  date_ranges <- fhpredict:::create_date_ranges(dates)
-
-  system.time(url_list <- lapply(date_ranges, function(date_range) {
-    fhpredict::get_radolan_urls_bucket(
-      from = yyyymmdd(date_range[1]),
-      to = yyyymmdd(date_range[2]),
-      time = "1050"
-    )
-  }))
-
-  urls <- unlist(url_list)
-
-  stopifnot(! any(duplicated(urls)))
 
   length(urls)
   length(dates)
