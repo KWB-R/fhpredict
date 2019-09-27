@@ -47,13 +47,16 @@ provide_rain_data_for_bathing_spot <- function(
 
   to_text_range <- function(x) as.character(gsub("-", "", x))
 
+  # Determine URLs to Radolan files to be downloaded and read
+  urls <- fhpredict::get_radolan_urls_bucket(
+    from = to_text_range(date_range[1]),
+    to = to_text_range(date_range[2]),
+    time = sampling_time,
+    bathing_season_only = TRUE
+  )
+
   # Read rain data for the corresponding time period
-  system.time(radolan_stack <- read_radolan_raster_stack(
-    date_from = to_text_range(date_range[1]),
-    date_to = to_text_range(date_range[2]),
-    bathing_season_only = TRUE,
-    sampling_time = sampling_time
-  ))
+  system.time(radolan_stack <- read_radolan_raster_stack(urls))
 
   # Crop the polygons from each raster layer
   cropped <- crop_area_from_radolan_stack(area_list, radolan_stack)

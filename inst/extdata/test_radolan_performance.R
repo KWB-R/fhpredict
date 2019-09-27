@@ -12,12 +12,15 @@ if (FALSE)
 # Test read_radolan_raster_stack() ---------------------------------------------
 if (FALSE)
 {
-  system.time(stack <- fhpredict:::read_radolan_raster_stack(
-    date_from = "20110101",
-    date_to = "20120101",
-    sampling_time = "1050",
+  # Get URLs to Radolan files
+  urls <- fhpredict::get_radolan_urls_bucket(
+    from = "20110101",
+    to = "20120101",
+    time = "1050",
     bathing_season_only = TRUE
-  ))
+  )
+
+  system.time(stack <- fhpredict:::read_radolan_raster_stack(urls))
   # 1 year (bathing season) -> ca. 3 min
 }
 

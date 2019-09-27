@@ -316,13 +316,16 @@ date_to <- "20080703"
 ### Read rain data from binary Radolan files
 
 ```{r}
-# Read rain data for a certain time period
-radolan_stack <- fhpredict:::read_radolan_raster_stack(
-  date_from = date_from,
-  date_to = date_to,
-  bathing_season_only = TRUE,
-  sampling_time = sampling_time
+# Get URLs to Radolan files to be downloaded and read
+urls <- fhpredict:::get_radolan_urls_bucket(
+  from = date_from, 
+  to = date_to, 
+  time = sampling_time, 
+  bathing_season_only = TRUE
 )
+
+# Read rain data for a certain time period
+radolan_stack <- fhpredict:::read_radolan_raster_stack(urls)
 
 # Show the raster images
 raster::plot(radolan_stack)
