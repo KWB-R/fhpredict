@@ -56,13 +56,17 @@ if (FALSE)
   # Crop the areas from the stack (problematic if there are many layers!)
   c2 <- fhpredict:::crop_area_from_radolan_stack(area, radolan2)
 
+  radolan_proj <- kwb.dwd:::get_radolan_projection_string()
+
+  identical(radolan_proj, as.character(raster::crs(radolan1a)))
+
   # Convert the area list structure to a matrix with columns "lon" and "lat"
   # Convert area structure given in coordinate reference system "crs_from"
   # to polygons given in coordinate reference system "crs_to"
   polygon <- fhpredict:::coordinates_to_polygon(
     lonlat = lonlat2,
     crs_from = sp::CRS('+proj=longlat +datum=WGS84'),
-    crs_to = as.character(raster::crs(radolan1a))
+    crs_to = radolan_proj
   )
 
   # Do the steps of crop_area_from_radolan_stack() separately

@@ -38,12 +38,14 @@ provide_rain_data_for_bathing_spot <- function(
   # Get metadata about the current bathing spot
   spot <- api_get_bathingspot(spot_id = spot_id)
 
-  # Provide the polygon in the same structure as returned by
-  # select_relevant_rain_area(): a recursive list
-  area_list <- convert_area_structure(spot_area = spot$area)
-
-  # Helper function to reformat the date from yyyy-mm-dd to yyyymmdd
-  to_text_range <- function(x) as.character(gsub("-", "", x))
+  # Convert the area list structure to a matrix with columns "lon" and "lat".
+  # Convert area structure given in coordinate reference system "crs_from"
+  # to polygons given in coordinate reference system "crs_to"
+  polygon <- coordinates_to_polygon(
+    lonlat = get_area_coordinates(spot),
+    crs_from = sp::CRS('+proj=longlat +datum=WGS84'),
+    crs_to = kwb.dwd:::get_radolan_projection_string()
+  )
 
   # Get the dates for which E. coli measurements are available
   if (is.null(date_range) || ! all_in_range) {
@@ -59,6 +61,9 @@ provide_rain_data_for_bathing_spot <- function(
     if (is.null(date_range)) {
       date_range <- range(dates_all)
     }
+
+    # Helper function to reformat the date from yyyy-mm-dd to yyyymmdd
+    to_text_range <- function(x) as.character(gsub("-", "", x))
 
     urls <- get_radolan_urls_bucket(
       from = to_text_range(date_range[1]),
@@ -76,6 +81,14 @@ provide_rain_data_for_bathing_spot <- function(
     # Reduce to dates within the bathing season
     dates <- dates_all[is_in_bathing_season(dates_all)]
 
+    if (! is.null(date_range)) {
+      dates <- dates[kwb.utils::inRange(dates, date_range[1], date_range[2])]
+    }
+
+    if (length(dates) == 0) {
+      return()
+    }
+
     # Add up to five days before each date
     dates_5d_before <- add_days_before(dates, 5)
 
@@ -83,17 +96,29 @@ provide_rain_data_for_bathing_spot <- function(
     urls <- get_radolan_urls_for_days(dates_5d_before)
   }
 
-  # Read rain data for the corresponding time period
-  system.time(radolan_stack <- read_radolan_raster_stack(urls))
+  # For each URL, read the file and crop the polygon
+  list_of_cropped <- lapply(seq_along(urls), function(i) {
 
-  # Crop the polygons from each raster layer
-  cropped <- crop_area_from_radolan_stack(area_list, radolan_stack)
+    message(sprintf(
+      "Reading and cropping from %s (%d/%d)...",
+      basename(urls[i]), i, length(urls)
+    ))
+
+    # Read the Radolan file and crop the polygon area
+    radolan <- kwb.dwd::read_binary_radolan_file(urls[i])
+
+    # Crop the polygon area
+    raster::crop(x = radolan, polygon)
+  })
+
+  # Stack the cropped areas
+  cropped <- raster::stack(list_of_cropped)
 
   # Get the mean over all layers for each point on the raster
   aggregated <- raster::cellStats(cropped, stat = mean)
 
   # The day information can be restored from the names of the layers
-  dates <- as.Date(substr(names(radolan_stack), 2, 9), format = "%Y%m%d")
+  dates <- as.Date(substr(names(urls), 1, 8), format = "%Y%m%d")
 
   # Provide rain data in a data frame
   rain <- data.frame(
