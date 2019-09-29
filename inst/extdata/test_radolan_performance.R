@@ -91,26 +91,11 @@ if (FALSE)
 # Rest -------------------------------------------------------------------------
 if (FALSE)
 {
-
-  head(dates_available)
-
-  length(urls)
-  length(dates)
-
-  head(substr(names(urls), 1, 8))
-  head(sort(dates))
-
-  for (date_range in date_ranges) {
-
-    #date_range <- date_ranges[[1]]
-    print(date_range)
-
-    fhpredict::provide_rain_data_for_bathing_spot(
-      user_id, spot_id,
-      sampling_time = "1050",
-      date_range = date_range
-    )
-  }
+  fhpredict::provide_rain_data_for_bathing_spot(
+    user_id = 5,
+    spot_id = 41,
+    sampling_time = "1050"
+  )
 
   diff(date_ranges[[1]])
 
