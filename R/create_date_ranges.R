@@ -1,7 +1,13 @@
 # group_dates_by_diff ----------------------------------------------------------
 
+#' Build Groups of Dates by Difference
+#'
+#' @param dates vector of \code{Date} objects
+#' @param diff_days maximum difference between consecutive dates that may occur
+#'   for dates within the same group
 #' @examples
-#' group_dates_by_diff(dates, diff_days = 5)
+#' dates <- as.Date(c("2019-07-01", "2019-07-03", "2019-07-06", "2019-07-08"))
+#' fhpredict:::group_dates_by_diff(dates, diff_days = 2)
 group_dates_by_diff <- function(dates, diff_days = 1)
 {
   stopifnot(inherits(dates, "Date"))
@@ -22,11 +28,18 @@ group_dates_by_diff <- function(dates, diff_days = 1)
 
 # add_days_before --------------------------------------------------------------
 
+#' Add Dates of 1:n Days Before Given Dates
+#'
+#' @param dates vector of \code{Date objects}
+#' @param n_days_before number of days to add before the days given in
+#'   \code{dates}
 #' @examples
 #' dates <- as.Date(c("2019-07-05", "2019-07-10"))
-#' add_days_before(dates)
-#' add_days_before(dates, n_days_before = 2)
-#' add_days_before(dates, n_days_before = 10) # duplicates are avoided
+#' fhpredict:::add_days_before(dates)
+#' fhpredict:::add_days_before(dates, n_days_before = 2)
+#'
+#' # Duplicates are removed so that unique dates are returned
+#' fhpredict:::add_days_before(dates, n_days_before = 10)
 add_days_before <- function(dates, n_days_before = 1)
 {
   stopifnot(inherits(dates, "Date"))
