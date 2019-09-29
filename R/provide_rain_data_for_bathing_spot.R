@@ -19,13 +19,18 @@
 #'   available.
 #' @param comment character string to be written to the field "comment" of the
 #'   rain database table.
+#' @param all_in_range if \code{TRUE} (the default is \code{FALSE}) rain data
+#'   for all days between the first and last day of a measurement are loaded.
+#'   By default (\code{all_in_range = FALSE}), data for the days of measurement
+#'   and for the days within a 5-day time period before each day of measurement,
+#'   are loaded.
 #' @return vector of integer containing the IDs of the records inserted into the
 #'   "rains" database table.
 #' @export
 #'
 provide_rain_data_for_bathing_spot <- function(
   user_id, spot_id, sampling_time = "1050", date_range = NULL,
-  comment = paste("imported:", Sys.time())
+  comment = paste("imported:", Sys.time()), all_in_range = FALSE
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
@@ -37,23 +42,46 @@ provide_rain_data_for_bathing_spot <- function(
   # select_relevant_rain_area(): a recursive list
   area_list <- convert_area_structure(spot_area = spot$area)
 
-  # If no date range is given, determine the range of dates for which rain data
-  # are required from the range of dates for which water quality measurements
-  # are available.
-  date_range <- kwb.utils::defaultIfNULL(
-    date_range,
-    range(get_unique_measurement_dates(user_id, spot_id))
-  )
-
+  # Helper function to reformat the date from yyyy-mm-dd to yyyymmdd
   to_text_range <- function(x) as.character(gsub("-", "", x))
 
+  # Get the dates for which E. coli measurements are available
+  if (is.null(date_range) || ! all_in_range) {
+    dates_all <- get_unique_measurement_dates(user_id, spot_id)
+  }
+
   # Determine URLs to Radolan files to be downloaded and read
-  urls <- fhpredict::get_radolan_urls_bucket(
-    from = to_text_range(date_range[1]),
-    to = to_text_range(date_range[2]),
-    time = sampling_time,
-    bathing_season_only = TRUE
-  )
+  if (all_in_range) {
+
+    # If no date range is given, determine the range of dates for which rain
+    # data are required from the range of dates for which water quality
+    # measurements are available.
+    if (is.null(date_range)) {
+      date_range <- range(dates_all)
+    }
+
+    urls <- get_radolan_urls_bucket(
+      from = to_text_range(date_range[1]),
+      to = to_text_range(date_range[2]),
+      time = sampling_time,
+      bathing_season_only = TRUE
+    )
+
+  } else {
+
+    if (is.null(dates_all)) {
+      return()
+    }
+
+    # Reduce to dates within the bathing season
+    dates <- dates_all[is_in_bathing_season(dates_all)]
+
+    # Add up to five days before each date
+    dates_5d_before <- add_days_before(dates, 5)
+
+    # Get URLs to related Radolan files
+    urls <- get_radolan_urls_for_days(dates_5d_before)
+  }
 
   # Read rain data for the corresponding time period
   system.time(radolan_stack <- read_radolan_raster_stack(urls))

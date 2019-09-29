@@ -6,7 +6,7 @@
 \usage{
 provide_rain_data_for_bathing_spot(user_id, spot_id,
   sampling_time = "1050", date_range = NULL,
-  comment = paste("imported:", Sys.time()))
+  comment = paste("imported:", Sys.time()), all_in_range = FALSE)
 }
 \arguments{
 \item{user_id}{user id}
@@ -23,6 +23,12 @@ available.}
 
 \item{comment}{character string to be written to the field "comment" of the
 rain database table.}
+
+\item{all_in_range}{if \code{TRUE} (the default is \code{FALSE}) rain data
+for all days between the first and last day of a measurement are loaded.
+By default (\code{all_in_range = FALSE}), data for the days of measurement
+and for the days within a 5-day time period before each day of measurement,
+are loaded.}
 }
 \value{
 vector of integer containing the IDs of the records inserted into the
