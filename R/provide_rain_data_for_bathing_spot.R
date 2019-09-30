@@ -61,6 +61,25 @@ provide_rain_data_for_bathing_spot <- function(
     crs_to = kwb.dwd:::get_radolan_projection_string()
   )
 
+  # Provide rain data in a data frame
+  rain <- read_radolan_data_within_polygon(urls, polygon)
+
+  # Clear existing rain from the database
+  api_delete_rain(user_id, spot_id)
+
+  # Add rain data frame to the database
+  api_add_rain(
+    user_id,
+    spot_id,
+    rain,
+    time_string = sampling_time_to_time_string(sampling_time),
+    comment = comment
+  )
+}
+
+# read_radolan_data_within_polygon ---------------------------------------------
+read_radolan_data_within_polygon <- function(urls, polygon)
+{
   # For each URL, read the file and crop the polygon
   list_of_cropped <- lapply(seq_along(urls), function(i) {
 
@@ -85,20 +104,9 @@ provide_rain_data_for_bathing_spot <- function(
   # The day information can be restored from the names of the layers
   dates <- as.Date(substr(names(urls), 1, 8), format = "%Y%m%d")
 
-  # Provide rain data in a data frame
-  rain <- data.frame(
+  data.frame(
     datum = dates,
     rain = as.numeric(aggregated) / 10
-  )
-
-  # Clear existing rain from the database
-  api_delete_rain(user_id, spot_id)
-
-  # Add rain data frame to the database
-  api_add_rain(
-    user_id, spot_id, rain,
-    time_string = sampling_time_to_time_string(sampling_time),
-    comment = comment
   )
 }
 
