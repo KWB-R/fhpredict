@@ -26,7 +26,10 @@
 #'   elements are strings in which the date and time is encoded in the format
 #'   yyyymmddHHMM, e.g. "201809171050" for "2019-09-18 10:50"
 #' @export
-#'
+#' @examples
+#' \dontrun{
+#' urls <- get_radolan_urls_for_measurements(user_id = 5, spot_id = 41)
+#' }
 get_radolan_urls_for_measurements <- function(
   user_id, spot_id, sampling_time = "1050", date_range = NULL,
   all_in_range = FALSE, n_days_before = 5
@@ -77,7 +80,7 @@ get_radolan_urls_for_measurements <- function(
 
   if (length(dates) == 0) {
     message(sprintf(
-      "No measurement dates between %s and %s.", date_range[1], date_range[1]
+      "No measurement dates between %s and %s.", date_range[1], date_range[2]
     ))
     return(character())
   }

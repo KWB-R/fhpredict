@@ -41,3 +41,8 @@ Determine the URLs to the Radolan files that are required to calibrate
 a model. For each day of measurement files (for the day of measurements and
 the five days before) are required.
 }
+\examples{
+\dontrun{
+urls <- get_radolan_urls_for_measurements(user_id = 5, spot_id = 41)
+}
+}
