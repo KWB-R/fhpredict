@@ -150,6 +150,34 @@ measurements <- fhpredict:::flatten_recursive_list(spot$measurements)
 head(kwb.utils::removeEmptyColumns(measurements))
 ```
 
+## Measurements
+
+Measurements of water quality (concentration of E.coli) are imported from CSV
+files into the database by the end user. Use the following code to check for 
+which bathing spots measurements are available:
+
+```{r}
+# Get information on bathing spots
+spots <- fhpredict::api_get_bathingspot(user_id = 3, limit = 1000)
+
+# Prepare a named vector of bathing spot IDs to be looped through
+spot_ids <- stats::setNames(nm = spots$id)
+
+# Loop through the bathing spots and get the measurements (if any)
+measurements <- lapply(spot_ids, function(spot_id) {
+  fhpredict::api_get_bathingspot(user_id, spot_id)$measurements
+})
+
+# Determine and print the IDs of spots with at least one measurement
+n_measurements <- lengths(measurements)
+
+# Show the corresponding number n of measurements
+data.frame(
+  spot_id = names(n_measurements)[n_measurements > 0], 
+  n = unname(n_measurements[n_measurements > 0])
+)
+```
+
 ## Models
 
 ### Overview on available models
@@ -284,15 +312,15 @@ There is a top-level function that can be used to perform all steps at once.
 For the single steps that are performed within this function, see below.
 
 In the following we reduce the range of days for which to load rain data to 
-three days. Setting `date_range` to `NULL` will instead load rain data for the
-whole range of dates for which measurements are available.
+three days. Omitting `date_range` or setting it to `NULL` will instead load rain
+data for the whole range of dates for which measurements are available.
 
 ```{r}
 # Function to be triggered by the user: Provide rain data for the bathing spot
 system.time(rain_ids <- fhpredict::provide_rain_data_for_bathing_spot(
-  user_id = 3, spot_id = 17, sampling_time = "1050",
-  date_range = as.Date(c("2008-07-01", "2008-07-03")),
-  comment = "testdata-tutorial"
+  user_id = 3, spot_id = 17, sampling_time = "1050"
+  #, date_range = as.Date(c("2008-07-01", "2008-07-03"))
+  , comment = "testdata-tutorial"
 ))
 ```
 
