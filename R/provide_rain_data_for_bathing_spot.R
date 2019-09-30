@@ -35,66 +35,31 @@ provide_rain_data_for_bathing_spot <- function(
 {
   #kwb.utils::assignPackageObjects("fhpredict")
 
-  # Get metadata about the current bathing spot
-  spot <- api_get_bathingspot(spot_id = spot_id)
+  # Determine the URLs to the Radolan files that are required to calibrate
+  # a model. For each day of measurement six files (one for the day of
+  # measurements and five for the five days before) are required.
+  urls <- get_radolan_urls_for_measurements(
+    user_id = user_id,
+    spot_id = spot_id,
+    sampling_time = sampling_time,
+    date_range = date_range,
+    all_in_range = all_in_range,
+    n_days_before = 5
+  )
 
-  # Convert the area list structure to a matrix with columns "lon" and "lat".
-  # Convert area structure given in coordinate reference system "crs_from"
-  # to polygons given in coordinate reference system "crs_to"
+  if (length(urls) == 0) {
+    return(NULL)
+  }
+
+  # Get metadata about the current bathing spot. Convert the area list structure
+  # to a matrix with columns "lon" and "lat". Convert area structure given in
+  # coordinate reference system "crs_from" to polygons given in coordinate
+  # reference system "crs_to"
   polygon <- coordinates_to_polygon(
-    lonlat = get_area_coordinates(spot),
+    lonlat = get_area_coordinates(api_get_bathingspot(spot_id = spot_id)),
     crs_from = sp::CRS('+proj=longlat +datum=WGS84'),
     crs_to = kwb.dwd:::get_radolan_projection_string()
   )
-
-  # Get the dates for which E. coli measurements are available
-  if (is.null(date_range) || ! all_in_range) {
-    dates_all <- get_unique_measurement_dates(user_id, spot_id)
-  }
-
-  # Determine URLs to Radolan files to be downloaded and read
-  if (all_in_range) {
-
-    # If no date range is given, determine the range of dates for which rain
-    # data are required from the range of dates for which water quality
-    # measurements are available.
-    if (is.null(date_range)) {
-      date_range <- range(dates_all)
-    }
-
-    # Helper function to reformat the date from yyyy-mm-dd to yyyymmdd
-    to_text_range <- function(x) as.character(gsub("-", "", x))
-
-    urls <- get_radolan_urls_bucket(
-      from = to_text_range(date_range[1]),
-      to = to_text_range(date_range[2]),
-      time = sampling_time,
-      bathing_season_only = TRUE
-    )
-
-  } else {
-
-    if (is.null(dates_all)) {
-      return()
-    }
-
-    # Reduce to dates within the bathing season
-    dates <- dates_all[is_in_bathing_season(dates_all)]
-
-    if (! is.null(date_range)) {
-      dates <- dates[kwb.utils::inRange(dates, date_range[1], date_range[2])]
-    }
-
-    if (length(dates) == 0) {
-      return()
-    }
-
-    # Add up to five days before each date
-    dates_5d_before <- add_days_before(dates, 5)
-
-    # Get URLs to related Radolan files
-    urls <- get_radolan_urls_for_days(dates_5d_before)
-  }
 
   # For each URL, read the file and crop the polygon
   list_of_cropped <- lapply(seq_along(urls), function(i) {
@@ -135,30 +100,6 @@ provide_rain_data_for_bathing_spot <- function(
     time_string = sampling_time_to_time_string(sampling_time),
     comment = comment
   )
-}
-
-# get_unique_measurement_dates -------------------------------------------------
-
-#' Sorted Unique Dates of Measurments
-#'
-#' @keywords internal
-get_unique_measurement_dates <- function(user_id, spot_id)
-{
-  measurements <- api_measurements_spot(user_id, spot_id)
-
-  if (is.null(measurements)) {
-
-    message(sprintf(
-      "No measurements available for user_id = %d and spot_id = %d.",
-      user_id, spot_id
-    ))
-
-    return()
-  }
-
-  timestamps <- kwb.utils::selectColumns(measurements, "date")
-
-  sort(unique(as.Date(iso_timestamp_to_local_posix(timestamps))))
 }
 
 # sampling_time_to_time_string -------------------------------------------------

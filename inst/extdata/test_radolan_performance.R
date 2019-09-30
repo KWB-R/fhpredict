@@ -93,5 +93,6 @@ if (FALSE)
 {
   system.time(fhpredict::provide_rain_data_for_bathing_spot(
     user_id = 5, spot_id = 41, sampling_time = "1050"
+    , date_range = c("2017-07-01", "2018-07-01")
   ))
 }

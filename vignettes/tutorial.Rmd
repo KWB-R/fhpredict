@@ -157,8 +157,11 @@ files into the database by the end user. Use the following code to check for
 which bathing spots measurements are available:
 
 ```{r}
+# Set user ID
+user_id <- 3
+
 # Get information on bathing spots
-spots <- fhpredict::api_get_bathingspot(user_id = 3, limit = 1000)
+spots <- fhpredict::api_get_bathingspot(user_id = user_id, limit = 1000)
 
 # Prepare a named vector of bathing spot IDs to be looped through
 spot_ids <- stats::setNames(nm = spots$id)
