@@ -75,7 +75,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fhpredict</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -141,7 +141,7 @@
     <p>Get Timeseries Data from the Postgres Database Via API</p>
     </div>
 
-    <pre class="usage"><span class='fu'>api_get_timeseries</span>(<span class='no'>path</span>, <span class='kw'>subject</span> <span class='kw'>=</span> <span class='st'>"timeseries"</span>)</pre>
+    <pre class="usage"><span class='fu'>api_get_timeseries</span>(<span class='no'>path</span>, <span class='kw'>subject</span> <span class='kw'>=</span> <span class='st'>"timeseries"</span>, <span class='kw'>sort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -153,6 +153,11 @@
     <tr>
       <th>subject</th>
       <td><p>name of data subject, to be used in messages</p></td>
+    </tr>
+    <tr>
+      <th>sort</th>
+      <td><p>if <code>TRUE</code> (the default), the returned data frame will be
+sorted by the "dateTime" column</p></td>
     </tr>
     </table>
 

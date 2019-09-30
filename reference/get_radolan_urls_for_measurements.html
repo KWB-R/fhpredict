@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Path to Bathing Spot API endpoint — path_bathingspot • fhpredict</title>
+<title>Determine URLs to Radolan Files for Measurements — get_radolan_urls_for_measurements • fhpredict</title>
 
 
 <!-- jquery -->
@@ -41,8 +41,10 @@
 
 
 
-<meta property="og:title" content="Path to Bathing Spot API endpoint — path_bathingspot" />
-<meta property="og:description" content="Path to Bathing Spot API endpoint" />
+<meta property="og:title" content="Determine URLs to Radolan Files for Measurements — get_radolan_urls_for_measurements" />
+<meta property="og:description" content="Determine the URLs to the Radolan files that are required to calibrate
+a model. For each day of measurement files (for the day of measurements and
+the five days before) are required." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -132,26 +134,76 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Path to Bathing Spot API endpoint</h1>
-    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/api_paths.R'><code>R/api_paths.R</code></a></small>
-    <div class="hidden name"><code>path_bathingspot.Rd</code></div>
+    <h1>Determine URLs to Radolan Files for Measurements</h1>
+    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/get_radolan_urls_for_measurements.R'><code>R/get_radolan_urls_for_measurements.R</code></a></small>
+    <div class="hidden name"><code>get_radolan_urls_for_measurements.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Path to Bathing Spot API endpoint</p>
+    <p>Determine the URLs to the Radolan files that are required to calibrate
+a model. For each day of measurement files (for the day of measurements and
+the five days before) are required.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>path_bathingspot</span>(<span class='kw'>user_id</span> <span class='kw'>=</span> -<span class='fl'>1L</span>, <span class='kw'>spot_id</span> <span class='kw'>=</span> -<span class='fl'>1L</span>, <span class='kw'>limit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>skip</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>"/"</span>)</pre>
+    <pre class="usage"><span class='fu'>get_radolan_urls_for_measurements</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>,
+  <span class='kw'>sampling_time</span> <span class='kw'>=</span> <span class='st'>"1050"</span>, <span class='kw'>date_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>all_in_range</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>n_days_before</span> <span class='kw'>=</span> <span class='fl'>5</span>)</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>user_id</th>
+      <td><p>user id</p></td>
+    </tr>
+    <tr>
+      <th>spot_id</th>
+      <td><p>bathing spot id</p></td>
+    </tr>
+    <tr>
+      <th>sampling_time</th>
+      <td><p>expected sampling time. Will be used to select the
+corresponding Radolan files.</p></td>
+    </tr>
+    <tr>
+      <th>date_range</th>
+      <td><p>vector of two Date objects giving the first and last day of
+rain data to be loaded. If <code>NULL</code> (the default) the range of dates is
+determined from the range of dates for which water quality measurements are
+available.</p></td>
+    </tr>
+    <tr>
+      <th>all_in_range</th>
+      <td><p>if <code>TRUE</code> (the default is <code>FALSE</code>) rain data
+for all days between the first and last day of a measurement are loaded.
+By default (<code>all_in_range = FALSE</code>), data for the days of measurement
+and for the days within a <code>n_days_before</code>-day time period before each
+day of measurement, are loaded.</p></td>
+    </tr>
+    <tr>
+      <th>n_days_before</th>
+      <td><p>number of days before a measurement for which to load
+rain data</p></td>
+    </tr>
+    </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>named vector of character containing the URLs to the Radolan files
+  required for the measurements storted in the database. The names of the
+  elements are strings in which the date and time is encoded in the format
+  yyyymmddHHMM, e.g. "201809171050" for "2019-09-18 10:50"</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw pkg'>fhpredict</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/fhpredict/man/path_bathingspot.html'>path_bathingspot</a></span>()</div><div class='output co'>#&gt; [1] "bathingspots"</div><div class='input'><span class='kw pkg'>fhpredict</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/fhpredict/man/path_bathingspot.html'>path_bathingspot</a></span>(<span class='kw'>spot_id</span> <span class='kw'>=</span> <span class='fl'>3</span>)</div><div class='output co'>#&gt; [1] "bathingspots/3"</div><div class='input'><span class='kw pkg'>fhpredict</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/fhpredict/man/path_bathingspot.html'>path_bathingspot</a></span>(<span class='kw'>user_id</span> <span class='kw'>=</span> <span class='fl'>7</span>)</div><div class='output co'>#&gt; [1] "users/7/bathingspots"</div><div class='input'><span class='kw pkg'>fhpredict</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/fhpredict/man/path_bathingspot.html'>path_bathingspot</a></span>(<span class='kw'>user_id</span> <span class='kw'>=</span> <span class='fl'>22</span>, <span class='kw'>spot_id</span> <span class='kw'>=</span> <span class='fl'>33</span>)</div><div class='output co'>#&gt; [1] "users/22/bathingspots/33"</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='no'>urls</span> <span class='kw'>&lt;-</span> <span class='fu'>get_radolan_urls_for_measurements</span>(<span class='kw'>user_id</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>spot_id</span> <span class='kw'>=</span> <span class='fl'>41</span>)
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
 
