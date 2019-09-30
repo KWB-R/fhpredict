@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Provide Rain Data for one Bathing Spot — provide_rain_data_for_bathing_spot • fhpredict</title>
+<title>Add Dates of 1:n Days Before Given Dates — add_days_before • fhpredict</title>
 
 
 <!-- jquery -->
@@ -41,13 +41,8 @@
 
 
 
-<meta property="og:title" content="Provide Rain Data for one Bathing Spot — provide_rain_data_for_bathing_spot" />
-<meta property="og:description" content="The function considers (i) the &quot;catchment&quot; area that is defined for the
-bathing spot and (ii) the date range that is taken from the range of dates
-for which measurements are available. Rain data are read from binary Radolan
-files, cropped around the &quot;catchment&quot; area and and averaged over all layears
-for each raster cell. The resulting rain data are then stored in the Postgres
-database. IMPORTANT: Existing rain data will be overwritten in the database!" />
+<meta property="og:title" content="Add Dates of 1:n Days Before Given Dates — add_days_before" />
+<meta property="og:description" content="Add Dates of 1:n Days Before Given Dates" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -137,73 +132,47 @@ database. IMPORTANT: Existing rain data will be overwritten in the database!" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Provide Rain Data for one Bathing Spot</h1>
-    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/provide_rain_data_for_bathing_spot.R'><code>R/provide_rain_data_for_bathing_spot.R</code></a></small>
-    <div class="hidden name"><code>provide_rain_data_for_bathing_spot.Rd</code></div>
+    <h1>Add Dates of 1:n Days Before Given Dates</h1>
+    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/create_date_ranges.R'><code>R/create_date_ranges.R</code></a></small>
+    <div class="hidden name"><code>add_days_before.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The function considers (i) the "catchment" area that is defined for the
-bathing spot and (ii) the date range that is taken from the range of dates
-for which measurements are available. Rain data are read from binary Radolan
-files, cropped around the "catchment" area and and averaged over all layears
-for each raster cell. The resulting rain data are then stored in the Postgres
-database. IMPORTANT: Existing rain data will be overwritten in the database!</p>
+    <p>Add Dates of 1:n Days Before Given Dates</p>
     </div>
 
-    <pre class="usage"><span class='fu'>provide_rain_data_for_bathing_spot</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>,
-  <span class='kw'>sampling_time</span> <span class='kw'>=</span> <span class='st'>"1050"</span>, <span class='kw'>date_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>comment</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span>(<span class='st'>"imported:"</span>, <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.time</a></span>()), <span class='kw'>all_in_range</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>add_days_before</span>(<span class='no'>dates</span>, <span class='kw'>n_days_before</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>user_id</th>
-      <td><p>user id</p></td>
+      <th>dates</th>
+      <td><p>vector of <code>Date objects</code></p></td>
     </tr>
     <tr>
-      <th>spot_id</th>
-      <td><p>bathing spot id</p></td>
-    </tr>
-    <tr>
-      <th>sampling_time</th>
-      <td><p>expected sampling time. Will be used to select the
-corresponding Radolan files.</p></td>
-    </tr>
-    <tr>
-      <th>date_range</th>
-      <td><p>vector of two Date objects giving the first and last day of
-rain data to be loaded. If <code>NULL</code> (the default) the range of dates is
-determined from the range of dates for which water quality measurements are
-available.</p></td>
-    </tr>
-    <tr>
-      <th>comment</th>
-      <td><p>character string to be written to the field "comment" of the
-rain database table.</p></td>
-    </tr>
-    <tr>
-      <th>all_in_range</th>
-      <td><p>if <code>TRUE</code> (the default is <code>FALSE</code>) rain data
-for all days between the first and last day of a measurement are loaded.
-By default (<code>all_in_range = FALSE</code>), data for the days of measurement
-and for the days within a 5-day time period before each day of measurement,
-are loaded.</p></td>
+      <th>n_days_before</th>
+      <td><p>number of days to add before the days given in
+<code>dates</code></p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>vector of integer containing the IDs of the records inserted into the
-  "rains" database table.</p>
-
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>dates</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"2019-07-05"</span>, <span class='st'>"2019-07-10"</span>))
+<span class='kw pkg'>fhpredict</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/fhpredict/man/add_days_before.html'>add_days_before</a></span>(<span class='no'>dates</span>)</div><div class='output co'>#&gt; [1] "2019-07-04" "2019-07-05" "2019-07-09" "2019-07-10"</div><div class='input'><span class='kw pkg'>fhpredict</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/fhpredict/man/add_days_before.html'>add_days_before</a></span>(<span class='no'>dates</span>, <span class='kw'>n_days_before</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt; [1] "2019-07-03" "2019-07-04" "2019-07-05" "2019-07-08" "2019-07-09"
+#&gt; [6] "2019-07-10"</div><div class='input'>
+<span class='co'># Duplicates are removed so that unique dates are returned</span>
+<span class='kw pkg'>fhpredict</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/fhpredict/man/add_days_before.html'>add_days_before</a></span>(<span class='no'>dates</span>, <span class='kw'>n_days_before</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt;  [1] "2019-06-25" "2019-06-26" "2019-06-27" "2019-06-28" "2019-06-29"
+#&gt;  [6] "2019-06-30" "2019-07-01" "2019-07-02" "2019-07-03" "2019-07-04"
+#&gt; [11] "2019-07-05" "2019-07-06" "2019-07-07" "2019-07-08" "2019-07-09"
+#&gt; [16] "2019-07-10"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>
