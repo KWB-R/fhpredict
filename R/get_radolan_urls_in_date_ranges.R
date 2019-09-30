@@ -1,4 +1,7 @@
 # get_radolan_urls_in_date_ranges ----------------------------------------------
+# urls <- get_radolan_urls_in_date_ranges(
+#   data.frame(from_date = "2018-07-01", to_date = "2018-08-01")
+# )
 get_radolan_urls_in_date_ranges <- function(date_ranges, time = "1050")
 {
   dates_from <- kwb.utils::selectColumns(date_ranges, "from_date")
