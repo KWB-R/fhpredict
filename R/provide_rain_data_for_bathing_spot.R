@@ -55,11 +55,7 @@ provide_rain_data_for_bathing_spot <- function(
   # to a matrix with columns "lon" and "lat". Convert area structure given in
   # coordinate reference system "crs_from" to polygons given in coordinate
   # reference system "crs_to"
-  polygon <- coordinates_to_polygon(
-    lonlat = get_area_coordinates(api_get_bathingspot(user_id, spot_id)),
-    crs_from = sp::CRS('+proj=longlat +datum=WGS84'),
-    crs_to = kwb.dwd:::get_radolan_projection_string()
-  )
+  polygon <- get_polygon_for_bathing_spot(user_id, spot_id)
 
   # Get rain data that already exists in the database
   rain_db <- api_get_rain(user_id, spot_id)
@@ -75,6 +71,16 @@ provide_rain_data_for_bathing_spot <- function(
     rain = rain,
     rain_db = rain_db,
     time_string = sampling_time_to_time_string(sampling_time)
+  )
+}
+
+# get_polygon_for_bathing_spot -------------------------------------------------
+get_polygon_for_bathing_spot <- function(user_id, spot_id)
+{
+  coordinates_to_polygon(
+    lonlat = get_area_coordinates(api_get_bathingspot(user_id, spot_id)),
+    crs_from = sp::CRS('+proj=longlat +datum=WGS84'),
+    crs_to = kwb.dwd:::get_radolan_projection_string()
   )
 }
 
