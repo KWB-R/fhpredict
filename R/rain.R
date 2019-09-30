@@ -8,7 +8,8 @@
 #'   \code{rain})
 #' @param time_string time to which rain data values relate, default:
 #'   \code{"12:00:00"}
-#' @param comment character string to be stored in database field "comment"
+#' @param comment character string to be written to the field "comment" of the
+#'   rain database table.
 #' @export
 #' @examples
 #' \dontrun{
