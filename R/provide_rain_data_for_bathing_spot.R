@@ -80,9 +80,9 @@ provide_rain_data_for_bathing_spot <- function(
 
     message(
       "Please use the returned object in a loop to perform the actual data ",
-      "import, as in the following:\n",
+      "import,\nas in the following code:\n\n",
       sprintf(
-        "control <- provide_rain_data_for_bathing_spot(%d, %d)\n",
+        "control <- provide_rain_data_for_bathing_spot(%d, %d)\n\n",
         user_id, spot_id
       ),
       "while (control$remaining > 0) {\n",
