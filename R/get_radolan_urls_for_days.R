@@ -1,4 +1,6 @@
 # get_radolan_urls_for_days ----------------------------------------------------
+# dates <- seq(as.Date("2018-07-01"), as.Date("2018-08-01"), by = 1)
+# urls <- get_radolan_urls_for_days(dates)
 get_radolan_urls_for_days <- function(dates, diff_days = 10)
 {
   # Call fhpredict:::test_performance_get_radolan_urls() to find a good value

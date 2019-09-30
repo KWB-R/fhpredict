@@ -4,9 +4,11 @@
 #'
 #' @param path (relative) path to API endpoint
 #' @param subject name of data subject, to be used in messages
+#' @param sort if \code{TRUE} (the default), the returned data frame will be
+#'   sorted by the "dateTime" column
 #' @keywords internal
 #'
-api_get_timeseries <- function(path, subject = "timeseries")
+api_get_timeseries <- function(path, subject = "timeseries", sort = TRUE)
 {
   df <- kwb.utils::catAndRun(
 
@@ -39,6 +41,13 @@ api_get_timeseries <- function(path, subject = "timeseries")
       df
     }
   )
+
+  if (sort) {
+
+    df <- kwb.utils::catAndRun("Sorting data frame by time", {
+      df[order(df$dateTime), , drop = FALSE]
+    })
+  }
 
   kwb.utils::removeColumns(df, c("date", "comment"))
 }

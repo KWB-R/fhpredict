@@ -5,8 +5,8 @@
 \title{Provide Rain Data for one Bathing Spot}
 \usage{
 provide_rain_data_for_bathing_spot(user_id, spot_id,
-  sampling_time = "1050", date_range = NULL,
-  comment = paste("imported:", Sys.time()), all_in_range = FALSE)
+  sampling_time = "1050", date_range = NULL, blocksize = 10,
+  control = NULL)
 }
 \arguments{
 \item{user_id}{user id}
@@ -21,14 +21,17 @@ rain data to be loaded. If \code{NULL} (the default) the range of dates is
 determined from the range of dates for which water quality measurements are
 available.}
 
-\item{comment}{character string to be written to the field "comment" of the
-rain database table.}
+\item{blocksize}{number of Radolan files to be downloaded and processed
+"at once", i.e. this number of files is downloaded, read, cropped, averaged
+and written to the database before loading new files. By doing so, at least
+some data will be available in the database in case that too many files
+cause a crash.}
 
-\item{all_in_range}{if \code{TRUE} (the default is \code{FALSE}) rain data
-for all days between the first and last day of a measurement are loaded.
-By default (\code{all_in_range = FALSE}), data for the days of measurement
-and for the days within a 5-day time period before each day of measurement,
-are loaded.}
+\item{control}{object returned by a former call to this function that
+contains the current state of the import process and takes care that the
+next block of required data is downloaded. When omitted, the function
+returns an object that can be used as a control object for a next call of
+this function. See example.}
 }
 \value{
 vector of integer containing the IDs of the records inserted into the
@@ -41,4 +44,12 @@ for which measurements are available. Rain data are read from binary Radolan
 files, cropped around the "catchment" area and and averaged over all layears
 for each raster cell. The resulting rain data are then stored in the Postgres
 database. IMPORTANT: Existing rain data will be overwritten in the database!
+}
+\examples{
+\dontrun{
+control <- provide_rain_data_for_bathing_spot(user_id = 5, spot_id = 41)
+while (control$remaining > 0) {
+  control <- provide_rain_data_for_bathing_spot(control = control)
+}
+}
 }

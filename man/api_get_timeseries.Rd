@@ -4,12 +4,15 @@
 \alias{api_get_timeseries}
 \title{Get Timeseries Data from the Postgres Database Via API}
 \usage{
-api_get_timeseries(path, subject = "timeseries")
+api_get_timeseries(path, subject = "timeseries", sort = TRUE)
 }
 \arguments{
 \item{path}{(relative) path to API endpoint}
 
 \item{subject}{name of data subject, to be used in messages}
+
+\item{sort}{if \code{TRUE} (the default), the returned data frame will be
+sorted by the "dateTime" column}
 }
 \description{
 Get Timeseries Data from the Postgres Database Via API
