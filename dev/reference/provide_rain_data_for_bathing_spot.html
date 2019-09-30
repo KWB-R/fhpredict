@@ -80,7 +80,7 @@ database. IMPORTANT: Existing rain data will be overwritten in the database!" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fhpredict</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.1.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.0.9000</span>
       </span>
     </div>
 
@@ -152,8 +152,8 @@ database. IMPORTANT: Existing rain data will be overwritten in the database!</p>
     </div>
 
     <pre class="usage"><span class='fu'>provide_rain_data_for_bathing_spot</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>,
-  <span class='kw'>sampling_time</span> <span class='kw'>=</span> <span class='st'>"1050"</span>, <span class='kw'>date_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>comment</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span>(<span class='st'>"imported:"</span>, <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.time</a></span>()), <span class='kw'>all_in_range</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>sampling_time</span> <span class='kw'>=</span> <span class='st'>"1050"</span>, <span class='kw'>date_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>blocksize</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>control</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -179,17 +179,20 @@ determined from the range of dates for which water quality measurements are
 available.</p></td>
     </tr>
     <tr>
-      <th>comment</th>
-      <td><p>character string to be written to the field "comment" of the
-rain database table.</p></td>
+      <th>blocksize</th>
+      <td><p>number of Radolan files to be downloaded and processed
+"at once", i.e. this number of files is downloaded, read, cropped, averaged
+and written to the database before loading new files. By doing so, at least
+some data will be available in the database in case that too many files
+cause a crash.</p></td>
     </tr>
     <tr>
-      <th>all_in_range</th>
-      <td><p>if <code>TRUE</code> (the default is <code>FALSE</code>) rain data
-for all days between the first and last day of a measurement are loaded.
-By default (<code>all_in_range = FALSE</code>), data for the days of measurement
-and for the days within a 5-day time period before each day of measurement,
-are loaded.</p></td>
+      <th>control</th>
+      <td><p>object returned by a former call to this function that
+contains the current state of the import process and takes care that the
+next block of required data is downloaded. When omitted, the function
+returns an object that can be used as a control object for a next call of
+this function. See example.</p></td>
     </tr>
     </table>
 
@@ -198,12 +201,20 @@ are loaded.</p></td>
     <p>vector of integer containing the IDs of the records inserted into the
   "rains" database table.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='no'>control</span> <span class='kw'>&lt;-</span> <span class='fu'>provide_rain_data_for_bathing_spot</span>(<span class='kw'>user_id</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>spot_id</span> <span class='kw'>=</span> <span class='fl'>41</span>)
+<span class='kw'>while</span> (<span class='no'>control</span>$<span class='no'>remaining</span> <span class='kw'>&gt;</span> <span class='fl'>0</span>) {
+  <span class='no'>control</span> <span class='kw'>&lt;-</span> <span class='fu'>provide_rain_data_for_bathing_spot</span>(<span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>control</span>)
+}
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>
