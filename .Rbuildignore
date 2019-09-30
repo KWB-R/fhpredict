@@ -6,6 +6,6 @@
 ^.travis\.yml$
 ^appveyor\.yml$
 fhpredict.Rproj
-^index\.Rmd$
+^index\.R?md$
 ^.*\.Rproj$
 ^\.Rproj\.user$

@@ -38,7 +38,7 @@ Show the IDs of the created database records
 rain_ids
 
 # Delete the fake rain data
-api_delete_rain(user_id = 3, spot_id = 1441, rain_ids = rain_ids)
+api_delete_rain(user_id = 3, spot_id = 1441, ids = rain_ids)
 }
 
 }

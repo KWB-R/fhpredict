@@ -4,7 +4,7 @@
 \alias{postgres_post}
 \title{Send POST Request to Postgres API}
 \usage{
-postgres_post(path, body = NULL)
+postgres_post(path, body = NULL, encode = "json")
 }
 \arguments{
 \item{path}{relative path, e.g. \code{users/3/bathingspots/18/genericInputs}
@@ -12,6 +12,9 @@ to create a generic input for bathing spot of user 3 with ID 18}
 
 \item{body}{list with the fields to be set as \code{key = value} pairs, e.g.
 \code{list(name = "lirum larum")}}
+
+\item{encode}{passed to \code{\link[httr]{POST}}. Default: "json". Set to
+"multipart" for uploading files!}
 }
 \value{
 In case of success this function returns what

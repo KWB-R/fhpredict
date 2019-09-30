@@ -28,6 +28,18 @@ path_bathingspot <- function(
   )
 }
 
+# path_discharges --------------------------------------------------------------
+path_discharges <- function(user_id, spot_id, discharge_id = -1L)
+{
+  path <- paste0(path_bathingspot(user_id, spot_id), "/discharges")
+
+  if (discharge_id == -1L) {
+    return(path)
+  }
+
+  sprintf("%s/%d", path, discharge_id)
+}
+
 # path_measurements ------------------------------------------------------------
 path_measurements <- function(user_id, spot_id)
 {
