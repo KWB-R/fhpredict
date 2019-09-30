@@ -17,7 +17,7 @@ add_timeseries_point_to_database <- function(
 
   id <- result$data[[1]]$id
 
-  message("A ", subject, " data record with id = ", id, " has been inserted.")
+  #message("A ", subject, " data record with id = ", id, " has been inserted.")
 
   # Return the id of the added record
   id

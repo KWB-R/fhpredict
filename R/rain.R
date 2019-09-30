@@ -38,16 +38,21 @@ api_add_rain <- function(
   date_strings <- as.character(kwb.utils::selectColumns(rain, "datum"))
   values <- kwb.utils::selectColumns(rain, "rain")
 
-  result <- lapply(seq_along(values), function(i) {
-    add_timeseries_point_to_database(
-      path = path_rains(user_id, spot_id),
-      date_string = date_strings[i],
-      time_string = time_string,
-      value = values[i],
-      comment = comment,
-      subject = "rain"
-    )
-  })
+  result <- kwb.utils::catAndRun(
+    sprintf(
+      "Inserting %d rain data records into the database", length(date_strings)
+    ),
+    lapply(seq_along(values), function(i) {
+      add_timeseries_point_to_database(
+        path = path_rains(user_id, spot_id),
+        date_string = date_strings[i],
+        time_string = time_string,
+        value = values[i],
+        comment = comment,
+        subject = "rain"
+      )
+    })
+  )
 
   # Return the ids of the rain data records
   unlist(result)
