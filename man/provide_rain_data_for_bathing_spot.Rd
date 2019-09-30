@@ -5,8 +5,7 @@
 \title{Provide Rain Data for one Bathing Spot}
 \usage{
 provide_rain_data_for_bathing_spot(user_id, spot_id,
-  sampling_time = "1050", date_range = NULL,
-  comment = paste("imported:", Sys.time()), all_in_range = FALSE)
+  sampling_time = "1050", date_range = NULL, blocksize = 10)
 }
 \arguments{
 \item{user_id}{user id}
@@ -21,14 +20,11 @@ rain data to be loaded. If \code{NULL} (the default) the range of dates is
 determined from the range of dates for which water quality measurements are
 available.}
 
-\item{comment}{character string to be written to the field "comment" of the
-rain database table.}
-
-\item{all_in_range}{if \code{TRUE} (the default is \code{FALSE}) rain data
-for all days between the first and last day of a measurement are loaded.
-By default (\code{all_in_range = FALSE}), data for the days of measurement
-and for the days within a 5-day time period before each day of measurement,
-are loaded.}
+\item{blocksize}{number of Radolan files to be downloaded and processed
+"at once", i.e. this number of files is downloaded, read, cropped, averaged
+and written to the database before loading new files. By doing so, at least
+some data will be available in the database in case that too many files
+cause a crash.}
 }
 \value{
 vector of integer containing the IDs of the records inserted into the
