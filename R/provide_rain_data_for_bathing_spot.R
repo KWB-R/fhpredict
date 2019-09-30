@@ -22,77 +22,149 @@
 #'   and written to the database before loading new files. By doing so, at least
 #'   some data will be available in the database in case that too many files
 #'   cause a crash.
+#' @param control object returned by a former call to this function that
+#'   contains the current state of the import process and takes care that the
+#'   next block of required data is downloaded. When omitted, the function
+#'   returns an object that can be used as a control object for a next call of
+#'   this function. See example.
 #' @return vector of integer containing the IDs of the records inserted into the
 #'   "rains" database table.
 #' @export
-#'
+#' @examples
+#' \dontrun{
+#' control <- provide_rain_data_for_bathing_spot(user_id = 5, spot_id = 41)
+#' while (control$remaining > 0) {
+#'   control <- provide_rain_data_for_bathing_spot(control = control)
+#' }
+#' }
 provide_rain_data_for_bathing_spot <- function(
-  user_id, spot_id, sampling_time = "1050", date_range = NULL, blocksize = 10
+  user_id, spot_id, sampling_time = "1050", date_range = NULL, blocksize = 10,
+  control = NULL
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
-  #user_id=5;spot_id=41;sampling_time="1050";date_range=NULL;blocksize=10
+  #user_id=5;spot_id=41;sampling_time="1050";date_range=NULL;blocksize=10;control=NULL
 
-  # Determine the URLs to the Radolan files that are required to calibrate
-  # a model. For each day of measurement six files (one for the day of
-  # measurements and five for the five days before) are required.
-  urls <- get_radolan_urls_for_measurements(
-    user_id = user_id,
-    spot_id = spot_id,
-    sampling_time = sampling_time,
-    date_range = date_range,
-    all_in_range = FALSE,
-    n_days_before = 5
-  )
+  if (is.null(control)) {
 
-  if (length(urls) == 0) {
-    return(NULL)
+    # Determine the URLs to the Radolan files that are required to calibrate
+    # a model. For each day of measurement six files (one for the day of
+    # measurements and five for the five days before) are required.
+    urls <- get_radolan_urls_for_measurements(
+      user_id = user_id,
+      spot_id = spot_id,
+      sampling_time = sampling_time,
+      date_range = date_range,
+      all_in_range = FALSE,
+      n_days_before = 5
+    )
+
+    # if (length(urls) == 0) {
+    #   return(NULL)
+    # }
+
+    # Get metadata about the current bathing spot. Convert the area list structure
+    # to a matrix with columns "lon" and "lat". Convert area structure given in
+    # coordinate reference system "crs_from" to polygons given in coordinate
+    # reference system "crs_to"
+    polygon <- get_polygon_for_bathing_spot(user_id, spot_id)
+
+    # Get rain data that already exists in the database
+    rain_db <- api_get_rain(user_id, spot_id)
+
+    # Group URLs into blocks to be downloaded and inserted "at once"
+    blocks <- kwb.utils::splitIntoFixSizedBlocks(
+      data = kwb.utils::noFactorDataFrame(url = urls),
+      blocksize = blocksize
+    )
+
+    message(
+      "Please use the returned object in a loop to perform the actual data ",
+      "import, as in the following:\n",
+      sprintf(
+        "control <- provide_rain_data_for_bathing_spot(%d, %d)\n",
+        user_id, spot_id
+      ),
+      "while (control$remaining > 0) {\n",
+      "  control <- provide_rain_data_for_bathing_spot(control = control)\n",
+      "}"
+    )
+
+    # Return the control object
+    return(list(
+      user_id = user_id,
+      spot_id = spot_id,
+      sampling_time = sampling_time,
+      date_range = date_range,
+      blocksize = blocksize,
+      polygon = polygon,
+      rain_db = rain_db,
+      blocks = blocks,
+      remaining = length(blocks)
+    ))
   }
 
-  # Get metadata about the current bathing spot. Convert the area list structure
-  # to a matrix with columns "lon" and "lat". Convert area structure given in
-  # coordinate reference system "crs_from" to polygons given in coordinate
-  # reference system "crs_to"
-  polygon <- get_polygon_for_bathing_spot(user_id, spot_id)
+  # If we arrive here, a control object was given to the function
 
-  # Get rain data that already exists in the database
-  rain_db <- api_get_rain(user_id, spot_id)
-
-  # Group URLs into blocks to be downloaded and inserted "at once"
-  blocks <- kwb.utils::splitIntoFixSizedBlocks(
-    data = kwb.utils::noFactorDataFrame(url = urls),
-    blocksize = blocksize
-  )
+  # if (length(urls) == 0) {
+  #   return(NULL)
+  # }
 
   # Loop through the data blocks
-  for (i in seq_along(blocks)) {
+  #for (i in seq_along(blocks)) {
 
-    kwb.utils::catAndRun(
-      sprintf("Importing rain data block %d/%d", i, length(blocks)),
-      newLine = 3,
-      expr = {
+  get_object <- function(name) kwb.utils::selectElements(control, name)
 
-        # Get URLs from the current block
-        urls <- stats::setNames(blocks[[i]]$url, rownames(blocks[[i]]))
+  blocks <- get_object("blocks")
+  n_blocks <- length(blocks)
 
-        # Provide rain data in a data frame
-        rain <- read_radolan_data_within_polygon(urls, polygon)
-
-        # For the days returned in the new rain data frame, replace the
-        # corresponding records that exist in the database with the new records
-        api_replace_rain(
-          user_id = user_id,
-          spot_id = spot_id,
-          rain = rain,
-          rain_db = rain_db,
-          time_string = sampling_time_to_time_string(sampling_time),
-          comment = paste("imported:", Sys.time())
-        )
-      } # end of expression to be evaluated by catAndRun()
-    )
+  if (n_blocks == 0) {
+    message("No URL blocks to process.")
+    return(list(remaining = 0))
   }
 
-  check_rain_data_consistency(user_id, spot_id)
+  i <- n_blocks - get_object("remaining") + 1
+
+  if (i < 1 || i > n_blocks) {
+    message("Invalid block index.")
+    return(list(remaining = 0))
+  }
+
+  user_id <- get_object("user_id")
+  spot_id <- get_object("spot_id")
+
+  kwb.utils::catAndRun(
+    sprintf("Importing rain data block %d/%d", i, n_blocks),
+    newLine = 3,
+    expr = {
+
+      # Get URLs from the current block
+      urls <- stats::setNames(blocks[[i]]$url, rownames(blocks[[i]]))
+
+      # Provide rain data in a data frame
+      rain <- read_radolan_data_within_polygon(urls, get_object("polygon"))
+
+      # For the days returned in the new rain data frame, replace the
+      # corresponding records that exist in the database with the new records
+      api_replace_rain(
+        user_id = user_id,
+        spot_id = spot_id,
+        rain = rain,
+        rain_db = get_object("rain_db"),
+        time_string = sampling_time_to_time_string(get_object("sampling_time")),
+        comment = paste("imported:", Sys.time())
+      )
+    } # end of expression to be evaluated by catAndRun()
+  )
+  #}
+
+  control$remaining <- control$remaining - 1
+
+  if (control$remaining == 0) {
+    check_rain_data_consistency(user_id, spot_id)
+  }
+
+  control
 }
 
 # get_polygon_for_bathing_spot -------------------------------------------------

@@ -5,7 +5,8 @@
 \title{Provide Rain Data for one Bathing Spot}
 \usage{
 provide_rain_data_for_bathing_spot(user_id, spot_id,
-  sampling_time = "1050", date_range = NULL, blocksize = 10)
+  sampling_time = "1050", date_range = NULL, blocksize = 10,
+  control = NULL)
 }
 \arguments{
 \item{user_id}{user id}
@@ -25,6 +26,12 @@ available.}
 and written to the database before loading new files. By doing so, at least
 some data will be available in the database in case that too many files
 cause a crash.}
+
+\item{control}{object returned by a former call to this function that
+contains the current state of the import process and takes care that the
+next block of required data is downloaded. When omitted, the function
+returns an object that can be used as a control object for a next call of
+this function. See example.}
 }
 \value{
 vector of integer containing the IDs of the records inserted into the
@@ -37,4 +44,12 @@ for which measurements are available. Rain data are read from binary Radolan
 files, cropped around the "catchment" area and and averaged over all layears
 for each raster cell. The resulting rain data are then stored in the Postgres
 database. IMPORTANT: Existing rain data will be overwritten in the database!
+}
+\examples{
+\dontrun{
+control <- provide_rain_data_for_bathing_spot(user_id = 5, spot_id = 41)
+while (control$remaining > 0) {
+  control <- provide_rain_data_for_bathing_spot(control = control)
+}
+}
 }
