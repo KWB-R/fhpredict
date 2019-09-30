@@ -80,7 +80,7 @@ database. IMPORTANT: Existing rain data will be overwritten in the database!" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fhpredict</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -153,7 +153,7 @@ database. IMPORTANT: Existing rain data will be overwritten in the database!</p>
 
     <pre class="usage"><span class='fu'>provide_rain_data_for_bathing_spot</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>,
   <span class='kw'>sampling_time</span> <span class='kw'>=</span> <span class='st'>"1050"</span>, <span class='kw'>date_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>comment</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span>(<span class='st'>"imported:"</span>, <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.time</a></span>()))</pre>
+  <span class='kw'>comment</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span>(<span class='st'>"imported:"</span>, <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.time</a></span>()), <span class='kw'>all_in_range</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -183,6 +183,14 @@ available.</p></td>
       <td><p>character string to be written to the field "comment" of the
 rain database table.</p></td>
     </tr>
+    <tr>
+      <th>all_in_range</th>
+      <td><p>if <code>TRUE</code> (the default is <code>FALSE</code>) rain data
+for all days between the first and last day of a measurement are loaded.
+By default (<code>all_in_range = FALSE</code>), data for the days of measurement
+and for the days within a 5-day time period before each day of measurement,
+are loaded.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -208,7 +216,7 @@ rain database table.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
 
       </footer>
