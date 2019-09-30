@@ -56,24 +56,25 @@ provide_rain_data_for_bathing_spot <- function(
   # coordinate reference system "crs_from" to polygons given in coordinate
   # reference system "crs_to"
   polygon <- coordinates_to_polygon(
-    lonlat = get_area_coordinates(api_get_bathingspot(spot_id = spot_id)),
+    lonlat = get_area_coordinates(api_get_bathingspot(user_id, spot_id)),
     crs_from = sp::CRS('+proj=longlat +datum=WGS84'),
     crs_to = kwb.dwd:::get_radolan_projection_string()
   )
 
+  # Get rain data that already exists in the database
+  rain_db <- api_get_rain(user_id, spot_id)
+
   # Provide rain data in a data frame
   rain <- read_radolan_data_within_polygon(urls, polygon)
 
-  # Clear existing rain from the database
-  api_delete_rain(user_id, spot_id)
-
-  # Add rain data frame to the database
-  api_add_rain(
-    user_id,
-    spot_id,
-    rain,
-    time_string = sampling_time_to_time_string(sampling_time),
-    comment = comment
+  # For the days returned in the new rain data frame, replace the corresponding
+  # records that exist in the database with the new records
+  api_replace_rain(
+    user_id = user_id,
+    spot_id = spot_id,
+    rain = rain,
+    rain_db = rain_db,
+    time_string = sampling_time_to_time_string(sampling_time)
   )
 }
 
@@ -107,6 +108,26 @@ read_radolan_data_within_polygon <- function(urls, polygon)
   data.frame(
     datum = dates,
     rain = as.numeric(aggregated) / 10
+  )
+}
+
+# api_replace_rain -------------------------------------------------------------
+api_replace_rain <- function(
+  user_id, spot_id, rain, rain_db = NULL, time_string
+)
+{
+  # Read existing rain data from database if not given
+  rain_db <- kwb.utils::defaultIfNULL(rain_db, api_get_rain(user_id, spot_id))
+
+  # Find IDs that relate to days for which new data are available
+  rain_ids <- rain_db$id[as.Date(rain_db$dateTime) %in% rain$datum]
+
+  # Clear existing rain from the database
+  api_delete_rain(user_id, spot_id, ids = rain_ids)
+
+  # Add rain data frame to the database
+  api_add_rain(
+    user_id, spot_id, rain, time_string = time_string, comment = comment
   )
 }
 
