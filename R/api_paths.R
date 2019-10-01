@@ -58,6 +58,18 @@ path_models <- function(user_id, spot_id, model_id = -1L)
   sprintf("%s/%d", path, model_id)
 }
 
+# path_predictions -------------------------------------------------------------
+path_predictions <- function(user_id, spot_id, prediction_id = -1L)
+{
+  path <- paste0(path_bathingspot(user_id, spot_id), "/predictions")
+
+  if (prediction_id == -1L) {
+    return(path)
+  }
+
+  sprintf("%s/%d", path, prediction_id)
+}
+
 # path_rains -------------------------------------------------------------------
 path_rains <- function(user_id, spot_id, rain_id = -1L)
 {
