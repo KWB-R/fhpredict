@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Deprecated — provide_rain_data_for_bathing_spot • fhpredict</title>
+<title>Predict Water Quality for Bathing Spot Using Stored Model — predict_quality • fhpredict</title>
 
 
 <!-- jquery -->
@@ -41,8 +41,8 @@
 
 
 
-<meta property="og:title" content="Deprecated — provide_rain_data_for_bathing_spot" />
-<meta property="og:description" content="Use provide_rain_data instead" />
+<meta property="og:title" content="Predict Water Quality for Bathing Spot Using Stored Model — predict_quality" />
+<meta property="og:description" content="Predict Water Quality for Bathing Spot Using Stored Model" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -132,60 +132,44 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Deprecated</h1>
-    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/provide_rain_data_for_bathing_spot.R'><code>R/provide_rain_data_for_bathing_spot.R</code></a></small>
-    <div class="hidden name"><code>provide_rain_data_for_bathing_spot.Rd</code></div>
+    <h1>Predict Water Quality for Bathing Spot Using Stored Model</h1>
+    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/predict_quality.R'><code>R/predict_quality.R</code></a></small>
+    <div class="hidden name"><code>predict_quality.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Use <code><a href='provide_rain_data.html'>provide_rain_data</a></code> instead</p>
+    <p>Predict Water Quality for Bathing Spot Using Stored Model</p>
     </div>
 
-    <pre class="usage"><span class='fu'>provide_rain_data_for_bathing_spot</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>,
-  <span class='kw'>sampling_time</span> <span class='kw'>=</span> <span class='st'>"1050"</span>, <span class='kw'>date_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>predict_quality</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>, <span class='kw'>date</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>())</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>user_id</th>
-      <td><p>user id</p></td>
+      <td><p>user ID</p></td>
     </tr>
     <tr>
       <th>spot_id</th>
-      <td><p>bathing spot id</p></td>
+      <td><p>bathing spot ID</p></td>
     </tr>
     <tr>
-      <th>sampling_time</th>
-      <td><p>expected sampling time. Will be used to select the
-corresponding Radolan files.</p></td>
-    </tr>
-    <tr>
-      <th>date_range</th>
-      <td><p>vector of two Date objects giving the first and last day of
-rain data to be loaded. If <code>NULL</code> (the default) the range of dates is
-determined from the range of dates for which water quality measurements are
-available.</p></td>
+      <th>date</th>
+      <td><p>Date object or date string in format yyyy-mm-dd</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>list with element <code>remaining = 0</code>, just for compatibility
-  with <code><a href='provide_rain_data.html'>provide_rain_data</a></code>
-  "rains" database table.</p>
+    <p>list with elements <code>data</code>, <code>success</code>, <code>message</code></p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'>provide_rain_data_for_bathing_spot</span>(<span class='kw'>user_id</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>spot_id</span> <span class='kw'>=</span> <span class='fl'>41</span>)
-}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
-      <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>
