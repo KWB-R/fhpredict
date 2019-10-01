@@ -2,11 +2,10 @@
 % Please edit documentation in R/provide_rain_data_for_bathing_spot.R
 \name{provide_rain_data_for_bathing_spot}
 \alias{provide_rain_data_for_bathing_spot}
-\title{Provide Rain Data for one Bathing Spot}
+\title{Deprecated}
 \usage{
 provide_rain_data_for_bathing_spot(user_id, spot_id,
-  sampling_time = "1050", date_range = NULL, blocksize = 10,
-  control = NULL)
+  sampling_time = "1050", date_range = NULL)
 }
 \arguments{
 \item{user_id}{user id}
@@ -20,36 +19,17 @@ corresponding Radolan files.}
 rain data to be loaded. If \code{NULL} (the default) the range of dates is
 determined from the range of dates for which water quality measurements are
 available.}
-
-\item{blocksize}{number of Radolan files to be downloaded and processed
-"at once", i.e. this number of files is downloaded, read, cropped, averaged
-and written to the database before loading new files. By doing so, at least
-some data will be available in the database in case that too many files
-cause a crash.}
-
-\item{control}{object returned by a former call to this function that
-contains the current state of the import process and takes care that the
-next block of required data is downloaded. When omitted, the function
-returns an object that can be used as a control object for a next call of
-this function. See example.}
 }
 \value{
-vector of integer containing the IDs of the records inserted into the
+list with element \code{remaining = 0}, just for compatibility
+  with \code{\link{provide_rain_data}}
   "rains" database table.
 }
 \description{
-The function considers (i) the "catchment" area that is defined for the
-bathing spot and (ii) the date range that is taken from the range of dates
-for which measurements are available. Rain data are read from binary Radolan
-files, cropped around the "catchment" area and and averaged over all layears
-for each raster cell. The resulting rain data are then stored in the Postgres
-database. IMPORTANT: Existing rain data will be overwritten in the database!
+Use \code{\link{provide_rain_data}} instead
 }
 \examples{
 \dontrun{
-control <- provide_rain_data_for_bathing_spot(user_id = 5, spot_id = 41)
-while (control$remaining > 0) {
-  control <- provide_rain_data_for_bathing_spot(control = control)
-}
+provide_rain_data_for_bathing_spot(user_id = 5, spot_id = 41)
 }
 }

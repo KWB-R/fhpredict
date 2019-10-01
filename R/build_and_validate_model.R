@@ -7,6 +7,7 @@ build_and_validate_model <- function(
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
+  #river_data=NULL;river=NULL;prefix="";n_folds=5
 
   # Check the arguments and stop if anything is not ok
   check_args_build_and_validate(river_data, river, spot_data)
@@ -39,6 +40,12 @@ build_and_validate_model <- function(
   sorted_models <- stat_tests %>%
     dplyr::filter(.data$below95 == 5 & .data$below90 == 5 & .data$in50 == 5) %>%
     dplyr::arrange(dplyr::desc(.data$R2))
+
+  if (nrow(sorted_models) == 0) {
+
+    message("Could not create a valid model!")
+    return(list())
+  }
 
   # Select the best model from models
   best_model <- kwb.utils::selectElements(models, sorted_models$model[1])

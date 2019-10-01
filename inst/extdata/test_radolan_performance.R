@@ -91,8 +91,12 @@ if (FALSE)
 # Test provide_rain_data_for_bathing_spot() ------------------------------------
 if (FALSE)
 {
-  system.time(fhpredict::provide_rain_data_for_bathing_spot(
+  control <- fhpredict::provide_rain_data_for_bathing_spot(
     user_id = 5, spot_id = 41, sampling_time = "1050"
     , date_range = c("2008-07-01", "2013-01-01")
-  ))
+  )
+
+  while (control$remaining > 0) {
+    control <- fhpredict::provide_rain_data_for_bathing_spot(control = control)
+  }
 }

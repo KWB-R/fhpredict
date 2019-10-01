@@ -20,6 +20,18 @@ convert_time_columns <- function(df, columns = c("createdAt", "updatedAt"))
   df
 }
 
+# create_result ----------------------------------------------------------------
+create_result <- function(
+  data = NULL, success = TRUE, message = "Everything ok"
+)
+{
+  list(
+    data = data,
+    sucess = success,
+    message = message
+  )
+}
+
 # extract_flat_information -----------------------------------------------------
 extract_flat_information <- function(x, keep_null = FALSE)
 {

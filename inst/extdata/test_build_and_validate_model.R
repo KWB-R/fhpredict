@@ -1,27 +1,22 @@
 # Test build_and_validate_model() ----------------------------------------------
 if (FALSE)
 {
+  user_id <- 5
+  spot_id <- 41
+
   # Get data in the format that is required by build_and_validate_model()
   spot_data <- fhpredict::provide_input_data(user_id, spot_id)
 
-  # Remove empty data frames
-  #spot_data <- spot_data[lengths(spot_data) > 0]
-
-  #reset_time <- function(x) as.POSIXct(substr(as.character(x), 1, 10))
-
-  #spot_data$hygiene$datum <- reset_time(spot_data$hygiene$datum)
-  #spot_data$r$datum <- reset_time(spot_data$r$datum)
+  set.seed(1)
 
   result <- fhpredict:::build_and_validate_model(
-    spot_data = spot_data,
-    prefix = "spot18_"
+    spot_data = spot_data# , prefix = "spot18_"
   )
 
   fhpredict::api_add_model(user_id, spot_id, result$stanfit, comment = "great!")
 
   object.size(result[[3]])
   rstanarm::launch_shinystan(result[[3]])
-
 
   dn <- data.frame(r_mean_mean_23 = seq(0, 40, .5))
 
