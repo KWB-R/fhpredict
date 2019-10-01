@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Add Dates of 1:n Days Before Given Dates — add_days_before • fhpredict</title>
+<title>Predict Water Quality for Bathing Spot Using Stored Model — predict_quality • fhpredict</title>
 
 
 <!-- jquery -->
@@ -41,8 +41,8 @@
 
 
 
-<meta property="og:title" content="Add Dates of 1:n Days Before Given Dates — add_days_before" />
-<meta property="og:description" content="Add Dates of 1:n Days Before Given Dates" />
+<meta property="og:title" content="Predict Water Quality for Bathing Spot Using Stored Model — predict_quality" />
+<meta property="og:description" content="Predict Water Quality for Bathing Spot Using Stored Model" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -132,47 +132,44 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Add Dates of 1:n Days Before Given Dates</h1>
-    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/create_date_ranges.R'><code>R/create_date_ranges.R</code></a></small>
-    <div class="hidden name"><code>add_days_before.Rd</code></div>
+    <h1>Predict Water Quality for Bathing Spot Using Stored Model</h1>
+    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/predict_quality.R'><code>R/predict_quality.R</code></a></small>
+    <div class="hidden name"><code>predict_quality.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Add Dates of 1:n Days Before Given Dates</p>
+    <p>Predict Water Quality for Bathing Spot Using Stored Model</p>
     </div>
 
-    <pre class="usage"><span class='fu'>add_days_before</span>(<span class='no'>dates</span>, <span class='kw'>n_days_before</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
+    <pre class="usage"><span class='fu'>predict_quality</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>, <span class='kw'>date</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>())</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>dates</th>
-      <td><p>vector of <code>Date objects</code></p></td>
+      <th>user_id</th>
+      <td><p>user ID</p></td>
     </tr>
     <tr>
-      <th>n_days_before</th>
-      <td><p>number of days to add before the days given in
-<code>dates</code></p></td>
+      <th>spot_id</th>
+      <td><p>bathing spot ID</p></td>
+    </tr>
+    <tr>
+      <th>date</th>
+      <td><p>Date object or date string in format yyyy-mm-dd</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>dates</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"2019-07-05"</span>, <span class='st'>"2019-07-10"</span>))
-<span class='kw pkg'>fhpredict</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/fhpredict/man/add_days_before.html'>add_days_before</a></span>(<span class='no'>dates</span>)</div><div class='output co'>#&gt; [1] "2019-07-04" "2019-07-05" "2019-07-09" "2019-07-10"</div><div class='input'><span class='kw pkg'>fhpredict</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/fhpredict/man/add_days_before.html'>add_days_before</a></span>(<span class='no'>dates</span>, <span class='kw'>n_days_before</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt; [1] "2019-07-03" "2019-07-04" "2019-07-05" "2019-07-08" "2019-07-09"
-#&gt; [6] "2019-07-10"</div><div class='input'>
-<span class='co'># Duplicates are removed so that unique dates are returned</span>
-<span class='kw pkg'>fhpredict</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/fhpredict/man/add_days_before.html'>add_days_before</a></span>(<span class='no'>dates</span>, <span class='kw'>n_days_before</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt;  [1] "2019-06-25" "2019-06-26" "2019-06-27" "2019-06-28" "2019-06-29"
-#&gt;  [6] "2019-06-30" "2019-07-01" "2019-07-02" "2019-07-03" "2019-07-04"
-#&gt; [11] "2019-07-05" "2019-07-06" "2019-07-07" "2019-07-08" "2019-07-09"
-#&gt; [16] "2019-07-10"</div></pre>
+    <p>list with elements <code>data</code>, <code>success</code>, <code>message</code></p>
+
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#examples">Examples</a></li>
+      <li><a href="#value">Value</a></li>
     </ul>
 
   </div>
