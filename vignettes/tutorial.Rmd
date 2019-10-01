@@ -320,10 +320,14 @@ data for the whole range of dates for which measurements are available.
 
 ```{r}
 # Function to be triggered by the user: Provide rain data for the bathing spot
-system.time(rain_ids <- fhpredict::provide_rain_data_for_bathing_spot(
-  user_id = 3, spot_id = 17, sampling_time = "1050"
+control <- fhpredict::provide_rain_data(
+  user_id = 3, spot_id = 17
   #, date_range = as.Date(c("2008-07-01", "2008-07-03"))
-))
+)
+
+while (control$remaining) {
+  control <- fhpredict::provide_rain_data(control)
+}
 ```
 
 Check that the data arrived by reloading them from the database:

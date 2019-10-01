@@ -1,5 +1,51 @@
 # provide_rain_data_for_bathing_spot -------------------------------------------
 
+#' Deprecated
+#'
+#' Use \code{\link{provide_rain_data}} instead
+#'
+#' @param user_id user id
+#' @param spot_id bathing spot id
+#' @param sampling_time expected sampling time. Will be used to select the
+#'   corresponding Radolan files.
+#' @param date_range vector of two Date objects giving the first and last day of
+#'   rain data to be loaded. If \code{NULL} (the default) the range of dates is
+#'   determined from the range of dates for which water quality measurements are
+#'   available.
+#' @return list with element \code{remaining = 0}, just for compatibility
+#'   with \code{\link{provide_rain_data}}
+#'   "rains" database table.
+#' @export
+#' @examples
+#' \dontrun{
+#' provide_rain_data_for_bathing_spot(user_id = 5, spot_id = 41)
+#' }
+provide_rain_data_for_bathing_spot <- function(
+  user_id, spot_id, sampling_time = "1050", date_range = NULL
+)
+{
+  kwb.utils::warningDeprecated(
+    old_name = "provide_rain_data_for_bathing_spot",
+    new_name = "provide_rain_data"
+  )
+
+  control <- provide_rain_data(
+    user_id = user_id,
+    spot_id = spot_id,
+    sampling_time = sampling_time,
+    date_range = date_range
+  )
+
+  while (control$remaining > 0) {
+
+    control <- provide_rain_data(control = control)
+  }
+
+  return(list(remaining = 0))
+}
+
+# provide_rain_data ------------------------------------------------------------
+
 #' Provide Rain Data for one Bathing Spot
 #'
 #' The function considers (i) the "catchment" area that is defined for the
@@ -37,7 +83,7 @@
 #'   control <- provide_rain_data_for_bathing_spot(control = control)
 #' }
 #' }
-provide_rain_data_for_bathing_spot <- function(
+provide_rain_data <- function(
   user_id, spot_id, sampling_time = "1050", date_range = NULL, blocksize = 10,
   control = NULL
 )
