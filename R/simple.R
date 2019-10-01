@@ -1,13 +1,13 @@
 #' A io function
 #'
 #' simple function to test the opencpu API for the project
-#' @param a string (optional)
-#' @param b string (optional)
+#' @param spot_id number
+#' @param user_id number
 #' @export
 #' @keywords simple
 #' @examples
 #' \dontrun{simple()}
-simple <- function (a = 'foo', b = 'bah') {
+simple <- function (spot_id, user_id) {
   Sys.sleep(0.5)
   nums = c(1, 2, 3)
   res <- list(
