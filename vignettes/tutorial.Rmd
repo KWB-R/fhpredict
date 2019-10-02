@@ -15,7 +15,8 @@ editor_options:
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 7
+  fig.width = 7,
+  eval = FALSE
 )
 ```
 
@@ -61,9 +62,9 @@ bathing_spots <- fhpredict::api_get_bathingspot(user_id = 3)
 nrow(bathing_spots)
 ```
 
-By default, only the first `r nrow(bathing_spots)` bathing spots are considered
-in the returned data frame. Set the argument `limit` to a high number so that
-you get a list of all available bathing spots:
+By default, only the first bathing spots are considered in the returned data
+frame. Set the argument `limit` to a high number so that you get a list of all
+available bathing spots:
 
 ```{r}
 # Get overview on all bathing spots associated to user with id 3
