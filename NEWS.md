@@ -1,5 +1,11 @@
 # fhpredict 0.4.0
 
+* provide_rain_data_for_bathing_spot(): Return object with elements "success",
+  "data", "message"
+* fix bug in overwriting existing rain data
+
+# fhpredict 0.4.0
+
 * New: build_model(user_id, spot_id)
 * New: predict_quality(user_id, spot_id) - with fake implementation!
 
