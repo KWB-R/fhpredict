@@ -5,7 +5,7 @@
 \title{Provide Rain Data for one Bathing Spot}
 \usage{
 provide_rain_data(user_id, spot_id, sampling_time = "1050",
-  date_range = NULL, blocksize = 10, control = NULL)
+  date_range = NULL, blocksize = 10, control = NULL, info = TRUE)
 }
 \arguments{
 \item{user_id}{user id}
@@ -31,6 +31,9 @@ contains the current state of the import process and takes care that the
 next block of required data is downloaded. When omitted, the function
 returns an object that can be used as a control object for a next call of
 this function. See example.}
+
+\item{info}{if \code{TRUE} (the default), a message is shown that describes
+how to use this function in a loop}
 }
 \value{
 vector of integer containing the IDs of the records inserted into the

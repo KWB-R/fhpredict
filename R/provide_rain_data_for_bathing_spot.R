@@ -1,8 +1,8 @@
 # provide_rain_data_for_bathing_spot -------------------------------------------
 
-#' Deprecated
+#' Provide Rain Data for one Bathing Spot
 #'
-#' Use \code{\link{provide_rain_data}} instead
+#' Consider to use \code{\link{provide_rain_data}}. For a description see there.
 #'
 #' @param user_id user id
 #' @param spot_id bathing spot id
@@ -12,9 +12,10 @@
 #'   rain data to be loaded. If \code{NULL} (the default) the range of dates is
 #'   determined from the range of dates for which water quality measurements are
 #'   available.
-#' @return list with element \code{remaining = 0}, just for compatibility
-#'   with \code{\link{provide_rain_data}}
-#'   "rains" database table.
+#' @return list with elements \code{data}, \code{success}, \code{message}. The
+#'   \code{data} element contains a vector of IDs identifying the records in
+#'   the rain data table associated with the bathing spot given by
+#'   \code{user_id} and \code{spot_id}
 #' @export
 #' @examples
 #' \dontrun{
@@ -24,16 +25,20 @@ provide_rain_data_for_bathing_spot <- function(
   user_id, spot_id, sampling_time = "1050", date_range = NULL
 )
 {
-  kwb.utils::warningDeprecated(
-    old_name = "provide_rain_data_for_bathing_spot",
-    new_name = "provide_rain_data"
-  )
+  #kwb.utils::assignPackageObjects("fhpredict")
+  #user_id=4;spot_id=17;sampling_time="1050";date_range=NULL
+
+  # kwb.utils::warningDeprecated(
+  #   old_name = "provide_rain_data_for_bathing_spot",
+  #   new_name = "provide_rain_data"
+  # )
 
   control <- provide_rain_data(
     user_id = user_id,
     spot_id = spot_id,
     sampling_time = sampling_time,
-    date_range = date_range
+    date_range = date_range,
+    info = FALSE
   )
 
   while (control$remaining > 0) {
@@ -41,7 +46,14 @@ provide_rain_data_for_bathing_spot <- function(
     control <- provide_rain_data(control = control)
   }
 
-  return(list(remaining = 0))
+  create_result(
+    data = control$rain_ids,
+    success = TRUE,
+    message = sprintf(
+      "%d rain data records have been inserted to the database.",
+      length(control$rain_ids)
+    )
+  )
 }
 
 # provide_rain_data ------------------------------------------------------------
@@ -73,6 +85,8 @@ provide_rain_data_for_bathing_spot <- function(
 #'   next block of required data is downloaded. When omitted, the function
 #'   returns an object that can be used as a control object for a next call of
 #'   this function. See example.
+#' @param info if \code{TRUE} (the default), a message is shown that describes
+#'   how to use this function in a loop
 #' @return vector of integer containing the IDs of the records inserted into the
 #'   "rains" database table.
 #' @export
@@ -85,7 +99,7 @@ provide_rain_data_for_bathing_spot <- function(
 #' }
 provide_rain_data <- function(
   user_id, spot_id, sampling_time = "1050", date_range = NULL, blocksize = 10,
-  control = NULL
+  control = NULL, info = TRUE
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
@@ -124,17 +138,19 @@ provide_rain_data <- function(
       blocksize = blocksize
     )
 
-    message(
-      "Please use the returned object in a loop to perform the actual data ",
-      "import,\nas in the following code:\n\n",
-      sprintf(
-        "control <- provide_rain_data_for_bathing_spot(%d, %d)\n\n",
-        user_id, spot_id
-      ),
-      "while (control$remaining > 0) {\n",
-      "  control <- provide_rain_data_for_bathing_spot(control = control)\n",
-      "}"
-    )
+    if (info) {
+      message(
+        "Please use the returned object in a loop to perform the actual data ",
+        "import,\nas in the following code:\n\n",
+        sprintf(
+          "control <- provide_rain_data_for_bathing_spot(%d, %d)\n\n",
+          user_id, spot_id
+        ),
+        "while (control$remaining > 0) {\n",
+        "  control <- provide_rain_data_for_bathing_spot(control = control)\n",
+        "}"
+      )
+    }
 
     # Return the control object
     return(list(
@@ -192,7 +208,7 @@ provide_rain_data <- function(
 
       # For the days returned in the new rain data frame, replace the
       # corresponding records that exist in the database with the new records
-      api_replace_rain(
+      rain_ids <- api_replace_rain(
         user_id = user_id,
         spot_id = spot_id,
         rain = rain,
@@ -200,6 +216,8 @@ provide_rain_data <- function(
         time_string = sampling_time_to_time_string(get_object("sampling_time")),
         comment = paste("imported:", Sys.time())
       )
+
+      control$rain_ids <- c(control$rain_ids, rain_ids)
     } # end of expression to be evaluated by catAndRun()
   )
   #}
@@ -265,10 +283,18 @@ api_replace_rain <- function(
   rain_db <- kwb.utils::defaultIfNULL(rain_db, api_get_rain(user_id, spot_id))
 
   # Find IDs that relate to days for which new data are available
-  rain_ids <- rain_db$id[as.Date(rain_db$dateTime) %in% rain$datum]
+  if (nrow(rain_db)) {
 
-  # Clear existing rain from the database
-  api_delete_rain(user_id, spot_id, ids = rain_ids)
+    # Get IDs of records that exist for the days to be inserted
+    date_strings <- format(rain_db$date, "%Y-%m-%d")
+    ids <- rain_db$id[date_strings %in% as.character(rain$datum)]
+
+    # Clear existing rain from the database
+    if (length(ids)) {
+
+      api_delete_rain(user_id = user_id, spot_id = spot_id, ids = ids)
+    }
+  }
 
   # Add rain data frame to the database
   api_add_rain(
