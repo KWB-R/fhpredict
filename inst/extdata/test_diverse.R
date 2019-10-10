@@ -121,27 +121,13 @@ if (FALSE)
     rain = c(1.23, 2.34)
   )
 
-  # Add rain data, one record at a time
+  # Add rain data, all records at once
   system.time(fhpredict::api_add_rain(
     user_id, spot_id, rain, time_string = "12:13:14"
   ))
 
   # Read the result
-  r1 <- fhpredict:::api_get_rain(user_id, spot_id)
-
-  # Delete the table
-  fhpredict::api_delete_rain(user_id, spot_id)
-
-  # Add rain again, now all at once
-  system.time(fhpredict::api_add_rain(
-    user_id, spot_id, rain, time_string = "12:13:14", one_at_a_time = FALSE
-  ))
-
-  # Read the result
-  r2 <- fhpredict:::api_get_rain(user_id, spot_id)
-
-  columns <- c("dateTime", "value")
-  stopifnot(identical(r1[, columns], r2[, columns]))
+  fhpredict:::api_get_rain(user_id, spot_id)
 }
 
 # Test 3 -----------------------------------------------------------------------

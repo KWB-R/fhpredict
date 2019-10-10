@@ -5,9 +5,7 @@
 \title{Add Rain Data Frame to Postgres Database Via API}
 \usage{
 api_add_rain(user_id, spot_id, rain, time_string = "12:00:00",
-  comment = NULL,
-  one_at_a_time = kwb.default::getDefault("api_add_rain",
-  "one_at_a_time", TRUE))
+  comment = NULL)
 }
 \arguments{
 \item{user_id}{user id}

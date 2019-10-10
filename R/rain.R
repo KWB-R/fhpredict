@@ -32,8 +32,7 @@
 #' }
 #'
 api_add_rain <- function(
-  user_id, spot_id, rain, time_string = "12:00:00", comment = NULL,
-  one_at_a_time = kwb.default::getDefault("api_add_rain", "one_at_a_time", TRUE)
+  user_id, spot_id, rain, time_string = "12:00:00", comment = NULL
 )
 {
   stopifnot(is.data.frame(rain))
@@ -49,35 +48,20 @@ api_add_rain <- function(
     ),
 
     expr = {
-      path <- path_rains(user_id, spot_id)
 
-      if (one_at_a_time) {
+      # Prepare data frame to be passed to add_timeseries_point_to_database()
+      data <- kwb.utils::noFactorDataFrame(
+        date = date_strings,
+        dateTime = time_string,
+        value = values
+      )
 
-        unlist(lapply(seq_along(values), function(i) {
+      data$comment <- comment
 
-          add_timeseries_point_to_database(
-            path = path,
-            date_string = date_strings[i],
-            time_string = time_string,
-            value = values[i],
-            comment = comment
-          )
-
-        }))
-
-      } else {
-
-        # Prepare data frame to be passed to add_timeseries_point_to_database()
-        data <- kwb.utils::noFactorDataFrame(
-          date = date_strings,
-          dateTime = time_string,
-          value = values
-        )
-
-        data$comment <- comment
-
-        add_timeseries_point_to_database(path = path, data = data)
-      }
+      add_timeseries_point_to_database(
+        path = path_rains(user_id, spot_id),
+        data = data
+      )
     }
   )
 }

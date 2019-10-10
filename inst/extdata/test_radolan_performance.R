@@ -98,8 +98,6 @@ if (FALSE)
   #r <- fhpredict:::api_get_rain(user_id, spot_id)
   #fhpredict::api_delete_rain(user_id, spot_id)
 
-  #kwb.default::setDefault("api_add_rain", one_at_a_time = FALSE)
-
   system.time(result <- fhpredict::provide_rain_data_for_bathing_spot(
     user_id, spot_id
     #, date_range = c("2008-07-01", "2013-01-01")
