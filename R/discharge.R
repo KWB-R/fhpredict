@@ -18,8 +18,7 @@ api_add_discharge <- function(user_id, spot_id, discharge, comment = NULL)
       date_string = substr(timestamps[i], 1, 10),
       time_string = substr(timestamps[i], 12, 19),
       value = values[i],
-      comment = comment,
-      subject = "discharge"
+      comment = comment
     )
   })
 

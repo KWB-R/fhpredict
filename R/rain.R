@@ -10,6 +10,8 @@
 #'   \code{"12:00:00"}
 #' @param comment character string to be written to the field "comment" of the
 #'   rain database table.
+#' @param one_at_a_time if \code{TRUE} each row of the rain data is added by its
+#'   own POST call to the API call. Otherwise all rows are posted together.
 #' @export
 #' @examples
 #' \dontrun{
@@ -30,7 +32,8 @@
 #' }
 #'
 api_add_rain <- function(
-  user_id, spot_id, rain, time_string = "12:00:00", comment = NULL
+  user_id, spot_id, rain, time_string = "12:00:00", comment = NULL,
+  one_at_a_time = TRUE
 )
 {
   stopifnot(is.data.frame(rain))
@@ -39,24 +42,44 @@ api_add_rain <- function(
   date_strings <- as.character(kwb.utils::selectColumns(rain, "datum"))
   values <- kwb.utils::selectColumns(rain, "rain")
 
-  result <- kwb.utils::catAndRun(
-    sprintf(
+  kwb.utils::catAndRun(
+
+    messageText = sprintf(
       "Inserting %d rain data records into the database", length(date_strings)
     ),
-    lapply(seq_along(values), function(i) {
-      add_timeseries_point_to_database(
-        path = path_rains(user_id, spot_id),
-        date_string = date_strings[i],
-        time_string = time_string,
-        value = values[i],
-        comment = comment,
-        subject = "rain"
-      )
-    })
-  )
 
-  # Return the ids of the rain data records
-  unlist(result)
+    expr = {
+      path <- path_rains(user_id, spot_id)
+
+      if (one_at_a_time) {
+
+        unlist(lapply(seq_along(values), function(i) {
+
+          add_timeseries_point_to_database(
+            path = path,
+            date_string = date_strings[i],
+            time_string = time_string,
+            value = values[i],
+            comment = comment
+          )
+
+        }))
+
+      } else {
+
+        # Prepare data frame to be passed to add_timeseries_point_to_database()
+        data <- kwb.utils::noFactorDataFrame(
+          date = date_strings,
+          dateTime = time_string,
+          value = values
+        )
+
+        data$comment <- comment
+
+        add_timeseries_point_to_database(path = path, data = data)
+      }
+    }
+  )
 }
 
 # api_get_rain -----------------------------------------------------------------
@@ -69,10 +92,7 @@ api_add_rain <- function(
 #'
 api_get_rain <- function(user_id, spot_id)
 {
-  api_get_timeseries(
-    path = path_rains(user_id, spot_id),
-    subject = "rain"
-  )
+  api_get_timeseries(path = path_rains(user_id, spot_id), subject = "rain")
 }
 
 # api_delete_rain --------------------------------------------------------------

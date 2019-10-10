@@ -34,7 +34,10 @@ api_get_timeseries <- function(path, subject = "timeseries", sort = TRUE)
       df <- convert_time_columns(df)
 
       df$dateTime = as.POSIXct(
-        x = kwb.utils::pasteColumns(df, c("date", "dateTime")),
+        x = paste(
+          substr(kwb.utils::selectColumns(df, "date"), 1, 10),
+          kwb.utils::selectColumns(df, "dateTime")
+        ),
         tz = "Europe/Berlin"
       )
 

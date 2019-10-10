@@ -1,14 +1,22 @@
 # add_timeseries_point_to_database ---------------------------------------------
 add_timeseries_point_to_database <- function(
-  path, date_string, time_string, value, comment = NULL, subject = "time series"
+  path, date_string, time_string, value, comment = NULL, data = NULL
 )
 {
-  body <- list(
-    value = value,
-    dateTime = time_string,
-    date = date_string,
-    comment = comment
-  )
+  body <- if (is.null(data)) {
+
+    list(
+      value = value,
+      dateTime = time_string,
+      date = date_string,
+      comment = comment
+    )
+
+  } else {
+
+    # Create a list of lists if more than one record is given
+    lapply(seq_len(nrow(data)), function(i) as.list(data[i, ]))
+  }
 
   result <- postgres_post(path, body)
 
@@ -23,6 +31,6 @@ add_timeseries_point_to_database <- function(
 
   #stop_on_request_failure(result)
 
-  # Return the id of the added record
-  result$data[[1]]$id
+  # Return the id(s) of the added record(s)
+  sapply(result$data, kwb.utils::selectElements, "id")
 }

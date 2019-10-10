@@ -5,7 +5,7 @@
 \title{Add Rain Data Frame to Postgres Database Via API}
 \usage{
 api_add_rain(user_id, spot_id, rain, time_string = "12:00:00",
-  comment = NULL)
+  comment = NULL, one_at_a_time = TRUE)
 }
 \arguments{
 \item{user_id}{user id}
@@ -20,6 +20,9 @@ api_add_rain(user_id, spot_id, rain, time_string = "12:00:00",
 
 \item{comment}{character string to be written to the field "comment" of the
 rain database table.}
+
+\item{one_at_a_time}{if \code{TRUE} each row of the rain data is added by its
+own POST call to the API call. Otherwise all rows are posted together.}
 }
 \description{
 Add Rain Data Frame to Postgres Database Via API
