@@ -1,5 +1,5 @@
 # Set a global user
-user_id <- 5
+user_id <- 3 # 5
 
 # Check rain data availability -------------------------------------------------
 if (FALSE)
@@ -91,14 +91,17 @@ if (FALSE)
 # Test provide_rain_data_for_bathing_spot() ------------------------------------
 if (FALSE)
 {
-  user_id <- 4
-  spot_id <- 15
+  user_id <- 3 # 4
+  spot_id <- 42 # 15
 
   #spot <- fhpredict::api_get_bathingspot(user_id, spot_id)
-  #fhpredict:::api_get_rain(user_id, spot_id)
+  #r <- fhpredict:::api_get_rain(user_id, spot_id)
+  #fhpredict::api_delete_rain(user_id, spot_id)
 
-  result <- fhpredict::provide_rain_data_for_bathing_spot(
+  #kwb.default::setDefault("api_add_rain", one_at_a_time = FALSE)
+
+  system.time(result <- fhpredict::provide_rain_data_for_bathing_spot(
     user_id, spot_id
     #, date_range = c("2008-07-01", "2013-01-01")
-  )
+  ))
 }

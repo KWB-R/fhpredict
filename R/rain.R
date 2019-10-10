@@ -33,7 +33,7 @@
 #'
 api_add_rain <- function(
   user_id, spot_id, rain, time_string = "12:00:00", comment = NULL,
-  one_at_a_time = TRUE
+  one_at_a_time = kwb.default::getDefault("api_add_rain", "one_at_a_time", TRUE)
 )
 {
   stopifnot(is.data.frame(rain))

@@ -172,9 +172,6 @@ provide_rain_data <- function(
   #   return(NULL)
   # }
 
-  # Loop through the data blocks
-  #for (i in seq_along(blocks)) {
-
   get_object <- function(name) kwb.utils::selectElements(control, name)
 
   blocks <- get_object("blocks")
@@ -220,7 +217,6 @@ provide_rain_data <- function(
       control$rain_ids <- c(control$rain_ids, rain_ids)
     } # end of expression to be evaluated by catAndRun()
   )
-  #}
 
   control$remaining <- control$remaining - 1
 
@@ -248,7 +244,7 @@ read_radolan_data_within_polygon <- function(urls, polygon)
   list_of_cropped <- lapply(seq_along(urls), function(i) {
 
     message(sprintf(
-      "Reading and cropping from %s (%d/%d)...",
+      "Reading and cropping from %s (%d/%d) ...",
       basename(urls[i]), i, length(urls)
     ))
 
