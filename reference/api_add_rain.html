@@ -142,7 +142,7 @@
     </div>
 
     <pre class="usage"><span class='fu'>api_add_rain</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>, <span class='no'>rain</span>, <span class='kw'>time_string</span> <span class='kw'>=</span> <span class='st'>"12:00:00"</span>,
-  <span class='kw'>comment</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='kw'>comment</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>one_at_a_time</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -169,6 +169,11 @@
       <th>comment</th>
       <td><p>character string to be written to the field "comment" of the
 rain database table.</p></td>
+    </tr>
+    <tr>
+      <th>one_at_a_time</th>
+      <td><p>if <code>TRUE</code> each row of the rain data is added by its
+own POST call to the API call. Otherwise all rows are posted together.</p></td>
     </tr>
     </table>
 
