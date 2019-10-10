@@ -10,8 +10,6 @@
 #'   \code{"12:00:00"}
 #' @param comment character string to be written to the field "comment" of the
 #'   rain database table.
-#' @param one_at_a_time if \code{TRUE} each row of the rain data is added by its
-#'   own POST call to the API call. Otherwise all rows are posted together.
 #' @export
 #' @examples
 #' \dontrun{
@@ -49,7 +47,7 @@ api_add_rain <- function(
 
     expr = {
 
-      # Prepare data frame to be passed to add_timeseries_point_to_database()
+      # Prepare data frame to be passed to add_timeseries_to_database()
       data <- kwb.utils::noFactorDataFrame(
         date = date_strings,
         dateTime = time_string,
@@ -58,7 +56,7 @@ api_add_rain <- function(
 
       data$comment <- comment
 
-      add_timeseries_point_to_database(
+      add_timeseries_to_database(
         path = path_rains(user_id, spot_id),
         data = data
       )

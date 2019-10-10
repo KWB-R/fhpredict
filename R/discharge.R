@@ -3,27 +3,22 @@ api_add_discharge <- function(user_id, spot_id, discharge, comment = NULL)
 {
   stopifnot(is.data.frame(discharge))
 
-  # Provide vectors of dates and values
-  timestamps <- as.character(
-    #format.POSIXct(tz = "UTC",
-      kwb.utils::selectColumns(discharge, "dateTime")
-    #)
+  # Provide vector of timestamps
+  timestamps <- as.character(kwb.utils::selectColumns(discharge, "dateTime"))
+
+  data <- kwb.utils::noFactorDataFrame(
+    date = substr(timestamps, 1, 10),
+    dateTime = substr(timestamps, 12, 19),
+    value = kwb.utils::selectColumns(discharge, "discharge")
   )
 
-  values <- kwb.utils::selectColumns(discharge, "discharge")
-
-  result <- lapply(seq_along(values), function(i) {
-    add_timeseries_point_to_database(
-      path = path_discharges(user_id, spot_id),
-      date_string = substr(timestamps[i], 1, 10),
-      time_string = substr(timestamps[i], 12, 19),
-      value = values[i],
-      comment = comment
-    )
-  })
+  data$comment <- comment
 
   # Return the ids of the discharge data records
-  unlist(result)
+  add_timeseries_to_database(
+    path = path_discharges(user_id, spot_id),
+    data = data
+  )
 }
 
 # api_get_discharge ------------------------------------------------------------

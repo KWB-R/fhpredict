@@ -1,5 +1,5 @@
-# add_timeseries_point_to_database ---------------------------------------------
-add_timeseries_point_to_database <- function(
+# add_timeseries_to_database ---------------------------------------------------
+add_timeseries_to_database <- function(
   path, date_string, time_string, value, comment = NULL, data = NULL
 )
 {
