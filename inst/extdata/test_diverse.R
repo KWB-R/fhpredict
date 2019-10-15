@@ -39,6 +39,71 @@ if (FALSE)
   }
 }
 
+# Feed the database with our data from CSV -------------------------------------
+if (FALSE)
+{
+  data_frames <- river_data$havel
+
+  # 1. Hygiene (hygiene_havel)
+  # 2. Purification Plant Measurements (ka_havel)
+  # 3. Flows (q_havel)
+  # 4. Rain (r_havel)
+
+  user_id <- 3; spot_id <- 42
+
+  # 1 Hygiene
+  (measurements <- fhpredict:::api_get_measurements(user_id, spot_id))
+
+  # 1a clear
+  fhpredict::api_delete_measurements(user_id, spot_id)
+
+  # 1b import
+  data <- kwb.utils::renameColumns(data_frames$hygiene_havel, list(
+    datum = "date",
+    "e.coli" = "conc_ec"
+  ))
+
+  data <- data[! duplicated(data$date), ]
+
+  fhpredict:::add_timeseries_to_database(
+    path = fhpredict:::path_measurements(user_id, spot_id),
+    data = data[1:10, ]
+  )
+
+  # 1c check
+  (measurements <- fhpredict:::api_get_measurements(user_id, spot_id))
+
+  stopifnot(nrow(measurements) == nrow(data))
+  stopifnot(identical(
+    as.POSIXct(substr(measurements$date, 1, 10), tz = "UTC"), data$date
+  ))
+
+  # 2 Purification plant measurements: Endpoint does not work...
+
+  # 3 Flows
+  fhpredict::api_get_discharge(user_id, spot_id)
+
+  # 3a clear
+  fhpredict::api_delete_discharge(user_id, spot_id)
+
+  # 3b import
+  df <- data_frames$q_havel
+  data <- kwb.utils::noFactorDataFrame(
+    date = format(df$datum, "%Y-%m-%d"),
+    dateTime = format(df$datum, "%H:%M:%S"),
+    value = df[[2]]
+  )
+  str(data)
+  path <- fhpredict:::path_discharges(user_id, spot_id)
+  fhpredict:::add_timeseries_to_database(path, data = data[1:500, ])
+
+  # 4 rain
+  fhpredict::api_get_rain(user_id, spot_id)
+
+  # 4a clear
+  fhpredict::api_delete_rain(user_id, spot_id)
+}
+
 # Test 2 -----------------------------------------------------------------------
 if (FALSE)
 {

@@ -22,7 +22,7 @@ provide_input_data <- function(user_id, spot_id)
   )
 
   # Look for microbiological measurements
-  measurements <- api_measurements_spot(user_id, spot_id)
+  measurements <- api_get_measurements(user_id, spot_id)
 
   # Add microbiological measurements to the result or return if there are no
   # measurements

@@ -96,7 +96,7 @@ get_radolan_urls_for_measurements <- function(
 #' @keywords internal
 get_unique_measurement_dates <- function(user_id, spot_id)
 {
-  measurements <- api_measurements_spot(user_id, spot_id)
+  measurements <- api_get_measurements(user_id, spot_id)
 
   if (is.null(measurements)) {
 
