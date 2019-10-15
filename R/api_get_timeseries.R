@@ -33,13 +33,7 @@ api_get_timeseries <- function(path, subject = "timeseries", sort = TRUE)
 
       df <- convert_time_columns(df)
 
-      df$dateTime = as.POSIXct(
-        x = paste(
-          substr(kwb.utils::selectColumns(df, "date"), 1, 10),
-          kwb.utils::selectColumns(df, "dateTime")
-        ),
-        tz = "Europe/Berlin"
-      )
+      df$dateTime = get_date_time_from_text_columns(df)
 
       df
     }
@@ -53,4 +47,23 @@ api_get_timeseries <- function(path, subject = "timeseries", sort = TRUE)
   }
 
   kwb.utils::removeColumns(df, c("date", "comment"))
+}
+
+# get_date_time_from_text_columns ----------------------------------------------
+get_date_time_from_text_columns <- function(df)
+{
+  get <- kwb.utils::selectColumns
+
+  date_strings <- get(df, "date")
+
+  timestamps <- if (grepl("Z$", date_strings[1])) {
+
+    date_strings
+
+  } else {
+
+    paste(substr(date_strings, 1, 10), get(df, "dateTime"))
+  }
+
+  as.POSIXct(x = timestamps, tz = "Europe/Berlin")
 }
