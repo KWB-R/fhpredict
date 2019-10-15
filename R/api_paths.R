@@ -41,9 +41,15 @@ path_discharges <- function(user_id, spot_id, discharge_id = -1L)
 }
 
 # path_measurements ------------------------------------------------------------
-path_measurements <- function(user_id, spot_id)
+path_measurements <- function(user_id, spot_id, measurement_id = -1L)
 {
-  paste0(path_bathingspot(user_id, spot_id), "/measurements")
+  path <- paste0(path_bathingspot(user_id, spot_id), "/measurements")
+
+  if (measurement_id == -1L) {
+    return(path)
+  }
+
+  sprintf("%s/%d", path, measurement_id)
 }
 
 # path_models ------------------------------------------------------------------
