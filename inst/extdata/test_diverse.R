@@ -1,16 +1,15 @@
+# Laden von Testdaten ----------------------------------------------------------
+rivers <- c("havel", "ilz", "isar", "mosel", "rhein", "ruhr", "spree")
+river_paths <- kwb.flusshygiene::get_paths()[paste0(rivers, "data")]
+river_data <- lapply(river_paths, kwb.flusshygiene::import_riverdata)
+names(river_data) <- rivers
+
 # Test 1 -----------------------------------------------------------------------
 if (FALSE)
 {
   #library(magrittr)
   #library(tidyverse)
   #library(kwb.flusshygiene)
-
-  # Laden von Testdaten
-  rivers <- c("havel", "ilz", "isar", "mosel", "rhein", "ruhr", "spree")
-  river_paths <- kwb.flusshygiene::get_paths()[paste0(rivers, "data")]
-
-  river_data <- lapply(river_paths, kwb.flusshygiene::import_riverdata)
-  names(river_data) <- rivers
 
   kwb.fakin:::store(river_data, "test_diverse.R")
 
@@ -23,6 +22,20 @@ if (FALSE)
     #, prefix = "havel"
   )
   #store(result2)
+
+  # Store the model in the database
+  model <- kwb.utils::selectElements(result2, "stanfit")
+  fhpredict::api_add_model(user_id, spot_id, model)
+
+  # Get an overview on available models
+  available_models <- fhpredict::api_get_model(user_id, spot_id)
+
+  # Reread the last added model
+  model_id <- max(available_models$id)
+  model_reread <- fhpredict::api_get_model(user_id, spot_id, model_id)
+
+  # Compare model with reread model
+  diffobj::diffStr(model, model_reread)
 
   # Compare
   diffobj::diffStr(restore("result2"), result2)
@@ -37,6 +50,7 @@ if (FALSE)
     # Compare original result with result from calling the function in fhpredict
     diffobj::diffStr(result1, result2)
   }
+
 }
 
 # Feed the database with our data from CSV -------------------------------------
@@ -199,12 +213,7 @@ if (FALSE)
 # Test 3 -----------------------------------------------------------------------
 if (FALSE)
 {
-  #### Laden von Testdaten ###################
-  rivers <- c("havel")
-  river_paths <- kwb.flusshygiene::get_paths()[paste0(rivers, "data")]
-  river_data <- lapply(river_paths, kwb.flusshygiene::import_riverdata)
-  river <- "havel"
-  names(river_data) <- rivers
+  #### Prerequsite: river_data (loaded on top of this script)
 
   fhpredict:::build_and_validate_model
 
@@ -214,6 +223,8 @@ if (FALSE)
   identical(river_data_ts, restore("river_data_ts"))
 
   set.seed(1)
+
+  river <- "havel"
 
   system.time(fb <- fhpredict:::get_forward_backward(river_data_ts, river))
 
