@@ -73,11 +73,6 @@ if (FALSE)
   # 1c check
   (measurements <- fhpredict:::api_get_measurements(user_id, spot_id))
 
-  stopifnot(nrow(measurements) == nrow(data))
-  stopifnot(identical(
-    as.POSIXct(substr(measurements$date, 1, 10), tz = "UTC"), data$date
-  ))
-
   # 2 Purification plant measurements: Endpoint does not work...
 
   # 3 Flows
@@ -95,13 +90,19 @@ if (FALSE)
   )
   str(data)
   path <- fhpredict:::path_discharges(user_id, spot_id)
-  fhpredict:::add_timeseries_to_database(path, data = data[1:500, ])
+  fhpredict:::add_timeseries_to_database(path, data = tail(data))
+
+  # 3c check
+  fhpredict::api_get_discharge(user_id, spot_id)
 
   # 4 rain
   fhpredict::api_get_rain(user_id, spot_id)
 
   # 4a clear
   fhpredict::api_delete_rain(user_id, spot_id)
+
+  # Create a model from the data available in the database
+  result <- fhpredict::build_model(user_id, spot_id)
 }
 
 # Test 2 -----------------------------------------------------------------------

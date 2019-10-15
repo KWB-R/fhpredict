@@ -13,12 +13,17 @@ build_model <- function(user_id, spot_id, seed = NULL)
   #kwb.utils::assignPackageObjects("fhpredict")
   #user_id=5;spot_id=41;seed=NULL
 
+  # Helper function to create a "failure" result object
+  create_failure <- function(x) {
+    create_result(success = FALSE, message = as.character(x))
+  }
+
   # Get data in the format that is required by build_and_validate_model()
   spot_data <- try(provide_input_data(user_id, spot_id))
 
   if (inherits(spot_data, "try-error")) {
 
-    return(create_result(success = FALSE, message = as.character(spot_data)))
+    return(create_failure(spot_data))
   }
 
   # Initialise the random number generator if a seed is given
@@ -28,7 +33,12 @@ build_model <- function(user_id, spot_id, seed = NULL)
     set.seed(seed)
   }
 
-  result <- build_and_validate_model(spot_data = spot_data)
+  result <- try(build_and_validate_model(spot_data = spot_data))
+
+  if (inherits(result, "try-error")) {
+
+    return(create_failure(result))
+  }
 
   if (length(result) == 0) {
 
@@ -37,16 +47,19 @@ build_model <- function(user_id, spot_id, seed = NULL)
     ))
   }
 
-  model <- kwb.utils::selectElements(result, "stanfit")
-
-  api_add_model(
+  result <- try(api_add_model(
     user_id = user_id,
     spot_id = spot_id,
-    model = model,
+    model = kwb.utils::selectElements(result, "stanfit"),
     comment = sprintf(
       "Model created on %s with fhpredict::build_model()", Sys.time()
     )
-  )
+  ))
+
+  if (inherits(result, "try-error")) {
+
+    return(create_failure(result))
+  }
 
   create_result(success = TRUE)
 }
