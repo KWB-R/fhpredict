@@ -8,7 +8,8 @@
 #'   \code{rain})
 #' @param time_string time to which rain data values relate, default:
 #'   \code{"12:00:00"}
-#' @param comment character string to be stored in database field "comment"
+#' @param comment character string to be written to the field "comment" of the
+#'   rain database table.
 #' @export
 #' @examples
 #' \dontrun{
@@ -38,19 +39,29 @@ api_add_rain <- function(
   date_strings <- as.character(kwb.utils::selectColumns(rain, "datum"))
   values <- kwb.utils::selectColumns(rain, "rain")
 
-  result <- lapply(seq_along(values), function(i) {
-    add_timeseries_point_to_database(
-      path = path_rains(user_id, spot_id),
-      date_string = date_strings[i],
-      time_string = time_string,
-      value = values[i],
-      comment = comment,
-      subject = "rain"
-    )
-  })
+  kwb.utils::catAndRun(
 
-  # Return the ids of the rain data records
-  unlist(result)
+    messageText = sprintf(
+      "Inserting %d rain data records into the database", length(date_strings)
+    ),
+
+    expr = {
+
+      # Prepare data frame to be passed to add_timeseries_to_database()
+      data <- kwb.utils::noFactorDataFrame(
+        date = date_strings,
+        dateTime = time_string,
+        value = values
+      )
+
+      data$comment <- comment
+
+      add_timeseries_to_database(
+        path = path_rains(user_id, spot_id),
+        data = data
+      )
+    }
+  )
 }
 
 # api_get_rain -----------------------------------------------------------------
@@ -63,10 +74,7 @@ api_add_rain <- function(
 #'
 api_get_rain <- function(user_id, spot_id)
 {
-  api_get_timeseries(
-    path = path_rains(user_id, spot_id),
-    subject = "rain"
-  )
+  api_get_timeseries(path = path_rains(user_id, spot_id), subject = "rain")
 }
 
 # api_delete_rain --------------------------------------------------------------

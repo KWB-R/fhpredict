@@ -1,5 +1,5 @@
 # Set a global user
-user_id <- 5
+user_id <- 3 # 5
 
 # Check rain data availability -------------------------------------------------
 if (FALSE)
@@ -88,49 +88,18 @@ if (FALSE)
   unname(numbers["n_radolan_files_new", ] / numbers["n_radolan_files_old", ])
 }
 
-# Rest -------------------------------------------------------------------------
+# Test provide_rain_data_for_bathing_spot() ------------------------------------
 if (FALSE)
 {
-  fhpredict::provide_rain_data_for_bathing_spot(
-    user_id = 5,
-    spot_id = 41,
-    sampling_time = "1050"
-  )
+  user_id <- 3 # 4
+  spot_id <- 42 # 15
 
-  diff(date_ranges[[1]])
+  #spot <- fhpredict::api_get_bathingspot(user_id, spot_id)
+  #r <- fhpredict:::api_get_rain(user_id, spot_id)
+  #fhpredict::api_delete_rain(user_id, spot_id)
 
-  stopifnot(length(dates) == 6)
-
-  # Get data in the format that is required by build_and_validate_model()
-  spot_data <- fhpredict::provide_input_data(user_id, spot_id)
-
-  # Remove empty data frames
-  #spot_data <- spot_data[lengths(spot_data) > 0]
-
-  #reset_time <- function(x) as.POSIXct(substr(as.character(x), 1, 10))
-
-  #spot_data$hygiene$datum <- reset_time(spot_data$hygiene$datum)
-  #spot_data$r$datum <- reset_time(spot_data$r$datum)
-
-  result <- fhpredict:::build_and_validate_model(
-    spot_data = spot_data,
-    prefix = "spot18_"
-  )
-
-  fhpredict::api_add_model(user_id, spot_id, result$stanfit, comment = "great!")
-
-  object.size(result[[3]])
-  rstanarm::launch_shinystan(result[[3]])
-
-
-  dn <- data.frame(r_mean_mean_23 = seq(0, 40, .5))
-
-  pp <- apply(rstanarm::posterior_predict(result[[3]], newdata = dn), 2,
-              quantile, probs = c(0.025, 0.5, 0.975))
-
-  result[[3]]$model
-
-  plot(dn$r_mean_mean_23, pp[2,])
-  lines(dn$r_mean_mean_23, pp[1,])
-  lines(dn$r_mean_mean_23, pp[3,])
+  system.time(result <- fhpredict::provide_rain_data_for_bathing_spot(
+    user_id, spot_id
+    #, date_range = c("2008-07-01", "2013-01-01")
+  ))
 }

@@ -35,6 +35,12 @@ environment variables to be set:
 * `AUTH0_CLIENT_SECRET`
 * `AUTH0_AUDIENCE`
 
+## Main functions
+
+* [`provide_rain_data()`](https://kwb-r.github.io/fhpredict/dev/reference/provide_rain_data.html)
+* [`build_model()`](https://kwb-r.github.io/fhpredict/dev/reference/build_model.html)
+* [`predict_quality()`](https://kwb-r.github.io/fhpredict/dev/reference/predict_quality.html)
+
 ## Documentation
 
 Release: [https://kwb-r.github.io/fhpredict](https://kwb-r.github.io/fhpredict)

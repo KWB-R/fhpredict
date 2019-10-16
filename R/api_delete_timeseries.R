@@ -26,14 +26,13 @@ api_delete_timeseries <- function(
   }
 
   # Delete all records given their ids
-  for (id in ids) {
-
-    kwb.utils::catAndRun(
-      paste("Deleting", subject, "data point with id", id),
-      dbg = dbg, {
+  kwb.utils::catAndRun(
+    sprintf("Deleting %d %s data points", length(ids), subject),
+    dbg = dbg, {
+      for (id in ids) {
         result <- postgres_delete(path = path_function(user_id, spot_id, id))
         stop_on_request_failure(result)
       }
-    )
-  }
+    }
+  )
 }

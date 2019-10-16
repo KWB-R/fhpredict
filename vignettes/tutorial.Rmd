@@ -15,7 +15,8 @@ editor_options:
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 7
+  fig.width = 7,
+  eval = FALSE
 )
 ```
 
@@ -61,9 +62,9 @@ bathing_spots <- fhpredict::api_get_bathingspot(user_id = 3)
 nrow(bathing_spots)
 ```
 
-By default, only the first `r nrow(bathing_spots)` bathing spots are considered
-in the returned data frame. Set the argument `limit` to a high number so that
-you get a list of all available bathing spots:
+By default, only the first bathing spots are considered in the returned data
+frame. Set the argument `limit` to a high number so that you get a list of all
+available bathing spots:
 
 ```{r}
 # Get overview on all bathing spots associated to user with id 3
@@ -148,6 +149,37 @@ measurements <- fhpredict:::flatten_recursive_list(spot$measurements)
 
 # Have a look at the first measurements (after removing empty columns)
 head(kwb.utils::removeEmptyColumns(measurements))
+```
+
+## Measurements
+
+Measurements of water quality (concentration of E.coli) are imported from CSV
+files into the database by the end user. Use the following code to check for 
+which bathing spots measurements are available:
+
+```{r}
+# Set user ID
+user_id <- 3
+
+# Get information on bathing spots
+spots <- fhpredict::api_get_bathingspot(user_id = user_id, limit = 1000)
+
+# Prepare a named vector of bathing spot IDs to be looped through
+spot_ids <- stats::setNames(nm = spots$id)
+
+# Loop through the bathing spots and get the measurements (if any)
+measurements <- lapply(spot_ids, function(spot_id) {
+  fhpredict::api_get_bathingspot(user_id, spot_id)$measurements
+})
+
+# Determine and print the IDs of spots with at least one measurement
+n_measurements <- lengths(measurements)
+
+# Show the corresponding number n of measurements
+data.frame(
+  spot_id = names(n_measurements)[n_measurements > 0], 
+  n = unname(n_measurements[n_measurements > 0])
+)
 ```
 
 ## Models
@@ -284,16 +316,19 @@ There is a top-level function that can be used to perform all steps at once.
 For the single steps that are performed within this function, see below.
 
 In the following we reduce the range of days for which to load rain data to 
-three days. Setting `date_range` to `NULL` will instead load rain data for the
-whole range of dates for which measurements are available.
+three days. Omitting `date_range` or setting it to `NULL` will instead load rain
+data for the whole range of dates for which measurements are available.
 
 ```{r}
 # Function to be triggered by the user: Provide rain data for the bathing spot
-system.time(rain_ids <- fhpredict::provide_rain_data_for_bathing_spot(
-  user_id = 3, spot_id = 17, sampling_time = "1050",
-  date_range = as.Date(c("2008-07-01", "2008-07-03")),
-  comment = "testdata-tutorial"
-))
+control <- fhpredict::provide_rain_data(
+  user_id = 3, spot_id = 17
+  #, date_range = as.Date(c("2008-07-01", "2008-07-03"))
+)
+
+while (control$remaining) {
+  control <- fhpredict::provide_rain_data(control)
+}
 ```
 
 Check that the data arrived by reloading them from the database:
