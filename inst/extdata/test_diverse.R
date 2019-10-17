@@ -4,7 +4,6 @@ river_paths <- kwb.flusshygiene::get_paths()[paste0(rivers, "data")]
 river_data <- lapply(river_paths, kwb.flusshygiene::import_riverdata)
 names(river_data) <- rivers
 
-
 # Check data structure for compliance with naming convention -------------------
 if (FALSE)
 {
@@ -12,16 +11,11 @@ if (FALSE)
   stopifnot(is.list(river_data))
 
   # All elements are "river data elements"
-  sapply(river_data, is_river_data_element)
-
-  is_river_data_element(x = river_data$havel)
-  is_river_data_element(x = river_data$spree)
+  sapply(river_data, fhpredict:::is_river_data_element)
 
   #x = river_data$havel
   #names(x)[4] <- "ii_me"
-  is_river_data_element(x)
-
-  lapply(river_data, is_river_data_element)
+  fhpredict:::is_river_data_element(x)
 }
 
 # Test 1 -----------------------------------------------------------------------
@@ -35,13 +29,28 @@ if (FALSE)
 
   river <- "havel"
 
+  #remotes::install_github("kwb-r/fhpredict@v0.5.0")
+  #remotes::install_github("kwb-r/fhpredict@dev")
+  fhpredict:::prepare_river_data
+
   # Create model with the function in fhpredict
   set.seed(1)
-  result2 <- fhpredict:::build_and_validate_model(
-    spot_data = river_data$havel
-    #, prefix = "havel"
-  )
-  #store(result2)
+
+  results <- lapply(river_data, function(x) {
+    try(fhpredict:::build_and_validate_model(spot_data = x))
+  })
+
+  #store(results)
+  results_orig <- restore("results")
+
+  diffobj::diffStr(results, results_orig)
+  diffobj::diffStr(results$havel, results_orig$havel)
+
+  spot_data <- river_data$havel
+
+  sapply(results, inherits, "try-error")
+
+  lapply(results, class)
 
   # Store the model in the database
   model <- kwb.utils::selectElements(result2, "stanfit")

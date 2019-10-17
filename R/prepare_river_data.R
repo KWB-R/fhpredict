@@ -1,73 +1,58 @@
 # prepare_river_data -----------------------------------------------------------
 prepare_river_data <- function(river_list)
 {
-  river_ts <- calc_t(datalist = river_list)
+  stopifnot(is_river_data_element(river_list))
 
-  # Names of list elements
-  elements <- names(river_ts)
+  # Modify the data frames contained in river_list according to their type:
+  # - Filter hygienic data for the summer months (May to September)
+  # - Filter non-hygienic data for the summer months (April to September)
+  #   and add a mean column
+  # - z-transform the rain data columns of the rain data frame
 
-  is_discharge <- grepl("^q",  elements)
-  is_treatment <- grepl("^ka", elements)
-  is_i         <- grepl("^i",  elements)
-  is_rain      <- grepl("^r",  elements)
+  for (element in names(river_list)) {
 
-  river_ts[is_discharge] <- lapply(river_ts[is_discharge], add_meancol)
-  river_ts[is_treatment] <- lapply(river_ts[is_treatment], add_meancol)
-  river_ts[is_i]         <- lapply(river_ts[is_i],         add_meancol)
-  river_ts[is_rain]      <- lapply(river_ts[is_rain],      add_meancol)
+    # Get the original data frame from the list
+    df <- river_list[[element]]
 
-  river_ts
-}
+    if (grepl("^hygiene", element)) {
 
-# calc_t -----------------------------------------------------------------------
-calc_t <- function(datalist)
-{
-  # Filter for summer months in the hygienic data
-  hygiene_element <- grep("hygiene", names(datalist), value = TRUE)
-  stopifnot(length(hygiene_element) == 1)
+      df <- df %>%
+        filter_for_months(5:9)
 
-  hygienic <- select_hygiene_data(datalist)
+    } else if (grepl("^(q|ka|i|r)_", element)) {
 
-  # Data frames with non-hygienic data
-  non_hygienics <- remove_hygiene_data(datalist)
+      df <- df %>%
+        filter_for_months(4:9) %>%
+        add_meancol()
 
-  # Filter hygienic measurements for months in summer (May to September)
-  hygienic_summer <- filter_for_months(hygienic, 5:9)
+    } else {
 
-  # Filter non-hygienic measurements for months in summer (April to September)
-  non_hygienics_summer <- lapply(non_hygienics, filter_for_months, 4:9)
+      stop("Unexpected element in river_list: ", element)
+    }
 
-  # z-transform the data frames with non-hygienic data
-  non_hygienics_z <- lapply(non_hygienics_summer, transform_z)
+    # z-transform the rain data columns
+    if (grepl("^r_", element)) {
 
-  # Recompose the list of hygienic and non-hygienic data and set original names
-  stats::setNames(c(list(hygienic_summer), non_hygienics_z), names(datalist))
-}
+      # Are the columns rain data columns?
+      is_rain <- grepl("^r_.*", names(df))
 
-# select_hygiene_data ----------------------------------------------------------
-select_hygiene_data <- function(datalist)
-{
-  hygiene_element <- grep_hygiene_name(datalist)
+      # Transform rain columns: log-transformed and 1/sigma2 (?)
+      df[is_rain] <- lapply(df[is_rain], function(x) log(x + 1))
+    }
 
-  kwb.utils::selectElements(datalist, hygiene_element)
-}
+    # Copy the transformed data frame back into the list
+    river_list[[element]] <- df
+  }
 
-# grep_hygiene_name ------------------------------------------------------------
-grep_hygiene_name <- function(datalist)
-{
-  stopifnot(is.list(datalist))
-  stopifnot(all(sapply(datalist, is.data.frame)))
-
-  hygiene_element <- grep("^hygiene", names(datalist), value = TRUE)
-  stopifnot(length(hygiene_element) == 1)
-
-  hygiene_element
+  river_list
 }
 
 # remove_hygiene_data ----------------------------------------------------------
 remove_hygiene_data <- function(datalist)
 {
-  hygiene_element <- grep_hygiene_name(datalist)
+  stopifnot(is_river_data_element(datalist))
+
+  hygiene_element <- grep("^hygiene", names(datalist), value = TRUE)
 
   result <- kwb.utils::catAndRun(
     sprintf("Removing element '%s' from list of data frames", hygiene_element),
@@ -83,19 +68,6 @@ filter_for_months <- function(df, month_numbers)
   dates <- kwb.utils::selectColumns(df, "datum")
 
   df[lubridate::month(dates) %in% month_numbers, ]
-}
-
-# transform_z ------------------------------------------------------------------
-transform_z <- function(df)
-{
-  # Are the columns rain columns?
-  is_rain_column <- grepl("^r_.*", names(df))
-
-  # Transform rain columns: log-transformed and 1/sigma2 (?)
-  df[is_rain_column] <- lapply(df[is_rain_column], function(x) log(x + 1))
-
-  # Return the data frame with rain columns being transformed
-  df
 }
 
 # add_meancol ------------------------------------------------------------------
