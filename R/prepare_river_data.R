@@ -20,21 +20,21 @@ prepare_river_data <- function(river_list)
 
     } else if (grepl("^(q|ka|i|r)_", element)) {
 
+      # z-transform the rain data columns
+      if (grepl("^r_", element)) {
+
+        # Are the columns rain data columns?
+        is_rain <- grepl("^r_.*", names(df))
+
+        # Transform rain columns: log-transformed and 1/sigma2 (?)
+        df[is_rain] <- lapply(df[is_rain], function(x) log(x + 1))
+      }
+
       df <- add_meancol(filter_for_months(df, 4:9))
 
     } else {
 
       stop("Unexpected element in river_list: ", element)
-    }
-
-    # z-transform the rain data columns
-    if (grepl("^r_", element)) {
-
-      # Are the columns rain data columns?
-      is_rain <- grepl("^r_.*", names(df))
-
-      # Transform rain columns: log-transformed and 1/sigma2 (?)
-      df[is_rain] <- lapply(df[is_rain], function(x) log(x + 1))
     }
 
     # Copy the transformed data frame back into the list
