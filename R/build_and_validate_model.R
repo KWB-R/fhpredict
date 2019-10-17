@@ -115,7 +115,7 @@ stepwise <- function (riverdata, pattern = "", dbg = TRUE)
   }
 
   kwb.utils::catIf(dbg, sprintf(
-    "Using %d variables:\n- %s",
+    "Using %d variables:\n- %s\n",
     length(variables), kwb.utils::stringList(variables, collapse = "\n- ")
   ))
 
