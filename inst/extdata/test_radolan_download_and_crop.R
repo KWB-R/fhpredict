@@ -2,8 +2,8 @@ if (FALSE)
 {
   # Function to be triggered by the user: Provide rain data for the bathing spot
   system.time(rain_ids <- fhpredict::provide_rain_data_for_bathing_spot(
-    user_id = 3, spot_id = 1441, sampling_time = "1050",
-    date_range = as.Date(c("2008-07-01", "2009-07-01"))
+    user_id = 5, spot_id = 41, sampling_time = "1050"
+    #, date_range = as.Date(c("2008-07-01", "2009-07-01"))
   ))
 
   # Read rain from database

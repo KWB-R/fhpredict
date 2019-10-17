@@ -3,7 +3,8 @@
 #' @importFrom rlang .data
 #' @keywords internal
 build_and_validate_model <- function(
-  river_data = NULL, river = NULL, spot_data, prefix = "", n_folds = 5
+  river_data = NULL, river = NULL, spot_data, prefix = "", n_folds = 5,
+  dbg = TRUE
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
@@ -12,11 +13,16 @@ build_and_validate_model <- function(
   # Check the arguments and stop if anything is not ok
   check_args_build_and_validate(river_data, river, spot_data)
 
-  # Prepare all data frames, among others by calling calc_t()
-  riverdata <- prepare_river_data(spot_data)
+  # Prepare all data frames (select summer season, log-transform rain, add mean,
+  # ...) add merge them to one big data frame
+  model_data <- provide_data_for_lm(
+    riverdata = prepare_river_data(spot_data),
+    pattern = "(i_mean|q_mean|r_mean|ka_mean)",
+    dbg = dbg
+  )
 
   # Step through, forward and backward selection
-  models <- stepwise(riverdata, pattern = "(i_mean|q_mean|r_mean|ka_mean)")
+  models <- stepwise(model_data)
 
   # Number the models
   names(models) <- sprintf("%smodel_%02d", prefix, seq_along(models))
@@ -88,7 +94,49 @@ check_args_build_and_validate <- function(river_data, river, spot_data)
 }
 
 # stepwise ---------------------------------------------------------------------
-stepwise <- function (riverdata, pattern = "", dbg = TRUE)
+stepwise <- function(model_data)
+{
+  # Definition of null and full models
+  null <- stats::lm(log_e.coli ~ 1, data = model_data)
+  full <- stats::lm(log_e.coli ~ .^2, data = model_data)
+
+  # Definition maximum number of steps. 10 at maximum
+  max_steps <- min(round(nrow(model_data) / 10), 10)
+
+  if (max_steps == 0) {
+
+    clean_stop(
+      "max_steps = 0 in stepwise() -> Not enough data points available!"
+    )
+  }
+
+  # Creating list of candidate models with 1 ... max_steps predictors
+  result <- lapply(X = seq_len(max_steps), FUN = function(steps) {
+    try(stats::step(
+      object = null,
+      scope = list(upper = full, lower = null),
+      direction = "forward",
+      steps = steps
+    ))
+  })
+
+  failed <- sapply(result, inherits, "try-error")
+
+  if (any(failed)) {
+
+    clean_stop(
+      "stat::step() failed for the following step numbers:\n",
+      sprintf(
+        "step = %d: %s", which(failed), sapply(result[failed], as.character)
+      )
+    )
+  }
+
+  result
+}
+
+# provide_data_for_lm ----------------------------------------------------------
+provide_data_for_lm <- function(riverdata, pattern = "", dbg = TRUE)
 {
   unrolled_data <- riverdata %>%
     remove_hygiene_data() %>%
@@ -123,7 +171,7 @@ stepwise <- function (riverdata, pattern = "", dbg = TRUE)
 
   # Prepare formulas
   data <- kwb.flusshygiene::process_model_riverdata(riverdata, variables) %>%
-    dplyr::select(- .data$datum)
+    kwb.utils::removeColumns("datum")
 
   if (nrow(data) == 0) {
 
@@ -135,41 +183,20 @@ stepwise <- function (riverdata, pattern = "", dbg = TRUE)
     )
   }
 
-  # Definition of null and full models
-  null <- stats::lm(log_e.coli ~ 1, data = data)
-  full <- stats::lm(log_e.coli ~ .^2, data = data)
+  data
+}
 
-  # Definition maximum number of steps. 10 at maximum
-  max_steps <- min(round(nrow(data) / 10), 10)
+# remove_hygiene_data ----------------------------------------------------------
+remove_hygiene_data <- function(datalist)
+{
+  stopifnot(is_river_data_element(datalist))
 
-  if (max_steps == 0) {
+  hygiene_element <- grep("^hygiene", names(datalist), value = TRUE)
 
-    clean_stop(
-      "max_steps = 0 in stepwise() -> Not enough data points available!"
-    )
-  }
-
-  # Creating list of candidate models with 1 ... max_steps predictors
-  result <- lapply(X = seq_len(max_steps), FUN = function(steps) {
-    try(stats::step(
-      object = null,
-      scope = list(upper = full, lower = null),
-      direction = "forward",
-      steps = steps
-    ))
-  })
-
-  failed <- sapply(result, inherits, "try-error")
-
-  if (any(failed)) {
-
-    clean_stop(
-      "stat::step() failed for the following step numbers:\n",
-      sprintf(
-        "step = %d: %s", which(failed), sapply(result[failed], as.character)
-      )
-    )
-  }
+  result <- kwb.utils::catAndRun(
+    sprintf("Removing element '%s' from list of data frames", hygiene_element),
+    datalist[setdiff(names(datalist), hygiene_element)]
+  )
 
   result
 }

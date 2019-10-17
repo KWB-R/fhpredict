@@ -244,8 +244,8 @@ read_radolan_data_within_polygon <- function(urls, polygon)
   list_of_cropped <- lapply(seq_along(urls), function(i) {
 
     message(sprintf(
-      "Reading and cropping from %s (%d/%d) ...",
-      basename(urls[i]), i, length(urls)
+      "Reading and cropping from %s (%d/%d = %0.1f%%)...",
+      basename(urls[i]), i, length(urls), 100 * i / length(urls)
     ))
 
     # Read the Radolan file and crop the polygon area

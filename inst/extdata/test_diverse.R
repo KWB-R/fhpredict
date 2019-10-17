@@ -4,6 +4,20 @@ river_paths <- kwb.flusshygiene::get_paths()[paste0(rivers, "data")]
 river_data <- lapply(river_paths, kwb.flusshygiene::import_riverdata)
 names(river_data) <- rivers
 
+# Check data structure for compliance with naming convention -------------------
+if (FALSE)
+{
+  # river_data is a list
+  stopifnot(is.list(river_data))
+
+  # All elements are "river data elements"
+  sapply(river_data, fhpredict:::is_river_data_element)
+
+  #x = river_data$havel
+  #names(x)[4] <- "ii_me"
+  fhpredict:::is_river_data_element(x)
+}
+
 # Test 1 -----------------------------------------------------------------------
 if (FALSE)
 {
@@ -15,13 +29,58 @@ if (FALSE)
 
   river <- "havel"
 
+  #remotes::install_github("kwb-r/fhpredict@v0.5.0")
+  #remotes::install_github("kwb-r/fhpredict@dev")
+
+  # Have a look at the definitions
+  fhpredict:::build_and_validate_model
+  fhpredict:::prepare_river_data
+
+  prepared <- lapply(river_data[names(river_data) != "spree"], fhpredict:::prepare_river_data)
+  #store(prepared)
+  prepared_orig <- restore("prepared")
+
+  identical(prepared, prepared_orig)
+
+  dfs1 <- prepared_orig$ilz
+  dfs2 <- prepared$ilz
+
+  sapply(names(dfs1), function(name) identical(dfs1[[name]], dfs2[[name]]))
+
+  kwb.test::testColumnwiseIdentity(a = dfs1$r_ilz, b = dfs2$r_ilz)
+
+  df <- dfs1$r_ilz
+  df <- dfs2$r_ilz
+
+  value_matrix <- as.matrix(df[, -c(1, ncol(df))])
+  head(value_matrix)
+
+  range(rowMeans(value_matrix, na.rm = TRUE) - df$r_mean)
+
+  identical(x, y)
+
   # Create model with the function in fhpredict
-  set.seed(1)
-  result2 <- fhpredict:::build_and_validate_model(
-    spot_data = river_data$havel
-    #, prefix = "havel"
+  set.seed(1); results <- lapply(river_data, function(x) {
+    try(fhpredict:::build_and_validate_model(spot_data = x))
+  })
+
+  #store(results)
+  results_orig <- restore("results")
+
+  diffobj::diffStr(results, results_orig)
+  diffobj::diffStr(results$havel, results_orig$havel)
+  diffobj::diffStr(results$ilz, results_orig$ilz)
+
+  diffobj::diffStr(
+    results$isar$best_model$model,
+    results_orig$isar$best_model$model
   )
-  #store(result2)
+
+  spot_data <- river_data$havel
+
+  sapply(results, inherits, "try-error")
+
+  lapply(results, class)
 
   # Store the model in the database
   model <- kwb.utils::selectElements(result2, "stanfit")

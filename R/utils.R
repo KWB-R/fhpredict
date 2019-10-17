@@ -1,3 +1,19 @@
+# all_elements_are_data_frames -------------------------------------------------
+all_elements_are_data_frames <- function(x)
+{
+  stopifnot(is.list(x))
+
+  all(sapply(x, is.data.frame))
+}
+
+# all_elements_are_named -------------------------------------------------------
+all_elements_are_named <- function(x)
+{
+  stopifnot(is.list(x))
+
+  length(names(x)) == length(x) && all(nzchar(names(x)))
+}
+
 # assert_final_slash -----------------------------------------------------------
 assert_final_slash <- function(x)
 {
@@ -116,6 +132,24 @@ get_environment_var <- function(name)
   }
 
   clean_stop(sprintf("Please set the environment variable '%s'", name))
+}
+
+# get_prefix -------------------------------------------------------------------
+get_prefix <- function(x)
+{
+  parts <- strsplit(x, "_")
+
+  more_than_one_part <- lengths(parts) > 1
+
+  if (! all(more_than_one_part)) {
+
+    stop(
+      "The following strings do not have a prefix (separated by underscore):\n",
+      kwb.utils::stringList(x[! more_than_one_part]), call. = FALSE
+    )
+  }
+
+  sapply(parts , "[", 1)
 }
 
 # iso_timestamp_to_local_posix -------------------------------------------------
