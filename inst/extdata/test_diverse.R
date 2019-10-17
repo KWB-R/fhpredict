@@ -31,12 +31,36 @@ if (FALSE)
 
   #remotes::install_github("kwb-r/fhpredict@v0.5.0")
   #remotes::install_github("kwb-r/fhpredict@dev")
+
+  # Have a look at the definitions
+  fhpredict:::build_and_validate_model
   fhpredict:::prepare_river_data
 
-  # Create model with the function in fhpredict
-  set.seed(1)
+  prepared <- lapply(river_data[names(river_data) != "spree"], fhpredict:::prepare_river_data)
+  #store(prepared)
+  prepared_orig <- restore("prepared")
 
-  results <- lapply(river_data, function(x) {
+  identical(prepared, prepared_orig)
+
+  dfs1 <- prepared_orig$ilz
+  dfs2 <- prepared$ilz
+
+  sapply(names(dfs1), function(name) identical(dfs1[[name]], dfs2[[name]]))
+
+  kwb.test::testColumnwiseIdentity(a = dfs1$r_ilz, b = dfs2$r_ilz)
+
+  df <- dfs1$r_ilz
+  df <- dfs2$r_ilz
+
+  value_matrix <- as.matrix(df[, -c(1, ncol(df))])
+  head(value_matrix)
+
+  range(rowMeans(value_matrix, na.rm = TRUE) - df$r_mean)
+
+  identical(x, y)
+
+  # Create model with the function in fhpredict
+  set.seed(1); results <- lapply(river_data, function(x) {
     try(fhpredict:::build_and_validate_model(spot_data = x))
   })
 
@@ -45,6 +69,12 @@ if (FALSE)
 
   diffobj::diffStr(results, results_orig)
   diffobj::diffStr(results$havel, results_orig$havel)
+  diffobj::diffStr(results$ilz, results_orig$ilz)
+
+  diffobj::diffStr(
+    results$isar$best_model$model,
+    results_orig$isar$best_model$model
+  )
 
   spot_data <- river_data$havel
 
