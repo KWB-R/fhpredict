@@ -1,24 +1,25 @@
 # add_timeseries_to_database ---------------------------------------------------
-add_timeseries_to_database <- function(
-  path, date_string, time_string, value, comment = NULL, data = NULL
-)
+add_timeseries_to_database <- function(path, data)
 {
-  body <- if (is.null(data)) {
+  stopifnot(is.data.frame(data))
 
-    list(
-      value = value,
-      dateTime = time_string,
-      date = date_string,
-      comment = comment
-    )
+  n_records <- nrow(data)
 
-  } else {
-
-    # Create a list of lists if more than one record is given
-    lapply(seq_len(nrow(data)), function(i) as.list(data[i, ]))
+  if (n_records == 0) {
+    message("Nothing to add.")
+    return(integer())
   }
 
-  result <- postgres_post(path, body)
+  # Helper function to convert a row of a data frame to a list
+  one_row_as_list <- function(i) as.list(data[i, , drop = FALSE])
+
+  # POST the data.
+  # Convert data frame to a list of lists if more than one record is given.
+  result <- postgres_post(path, body = if (n_records > 1) {
+    lapply(seq_len(n_records), one_row_as_list)
+  } else {
+    one_row_as_list(1)
+  })
 
   response <- attr(result, "response")
 
