@@ -16,14 +16,11 @@ prepare_river_data <- function(river_list)
 
     if (grepl("^hygiene", element)) {
 
-      df <- df %>%
-        filter_for_months(5:9)
+      df <- filter_for_months(df, 5:9)
 
     } else if (grepl("^(q|ka|i|r)_", element)) {
 
-      df <- df %>%
-        filter_for_months(4:9) %>%
-        add_meancol()
+      df <- add_meancol(filter_for_months(df, 4:9))
 
     } else {
 
@@ -47,22 +44,7 @@ prepare_river_data <- function(river_list)
   river_list
 }
 
-# remove_hygiene_data ----------------------------------------------------------
-remove_hygiene_data <- function(datalist)
-{
-  stopifnot(is_river_data_element(datalist))
-
-  hygiene_element <- grep("^hygiene", names(datalist), value = TRUE)
-
-  result <- kwb.utils::catAndRun(
-    sprintf("Removing element '%s' from list of data frames", hygiene_element),
-    datalist[setdiff(names(datalist), hygiene_element)]
-  )
-
-  result
-}
-
-# filter_for_months: filter for month numbers ----------------------------------
+# filter_for_months ------------------------------------------------------------
 filter_for_months <- function(df, month_numbers)
 {
   dates <- kwb.utils::selectColumns(df, "datum")

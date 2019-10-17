@@ -174,6 +174,21 @@ stepwise <- function (riverdata, pattern = "", dbg = TRUE)
   result
 }
 
+# remove_hygiene_data ----------------------------------------------------------
+remove_hygiene_data <- function(datalist)
+{
+  stopifnot(is_river_data_element(datalist))
+
+  hygiene_element <- grep("^hygiene", names(datalist), value = TRUE)
+
+  result <- kwb.utils::catAndRun(
+    sprintf("Removing element '%s' from list of data frames", hygiene_element),
+    datalist[setdiff(names(datalist), hygiene_element)]
+  )
+
+  result
+}
+
 # init_stat_tests_data ---------------------------------------------------------
 #' @importFrom rlang .data
 #' @keywords internal
