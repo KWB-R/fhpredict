@@ -4,6 +4,26 @@ river_paths <- kwb.flusshygiene::get_paths()[paste0(rivers, "data")]
 river_data <- lapply(river_paths, kwb.flusshygiene::import_riverdata)
 names(river_data) <- rivers
 
+
+# Check data structure for compliance with naming convention -------------------
+if (FALSE)
+{
+  # river_data is a list
+  stopifnot(is.list(river_data))
+
+  # All elements are "river data elements"
+  sapply(river_data, is_river_data_element)
+
+  is_river_data_element(x = river_data$havel)
+  is_river_data_element(x = river_data$spree)
+
+  #x = river_data$havel
+  #names(x)[4] <- "ii_me"
+  is_river_data_element(x)
+
+  lapply(river_data, is_river_data_element)
+}
+
 # Test 1 -----------------------------------------------------------------------
 if (FALSE)
 {
