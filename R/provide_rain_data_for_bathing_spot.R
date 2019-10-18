@@ -26,24 +26,29 @@ provide_rain_data_for_bathing_spot <- function(
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
-  #user_id=4;spot_id=17;sampling_time="1050";date_range=NULL
+  #user_id=3;spot_id=49;sampling_time="1050";date_range=NULL
 
-  # kwb.utils::warningDeprecated(
-  #   old_name = "provide_rain_data_for_bathing_spot",
-  #   new_name = "provide_rain_data"
-  # )
-
-  control <- provide_rain_data(
+  control <- try(provide_rain_data(
     user_id = user_id,
     spot_id = spot_id,
     sampling_time = sampling_time,
     date_range = date_range,
     info = FALSE
-  )
+  ))
+
+  if (inherits(control, "try-error")) {
+
+    return(create_failure(control))
+  }
 
   while (control$remaining > 0) {
 
-    control <- provide_rain_data(control = control)
+    control <- try(provide_rain_data(control = control))
+
+    if (inherits(control, "try-error")) {
+
+      return(create_failure(control))
+    }
   }
 
   create_result(
@@ -108,7 +113,7 @@ provide_rain_data <- function(
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
-  #user_id=5;spot_id=41;sampling_time="1050";date_range=NULL;blocksize=10;control=NULL
+  #user_id=5;spot_id=49;sampling_time="1050";date_range=NULL;blocksize=10;control=NULL
 
   if (is.null(control)) {
 
