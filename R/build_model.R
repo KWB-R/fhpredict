@@ -13,11 +13,6 @@ build_model <- function(user_id, spot_id, seed = NULL)
   #kwb.utils::assignPackageObjects("fhpredict")
   #user_id=5;spot_id=41;seed=NULL
 
-  # Helper function to create a "failure" result object
-  create_failure <- function(x) {
-    create_result(success = FALSE, message = as.character(x))
-  }
-
   # Get data in the format that is required by build_and_validate_model()
   spot_data <- try(provide_input_data(user_id, spot_id))
 

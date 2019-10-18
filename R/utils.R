@@ -36,6 +36,12 @@ convert_time_columns <- function(df, columns = c("createdAt", "updatedAt"))
   df
 }
 
+# create_failure: Create a "failure" result object -----------------------------
+create_failure <- function(x)
+{
+  create_result(success = FALSE, message = as.character(x))
+}
+
 # create_result ----------------------------------------------------------------
 create_result <- function(
   data = NULL, success = TRUE, message = "Everything ok"
