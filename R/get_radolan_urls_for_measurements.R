@@ -86,7 +86,10 @@ get_radolan_urls_for_measurements <- function(
   }
 
   # Add up to five days before each date and get URLs to related Radolan files
-  get_radolan_urls_for_days(add_days_before(dates, n_days_before))
+  get_radolan_urls_for_days(
+    dates = add_days_before(dates, n_days_before),
+    time = sampling_time
+  )
 }
 
 # get_unique_measurement_dates -------------------------------------------------
