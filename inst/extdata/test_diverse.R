@@ -1,12 +1,23 @@
+#
+# Source the whole script first to load the functions defined below
+#
+
 # Laden von Testdaten ----------------------------------------------------------
-rivers <- c("havel", "ilz", "isar", "mosel", "rhein", "ruhr", "spree")
-river_paths <- kwb.flusshygiene::get_paths()[paste0(rivers, "data")]
-river_data <- lapply(river_paths, kwb.flusshygiene::import_riverdata)
-names(river_data) <- rivers
+if (FALSE)
+{
+  rivers <- c("havel", "ilz", "isar", "mosel", "rhein", "ruhr", "spree")
+  river_paths <- kwb.flusshygiene::get_paths()[paste0(rivers, "data")]
+  river_data <- lapply(river_paths, kwb.flusshygiene::import_riverdata)
+  names(river_data) <- rivers
+
+  store(river_data)
+}
 
 # Check data structure for compliance with naming convention -------------------
 if (FALSE)
 {
+  river_data <- restore("river_data")
+
   # river_data is a list
   stopifnot(is.list(river_data))
 
@@ -18,17 +29,23 @@ if (FALSE)
   fhpredict:::is_river_data_element(x)
 }
 
+# Test prediction --------------------------------------------------------------
+if (FALSE)
+{
+  spot_id = 42
+
+  spot_data <- fhpredict:::provide_input_data(user_id = 3, spot_id = spot_id)
+
+  riverdata <- fhpredict:::prepare_river_data(spot_data)
+
+  pattern <- "(i_mean|q_mean|r_mean|ka_mean)"
+
+  model_data <- fhpredict:::provide_data_for_lm(riverdata, pattern)
+}
+
 # Test 1 -----------------------------------------------------------------------
 if (FALSE)
 {
-  #library(magrittr)
-  #library(tidyverse)
-  #library(kwb.flusshygiene)
-
-  kwb.fakin:::store(river_data, "test_diverse.R")
-
-  river <- "havel"
-
   #remotes::install_github("kwb-r/fhpredict@v0.5.0")
   #remotes::install_github("kwb-r/fhpredict@dev")
 
@@ -37,6 +54,7 @@ if (FALSE)
   fhpredict:::prepare_river_data
 
   prepared <- lapply(river_data[names(river_data) != "spree"], fhpredict:::prepare_river_data)
+
   #store(prepared)
   prepared_orig <- restore("prepared")
 
@@ -103,7 +121,7 @@ if (FALSE)
   if (exists("build_and_validate_model")) {
 
     set.seed(1)
-    result1 <- build_and_validate_model(river_data, river)
+    result1 <- build_and_validate_model(river_data, river = "havel")
     store(result1)
 
     # Compare original result with result from calling the function in fhpredict

@@ -13,8 +13,11 @@ provide_input_data <- function(user_id, spot_id)
   # Define shortcut to kwb.utils::selectColumns()
   get <- kwb.utils::selectColumns
 
-  # Prepare the result data structure
+  # Prepare the result list
   result <- list()
+
+  # Define function returning the name for an element of the result list
+  result_element <- function(prefix) sprintf("%s_spot%d", prefix, spot_id)
 
   # Define the end of possible error messages
   no_data_suffix <- sprintf(
@@ -28,7 +31,7 @@ provide_input_data <- function(user_id, spot_id)
   # measurements
   if (nrow(measurements)) {
 
-    result$hygiene <- data.frame(
+    result[[result_element("hygiene")]] <- data.frame(
       datum = reset_time(
         iso_timestamp_to_local_posix(get(measurements, "date"))
       ),
@@ -46,7 +49,7 @@ provide_input_data <- function(user_id, spot_id)
   # Add rain measurements to the result or return if there are no rain data
   if (nrow(rain)) {
 
-    result$r <- data.frame(
+    result[[result_element("r")]] <- data.frame(
       datum = reset_time(get(rain, "dateTime")),
       r_radolan = get(rain, "value")
     )
@@ -62,9 +65,9 @@ provide_input_data <- function(user_id, spot_id)
 
   # Add discharges to the result if there are any discharges
   if (nrow(discharge)) {
-    result$q <- data.frame(
+    result[[result_element("q")]] <- data.frame(
       datum = reset_time(get(discharge, "dateTime")),
-      discharge = get(discharge, "value")
+      q_1 = get(discharge, "value")
     )
   }
 
