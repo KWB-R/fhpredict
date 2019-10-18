@@ -1,9 +1,17 @@
-# api_get_measurements --------------------------------------------------------
+# api_get_measurements ---------------------------------------------------------
 api_get_measurements <- function(user_id = -1, spot_id = -1)
 {
   path <- path_measurements(user_id, spot_id)
 
   result <- safe_postgres_get(path)
+
+  if (length(result$data) == 0) {
+
+    clean_stop(sprintf(
+      "No measurements stored for spot_id = %d (user_id = %d).",
+      spot_id, user_id
+    ))
+  }
 
   measurements <- kwb.utils::safeRowBindAll(lapply(result$data, function(x) {
     kwb.utils::asNoFactorDataFrame(kwb.utils::excludeNULL(x, dbg = FALSE))
