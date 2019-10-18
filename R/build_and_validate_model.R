@@ -22,7 +22,7 @@ build_and_validate_model <- function(
   )
 
   # Step through, forward and backward selection
-  models <- stepwise(model_data)
+  models <- stepwise(kwb.utils::removeColumns(model_data, "datum"))
 
   # Number the models
   names(models) <- sprintf("%smodel_%02d", prefix, seq_along(models))
@@ -170,8 +170,7 @@ provide_data_for_lm <- function(riverdata, pattern = "", dbg = TRUE)
   variables <- c("log_e.coli", variables)
 
   # Prepare formulas
-  data <- kwb.flusshygiene::process_model_riverdata(riverdata, variables) %>%
-    kwb.utils::removeColumns("datum")
+  data <- kwb.flusshygiene::process_model_riverdata(riverdata, variables)
 
   if (nrow(data) == 0) {
 
