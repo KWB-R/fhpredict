@@ -5,7 +5,8 @@
 \title{Provide Rain Data for one Bathing Spot}
 \usage{
 provide_rain_data(user_id, spot_id, sampling_time = "1050",
-  date_range = NULL, blocksize = 10, control = NULL, info = TRUE)
+  date_range = NULL, blocksize = 10, control = NULL, info = TRUE,
+  urls = NULL)
 }
 \arguments{
 \item{user_id}{user id}
@@ -34,6 +35,12 @@ this function. See example.}
 
 \item{info}{if \code{TRUE} (the default), a message is shown that describes
 how to use this function in a loop}
+
+\item{urls}{vector of URLs to Radolan files. By default, the URLs are
+determined within the function, considering the available measurements.
+However, the user may override this behaviour by giving the URLs here.
+Only used when \code{control = NULL}, otherwise the URLs are taken from
+the \code{control} object.}
 }
 \value{
 vector of integer containing the IDs of the records inserted into the

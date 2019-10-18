@@ -32,7 +32,21 @@ if (FALSE)
 # Test prediction --------------------------------------------------------------
 if (FALSE)
 {
-  spot_id = 42
+  spot_id <- 42
+
+  date_range <- as.Date(c("2018-07-01", "2018-07-31"))
+  dates <- seq(date_range[1], date_range[2], by = 1)
+
+  urls <- fhpredict:::get_radolan_urls_for_days(
+    dates = fhpredict:::add_days_before(dates, n_days_before = 5),
+    time = "1050"
+  )
+
+  control <- fhpredict::provide_rain_data(user_id, spot_id = 42, urls = urls)
+
+  while (control$remaining > 0) {
+    control <- provide_rain_data(control = control)
+  }
 
   spot_data <- fhpredict:::provide_input_data(user_id = 3, spot_id = spot_id)
 

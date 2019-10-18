@@ -87,6 +87,11 @@ provide_rain_data_for_bathing_spot <- function(
 #'   this function. See example.
 #' @param info if \code{TRUE} (the default), a message is shown that describes
 #'   how to use this function in a loop
+#' @param urls vector of URLs to Radolan files. By default, the URLs are
+#'   determined within the function, considering the available measurements.
+#'   However, the user may override this behaviour by giving the URLs here.
+#'   Only used when \code{control = NULL}, otherwise the URLs are taken from
+#'   the \code{control} object.
 #' @return vector of integer containing the IDs of the records inserted into the
 #'   "rains" database table.
 #' @export
@@ -99,7 +104,7 @@ provide_rain_data_for_bathing_spot <- function(
 #' }
 provide_rain_data <- function(
   user_id, spot_id, sampling_time = "1050", date_range = NULL, blocksize = 10,
-  control = NULL, info = TRUE
+  control = NULL, info = TRUE, urls = NULL
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
@@ -110,18 +115,14 @@ provide_rain_data <- function(
     # Determine the URLs to the Radolan files that are required to calibrate
     # a model. For each day of measurement six files (one for the day of
     # measurements and five for the five days before) are required.
-    urls <- get_radolan_urls_for_measurements(
+    urls <- kwb.utils::defaultIfNULL(urls, get_radolan_urls_for_measurements(
       user_id = user_id,
       spot_id = spot_id,
       sampling_time = sampling_time,
       date_range = date_range,
       all_in_range = FALSE,
       n_days_before = 5
-    )
-
-    # if (length(urls) == 0) {
-    #   return(NULL)
-    # }
+    ))
 
     # Get metadata about the current bathing spot. Convert the area list structure
     # to a matrix with columns "lon" and "lat". Convert area structure given in
@@ -143,11 +144,11 @@ provide_rain_data <- function(
         "Please use the returned object in a loop to perform the actual data ",
         "import,\nas in the following code:\n\n",
         sprintf(
-          "control <- provide_rain_data_for_bathing_spot(%d, %d)\n\n",
+          "control <- provide_rain_data(%d, %d)\n\n",
           user_id, spot_id
         ),
         "while (control$remaining > 0) {\n",
-        "  control <- provide_rain_data_for_bathing_spot(control = control)\n",
+        "  control <- provide_rain_data(control = control)\n",
         "}"
       )
     }
