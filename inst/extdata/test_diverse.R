@@ -32,9 +32,10 @@ if (FALSE)
 # Test prediction --------------------------------------------------------------
 if (FALSE)
 {
+  user_id <- 3
   spot_id <- 42
 
-  date_range <- as.Date(c("2018-07-01", "2018-07-31"))
+  date_range <- as.Date(c("2019-10-01", "2019-10-15"))
   dates <- seq(date_range[1], date_range[2], by = 1)
 
   urls <- fhpredict:::get_radolan_urls_for_days(
@@ -42,19 +43,54 @@ if (FALSE)
     time = "1050"
   )
 
-  control <- fhpredict::provide_rain_data(user_id, spot_id = 42, urls = urls)
+  control <- fhpredict::provide_rain_data(user_id, spot_id, urls = urls)
 
   while (control$remaining > 0) {
     control <- provide_rain_data(control = control)
   }
 
-  spot_data <- fhpredict:::provide_input_data(user_id = 3, spot_id = spot_id)
+  spot_data <- fhpredict:::provide_input_data(user_id, spot_id)
 
   riverdata <- fhpredict:::prepare_river_data(spot_data)
 
-  pattern <- "(i_mean|q_mean|r_mean|ka_mean)"
+  #pattern <- "(i_mean|q_mean|r_mean|ka_mean)"
+  pattern <- "r_mean"
 
-  model_data <- fhpredict:::provide_data_for_lm(riverdata, pattern)
+  newdata <- fhpredict:::provide_data_for_lm(riverdata, pattern)
+
+  set.seed(1)
+  model_info <- fhpredict:::build_and_validate_model(
+    spot_data = spot_data[! grepl("^q", names(spot_data))] #river_data$havel[c(1, 4)]
+  )
+
+  fhpredict::build_model(user_id, spot_id)
+
+
+  model <- fhpredict:::api_get_model(user_id, spot_id)
+
+  model <- model_info$stanfit
+
+  (formula <- capture.output(print(model_info$stanfit$formula))[1])
+
+  prediction <- rstanarm::posterior_predict(model, newdata = newdata)
+
+  percentiles <- fhpredict:::get_percentiles_from_prediction(prediction)
+
+  percentiles$prediction <- fhpredict:::get_quality_from_percentiles(percentiles)
+
+  names(percentiles) <- kwb.utils::multiSubstitute(names(percentiles), list(
+    "^P" = "percentile", "\\." = "_"
+  ))
+
+  percentiles$date <- seq(dates[1], by = 1, length.out = nrow(percentiles))
+
+  fhpredict:::api_replace_predictions(user_id, spot_id, percentiles)
+
+  path <- fhpredict:::path_predictions(user_id, spot_id)
+  fhpredict:::api_get_timeseries(path)
+
+  #fhpredict:::add_timeseries_to_database(path, data = percentiles)
+  #fhpredict:::api_delete_timeseries(user_id, spot_id, fhpredict:::path_predictions)
 }
 
 # Test 1 -----------------------------------------------------------------------
