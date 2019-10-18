@@ -42,19 +42,30 @@ build_model <- function(user_id, spot_id, seed = NULL)
     ))
   }
 
-  result <- try(api_add_model(
-    user_id = user_id,
-    spot_id = spot_id,
-    model = kwb.utils::selectElements(result, "stanfit"),
-    comment = sprintf(
-      "Model created on %s with fhpredict::build_model()", Sys.time()
+  result <- try({
+
+    model <- kwb.utils::selectElements(result, "stanfit")
+
+    model_id <- api_add_model(
+      user_id = user_id,
+      spot_id = spot_id,
+      model = model,
+      comment = sprintf(
+        "Model created on %s with fhpredict::build_model()", Sys.time()
+      )
     )
-  ))
+  })
 
   if (inherits(result, "try-error")) {
 
     return(create_failure(result))
   }
 
-  create_result(success = TRUE)
+  create_result(
+    success = TRUE,
+    message = sprintf(
+      "A model was found and saved (model_id = %d):\n%s",
+      model_id, utils::capture.output(print(model$formula))[1]
+    )
+  )
 }
