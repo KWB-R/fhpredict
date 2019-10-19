@@ -146,7 +146,7 @@ if (FALSE)
 
   spot_data <- river_data$havel
 
-  sapply(results, inherits, "try-error")
+  sapply(results, is_error)
 
   lapply(results, class)
 

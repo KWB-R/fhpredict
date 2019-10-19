@@ -16,7 +16,7 @@ build_model <- function(user_id, spot_id, seed = NULL)
   # Get data in the format that is required by build_and_validate_model()
   spot_data <- try(provide_input_data(user_id, spot_id))
 
-  if (inherits(spot_data, "try-error")) {
+  if (is_error(spot_data)) {
     return(create_failure(spot_data))
   }
 
@@ -28,7 +28,7 @@ build_model <- function(user_id, spot_id, seed = NULL)
 
   result <- try(build_and_validate_model(spot_data = spot_data))
 
-  if (inherits(result, "try-error")) {
+  if (is_error(result)) {
     return(create_failure(result))
   }
 
@@ -50,7 +50,7 @@ build_model <- function(user_id, spot_id, seed = NULL)
     )
   })
 
-  if (inherits(result, "try-error")) {
+  if (is_error(result)) {
     return(create_failure(result))
   }
 

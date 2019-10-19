@@ -108,7 +108,7 @@ stepwise <- function(model_data)
     ))
   })
 
-  failed <- sapply(result, inherits, "try-error")
+  failed <- sapply(result, is_error)
 
   if (any(failed)) {
 

@@ -36,7 +36,7 @@ provide_rain_data_for_bathing_spot <- function(
     info = FALSE
   ))
 
-  if (inherits(control, "try-error")) {
+  if (is_error(control)) {
     return(create_failure(control))
   }
 
@@ -44,7 +44,7 @@ provide_rain_data_for_bathing_spot <- function(
 
     control <- try(provide_rain_data(control = control))
 
-    if (inherits(control, "try-error")) {
+    if (is_error(control)) {
       return(create_failure(control))
     }
   }

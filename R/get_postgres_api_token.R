@@ -26,7 +26,7 @@ get_postgres_api_token <- function(dbg = FALSE)
 
       result <- try(writeLines(token, file))
 
-      if (inherits(result, "try-error")) {
+      if (is_error(result)) {
 
         info <- fs::file_info(dirname(file))
 

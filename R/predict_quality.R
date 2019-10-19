@@ -16,7 +16,7 @@ predict_quality <- function(user_id, spot_id, date = Sys.Date())
   # Try to get the model that was added last (if any)
   model <- try(get_last_added_model(user_id, spot_id))
 
-  if (inherits(model, "try-error")) {
+  if (is_error(model)) {
     return(create_failure(model))
   }
 
@@ -34,7 +34,7 @@ predict_quality <- function(user_id, spot_id, date = Sys.Date())
     provide_data_for_lm(riverdata, pattern = "r_mean")
   })
 
-  if (inherits(newdata, "try-error")) {
+  if (is_error(newdata)) {
     return(create_failure(newdata))
   }
 

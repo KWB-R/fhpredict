@@ -158,6 +158,12 @@ get_prefix <- function(x)
   sapply(parts , "[", 1)
 }
 
+# is_error ---------------------------------------------------------------------
+is_error <- function(x)
+{
+  inherits(x, "try-error")
+}
+
 # iso_timestamp_to_local_posix -------------------------------------------------
 iso_timestamp_to_local_posix <- function(x, tzone = "Europe/Berlin")
 {
