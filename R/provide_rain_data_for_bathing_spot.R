@@ -280,7 +280,6 @@ api_replace_rain <- function(
 
     # Clear existing rain from the database
     if (length(ids)) {
-
       api_delete_rain(user_id = user_id, spot_id = spot_id, ids = ids)
     }
   }
@@ -294,12 +293,7 @@ api_replace_rain <- function(
 # sampling_time_to_time_string -------------------------------------------------
 sampling_time_to_time_string <- function(sampling_time)
 {
-  paste0(
-    substr(sampling_time, 1, 2),
-    ":",
-    substr(sampling_time, 3, 4),
-    ":00"
-  )
+  sprintf("%s:%s:00", substr(sampling_time, 1, 2), substr(sampling_time, 3, 4))
 }
 
 # check_rain_data_consistency --------------------------------------------------
