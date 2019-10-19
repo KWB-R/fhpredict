@@ -4,12 +4,12 @@
 \alias{simple}
 \title{A io function}
 \usage{
-simple(a = "foo", b = "bah")
+simple(spot_id, user_id)
 }
 \arguments{
-\item{a}{string (optional)}
+\item{spot_id}{number}
 
-\item{b}{string (optional)}
+\item{user_id}{number}
 }
 \description{
 simple function to test the opencpu API for the project
