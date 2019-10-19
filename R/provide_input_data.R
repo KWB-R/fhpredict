@@ -19,45 +19,34 @@ provide_input_data <- function(user_id, spot_id)
   # Define function returning the name for an element of the result list
   result_element <- function(prefix) sprintf("%s_spot%d", prefix, spot_id)
 
-  # Define the end of possible error messages
-  no_data_suffix <- sprintf(
-    "available for user_id = %d, spot_id = %d.", user_id, spot_id
-  )
-
   # Look for microbiological measurements
   measurements <- api_get_measurements(user_id, spot_id)
 
   # Add microbiological measurements to the result or return if there are no
   # measurements
-  if (nrow(measurements)) {
-
-    result[[result_element("hygiene")]] <- data.frame(
-      datum = reset_time(
-        iso_timestamp_to_local_posix(get(measurements, "date"))
-      ),
-      e.coli = get(measurements, "conc_ec")
-    )
-
-  } else {
-
-    clean_stop("No microbiological measurements ", no_data_suffix)
+  if (nrow(measurements) == 0) {
+    clean_stop(get_text(
+      "no_measurements", user_id = user_id, spot_id = spot_id
+    ))
   }
+
+  result[[result_element("hygiene")]] <- data.frame(
+    datum = reset_time(iso_timestamp_to_local_posix(get(measurements, "date"))),
+    e.coli = get(measurements, "conc_ec")
+  )
 
   # Look for rain data
   rain <- api_get_rain(user_id, spot_id)
 
   # Add rain measurements to the result or return if there are no rain data
-  if (nrow(rain)) {
-
-    result[[result_element("r")]] <- data.frame(
-      datum = reset_time(get(rain, "dateTime")),
-      r_radolan = get(rain, "value")
-    )
-
-  } else {
-
-    clean_stop("No rain data ", no_data_suffix)
+  if (nrow(rain) == 0) {
+    clean_stop(get_text("no_rain_data", user_id = user_id, spot_id = spot_id))
   }
+
+  result[[result_element("r")]] <- data.frame(
+    datum = reset_time(get(rain, "dateTime")),
+    r_radolan = get(rain, "value")
+  )
 
   # Look for discharge measurements. See tutorial for how to add some discharge
   # data
@@ -75,12 +64,4 @@ provide_input_data <- function(user_id, spot_id)
 
   # Return the result data structure
   result
-}
-
-# reset_time -------------------------------------------------------------------
-reset_time <- function(x)
-{
-  stopifnot(inherits(x, "POSIXct"))
-
-  as.POSIXct(substr(as.character(x), 1, 10), tz = attr(x, "tzone"))
 }

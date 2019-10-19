@@ -15,10 +15,7 @@ api_add_discharge <- function(user_id, spot_id, discharge, comment = NULL)
   data$comment <- comment
 
   # Return the ids of the discharge data records
-  add_timeseries_to_database(
-    path = path_discharges(user_id, spot_id),
-    data = data
-  )
+  add_timeseries_to_database(path_discharges(user_id, spot_id), data)
 }
 
 # api_get_discharge ------------------------------------------------------------
@@ -31,10 +28,7 @@ api_add_discharge <- function(user_id, spot_id, discharge, comment = NULL)
 #'
 api_get_discharge <- function(user_id, spot_id)
 {
-  api_get_timeseries(
-    path = path_discharges(user_id, spot_id),
-    subject = "discharge"
-  )
+  api_get_timeseries(path_discharges(user_id, spot_id), subject = "discharge")
 }
 
 # api_delete_discharge ---------------------------------------------------------

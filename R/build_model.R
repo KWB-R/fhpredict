@@ -17,13 +17,11 @@ build_model <- function(user_id, spot_id, seed = NULL)
   spot_data <- try(provide_input_data(user_id, spot_id))
 
   if (inherits(spot_data, "try-error")) {
-
     return(create_failure(spot_data))
   }
 
   # Initialise the random number generator if a seed is given
   if (! is.null(seed)) {
-
     stopifnot(is.numeric(seed))
     set.seed(seed)
   }
@@ -31,14 +29,12 @@ build_model <- function(user_id, spot_id, seed = NULL)
   result <- try(build_and_validate_model(spot_data = spot_data))
 
   if (inherits(result, "try-error")) {
-
     return(create_failure(result))
   }
 
   if (length(result) == 0) {
-
     return(create_result(
-      success = FALSE, message = "Could not create a valid model!"
+      success = FALSE, message = get_text("could_not_build_model")
     ))
   }
 
@@ -50,22 +46,17 @@ build_model <- function(user_id, spot_id, seed = NULL)
       user_id = user_id,
       spot_id = spot_id,
       model = model,
-      comment = sprintf(
-        "Model created on %s with fhpredict::build_model()", Sys.time()
-      )
+      comment = get_text("model_created", datetime = Sys.time())
     )
   })
 
   if (inherits(result, "try-error")) {
-
     return(create_failure(result))
   }
 
-  create_result(
-    success = TRUE,
-    message = sprintf(
-      "A model was found and saved (model_id = %d):\n%s",
-      model_id, utils::capture.output(print(model$formula))[1]
-    )
-  )
+  create_result(success = TRUE, message = get_text(
+    "model_found",
+    model_id = model_id,
+    formula = utils::capture.output(print(model$formula))[1]
+  ))
 }

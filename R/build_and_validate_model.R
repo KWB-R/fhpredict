@@ -49,7 +49,7 @@ build_and_validate_model <- function(
 
   if (nrow(sorted_models) == 0) {
 
-    message("Could not create a valid model!")
+    message(get_text("could_not_build_model"))
     return(list())
   }
 
@@ -72,24 +72,15 @@ build_and_validate_model <- function(
 check_args_build_and_validate <- function(river_data, river, spot_data)
 {
   if (! is.null(river_data)) {
-    clean_stop(
-      "The argument 'river_data' is not supported any more. Please use the ",
-      "new argument 'spot_data' to pass a list of data frames related to ONE ",
-      "bathing spot ONLY."
-    )
+    clean_stop(get_text("river_data_not_supported"))
   }
 
   if (! is.null(river)) {
-    clean_stop(
-      "The argument 'river' is not supported any more. You may use the ",
-      "new argument 'prefix' to prefix the names of the returned models."
-    )
+    clean_stop(get_text("river_not_supported"))
   }
 
   if (! all(sapply(spot_data, is.data.frame))) {
-    clean_stop(
-      "spot_data is expected to be a list of data frames!"
-    )
+    clean_stop(get_text("spot_data_expected_type"))
   }
 }
 
@@ -104,10 +95,7 @@ stepwise <- function(model_data)
   max_steps <- min(round(nrow(model_data) / 10), 10)
 
   if (max_steps == 0) {
-
-    clean_stop(
-      "max_steps = 0 in stepwise() -> Not enough data points available!"
-    )
+    clean_stop(get_text("max_steps_is_zero"))
   }
 
   # Creating list of candidate models with 1 ... max_steps predictors
@@ -124,12 +112,9 @@ stepwise <- function(model_data)
 
   if (any(failed)) {
 
-    clean_stop(
-      "stat::step() failed for the following step numbers:\n",
-      sprintf(
-        "step = %d: %s", which(failed), sapply(result[failed], as.character)
-      )
-    )
+    clean_stop(get_text("step_failed", details = new_line_collapsed(sprintf(
+      "step = %d: %s", which(failed), sapply(result[failed], as.character)
+    ))))
   }
 
   result
@@ -153,18 +138,16 @@ provide_data_for_lm <- function(riverdata, pattern = "", dbg = TRUE)
   if (nzchar(pattern)) {
 
     variables <- kwb.utils::catAndRun(
-      dbg = dbg,
-      messageText = sprintf(
-        "Filtering %d variables for those matching '%s'",
-        length(variables), pattern
-      ),
-      expr = grep(pattern, variables, value = TRUE)
+      get_text("filtering_variables", n = length(variables), pattern = pattern),
+      expr = grep(pattern, variables, value = TRUE),
+      dbg = dbg
     )
   }
 
-  kwb.utils::catIf(dbg, sprintf(
-    "Using %d variables:\n- %s\n",
-    length(variables), kwb.utils::stringList(variables, collapse = "\n- ")
+  kwb.utils::catIf(dbg, get_text(
+    "using_variables",
+    n = length(variables),
+    varlist = kwb.utils::stringList(variables, collapse = "\n- ")
   ))
 
   variables <- c("log_e.coli", variables)
@@ -173,13 +156,8 @@ provide_data_for_lm <- function(riverdata, pattern = "", dbg = TRUE)
   data <- kwb.flusshygiene::process_model_riverdata(riverdata, variables)
 
   if (nrow(data) == 0) {
-
     utils::str(riverdata)
-
-    clean_stop(
-      "kwb.flusshygiene::process_model_riverdata() returned an empty data ",
-      "frame! See the structure of 'riverdata' above."
-    )
+    clean_stop(get_text("process_returned_no_data"))
   }
 
   data
@@ -193,7 +171,7 @@ remove_hygiene_data <- function(datalist)
   hygiene_element <- grep("^hygiene", names(datalist), value = TRUE)
 
   result <- kwb.utils::catAndRun(
-    sprintf("Removing element '%s' from list of data frames", hygiene_element),
+    get_text("removing_data_frame", element = hygiene_element),
     datalist[setdiff(names(datalist), hygiene_element)]
   )
 
@@ -292,7 +270,7 @@ update_stat_tests <- function(
             .data$log_e.coli > .data$`2.5%`,
           within50 =
             .data$log_e.coli < .data$`75%` &
-            .data$log_e.coli > .data$`25%`,
+            .data$log_e.coli > .data$`25%`
         )
 
       stat_tests$in95[selected] <- stat_tests$in95[selected] +
@@ -315,7 +293,8 @@ update_stat_tests <- function(
 # test_beta --------------------------------------------------------------------
 test_beta <- function(is_true, percentile)
 {
-  stats::pbeta(q = percentile,
+  stats::pbeta(
+    q = percentile,
     shape1 = sum(is_true) + 1,
     shape2 = sum(! is_true) + 1
   ) > 0.05

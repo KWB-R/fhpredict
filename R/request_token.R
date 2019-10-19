@@ -32,9 +32,7 @@ request_token <- function()
   status <- httr::status_code(response)
 
   if (status != 200) {
-    message(sprintf(
-      "Request for token failed. Status: %d. Returning NULL.", status
-    ))
+    message(get_text("request_token_failed", status = status))
     return(NULL)
   }
 

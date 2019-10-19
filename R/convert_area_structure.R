@@ -18,15 +18,9 @@ convert_area_structure <- function(spot_area, swap_lat_long = FALSE)
 
   # Interchange latitude and longitude in the coordinates if requested
   if (swap_lat_long) {
-
     coords <- lapply(coords, function(x) x[c(2, 1)])
   }
 
   # Return a list similar to what select_relevant_rain_area() returns
-  list(
-    geometry = list(
-      type = "Polygon",
-      coordinates = list(coords)
-    )
-  )
+  list(geometry = list(type = "Polygon", coordinates = list(coords)))
 }

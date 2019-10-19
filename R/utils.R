@@ -168,8 +168,16 @@ iso_timestamp_to_local_posix <- function(x, tzone = "Europe/Berlin")
   structure(times, tzone = tzone)
 }
 
-# new_line_collapsed
+# new_line_collapsed -----------------------------------------------------------
 new_line_collapsed <- function(x)
 {
   paste(x, collapse = "\n")
+}
+
+# reset_time -------------------------------------------------------------------
+reset_time <- function(x)
+{
+  stopifnot(inherits(x, "POSIXct"))
+
+  as.POSIXct(substr(as.character(x), 1, 10), tz = attr(x, "tzone"))
 }

@@ -4,10 +4,9 @@ check_bathingspot <- function(bathing_spot)
   stopifnot(is.list(bathing_spot))
 
   # Use selectElements() to check if expected elements exist
-  for (element in c("id", "name", "latitude", "longitude", "area")) {
-
-    kwb.utils::selectElements(bathing_spot, element)
-  }
+  kwb.utils::selectElements(bathing_spot, elements = c(
+    "id", "name", "latitude", "longitude", "area"
+  ))
 }
 
 # check_user_id ----------------------------------------------------------------
@@ -23,8 +22,6 @@ check_user_id <- function(user_id)
 
     print(kwb.utils::selectColumns(users, c("id", "firstName", "lastName")))
 
-    clean_stop(sprintf(
-      "Invalid user_id: %d. See above for possible users.", user_id
-    ))
+    clean_stop(get_text("invalid_user", user_id = user_id))
   }
 }

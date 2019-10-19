@@ -14,13 +14,13 @@ get_postgres_api_token <- function(dbg = FALSE)
   file <- file.path(get_environment_var("TEMP"), ".postgres_api_token")
 
   read_token <- function() kwb.utils::catAndRun(
-    sprintf("Reading access token from '%s'", file),
+    get_text("reading_token", file = file),
     dbg = dbg,
     readLines(file)
   )
 
   write_token <- function(token) kwb.utils::catAndRun(
-    sprintf("Writing access token to '%s'", file),
+    get_text("writing_token", file = file),
     dbg = dbg,
     expr = {
 
@@ -30,18 +30,21 @@ get_postgres_api_token <- function(dbg = FALSE)
 
         info <- fs::file_info(dirname(file))
 
-        clean_stop(
-          "No permission to write to file ", file, "\n",
-          "Permissions/user/group of folder ", dirname(file), ":\n",
-          info$permissions, "/", info$user, "/", info$group, "\n",
-          "Error message: ", as.character(result)
-        )
+        clean_stop(get_text(
+          "no_write_permission",
+          file = file,
+          folder = dirname(file),
+          permissions = info$permissions,
+          user = info$user,
+          group = info$group,
+          error = as.character(result)
+        ))
       }
     }
   )
 
   new_token <- function() kwb.utils::catAndRun(
-    "Requesting a new access token",
+    get_text("requesting_token"),
     dbg = dbg,
     if (! is.null(token_data <- request_token())) {
       kwb.utils::selectElements(token_data, "access_token")

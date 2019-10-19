@@ -12,8 +12,8 @@
 #' @export
 #' @examples
 #' \dontrun{download_radolan(resolution = "daily")}
-download_radolan <- function(resolution = "daily", export_dir = "data") {
-
+download_radolan <- function(resolution = "daily", export_dir = "data")
+{
   if (! resolution %in% c("daily", "hourly")) {
     clean_stop("resolution must be one of 'daily', 'hourly'")
   }

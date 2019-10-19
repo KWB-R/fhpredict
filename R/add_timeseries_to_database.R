@@ -6,7 +6,7 @@ add_timeseries_to_database <- function(path, data)
   n_records <- nrow(data)
 
   if (n_records == 0) {
-    message("Nothing to add.")
+    message(get_text("nothing_to_add"))
     return(integer())
   }
 

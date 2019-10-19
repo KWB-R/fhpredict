@@ -11,7 +11,7 @@ is_valid_postgres_api_token <- function(token)
   success <- kwb.utils::defaultIfNULL(success, FALSE)
 
   if (! success) {
-    message("The token is not valid. The response was:")
+    message(get_text("invalid_token"))
     utils::str(httr::headers(response))
   }
 

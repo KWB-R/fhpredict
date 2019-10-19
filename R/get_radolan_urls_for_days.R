@@ -19,7 +19,6 @@ get_radolan_urls_for_days <- function(dates, diff_days = 10, time = "1050")
 
   # Return if there is not at least one URL
   if (length(urls) == 0) {
-
     return(character())
   }
 

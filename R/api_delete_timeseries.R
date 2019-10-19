@@ -11,13 +11,9 @@ api_delete_timeseries <- function(
 
     if (nrow(df) == 0) {
 
-      message(
-        sprintf(
-          "No %s data available for user_id = %d, spot_id = %d. ",
-          subject, user_id, spot_id
-        ),
-        "Nothing to delete."
-      )
+      message(get_text(
+        "no_data", subject = subject, user_id = user_id, spot_id = spot_id
+      ))
 
       return()
     }
@@ -27,7 +23,7 @@ api_delete_timeseries <- function(
 
   # Delete all records given their ids
   kwb.utils::catAndRun(
-    sprintf("Deleting %d %s data points", length(ids), subject),
+    get_text("deleting_data_points", n = length(ids), subject = subject),
     dbg = dbg, {
       for (id in ids) {
         result <- postgres_delete(path = path_function(user_id, spot_id, id))

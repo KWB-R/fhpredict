@@ -37,7 +37,6 @@ provide_rain_data_for_bathing_spot <- function(
   ))
 
   if (inherits(control, "try-error")) {
-
     return(create_failure(control))
   }
 
@@ -46,7 +45,6 @@ provide_rain_data_for_bathing_spot <- function(
     control <- try(provide_rain_data(control = control))
 
     if (inherits(control, "try-error")) {
-
       return(create_failure(control))
     }
   }
@@ -54,10 +52,7 @@ provide_rain_data_for_bathing_spot <- function(
   create_result(
     data = control$rain_ids,
     success = TRUE,
-    message = sprintf(
-      "%d rain data records have been inserted to the database.",
-      length(control$rain_ids)
-    )
+    message = get_text("rain_added", n = length(control$rain_ids))
   )
 }
 
@@ -145,17 +140,9 @@ provide_rain_data <- function(
     )
 
     if (info) {
-      message(
-        "Please use the returned object in a loop to perform the actual data ",
-        "import,\nas in the following code:\n\n",
-        sprintf(
-          "control <- provide_rain_data(%d, %d)\n\n",
-          user_id, spot_id
-        ),
-        "while (control$remaining > 0) {\n",
-        "  control <- provide_rain_data(control = control)\n",
-        "}"
-      )
+      message(get_text(
+        "info_provide_rain_data", user_id = user_id, spot_id = spot_id
+      ))
     }
 
     # Return the control object

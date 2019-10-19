@@ -62,7 +62,7 @@ get_radolan_urls_for_measurements <- function(
   }
 
   if (is.null(dates_all)) {
-    message("No measurement dates.")
+    message(get_text("no_measurement_dates"))
     return(character())
   }
 
@@ -70,7 +70,7 @@ get_radolan_urls_for_measurements <- function(
   dates <- dates_all[is_in_bathing_season(dates_all)]
 
   if (length(dates) == 0) {
-    message("No measurement dates in bathing season.")
+    message(get_text("no_measurement_dates_in_season"))
     return(character())
   }
 
@@ -79,8 +79,8 @@ get_radolan_urls_for_measurements <- function(
   }
 
   if (length(dates) == 0) {
-    message(sprintf(
-      "No measurement dates between %s and %s.", date_range[1], date_range[2]
+    message(get_text(
+      "no_measurement_dates_in_range", from = date_range[1], to = date_range[2]
     ))
     return(character())
   }
@@ -102,12 +102,7 @@ get_unique_measurement_dates <- function(user_id, spot_id)
   measurements <- api_get_measurements(user_id, spot_id)
 
   if (is.null(measurements)) {
-
-    message(sprintf(
-      "No measurements available for user_id = %d and spot_id = %d.",
-      user_id, spot_id
-    ))
-
+    message(get_text("no_measurements", user_id = user_id, spot_id = spot_id))
     return()
   }
 

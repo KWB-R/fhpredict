@@ -21,7 +21,6 @@ api_replace_predictions <- function(user_id, spot_id, percentiles)
 
     # Clear existing rain from the database
     if (length(ids)) {
-
       api_delete_timeseries(user_id, spot_id, path_predictions)
     }
   }

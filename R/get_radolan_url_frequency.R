@@ -25,7 +25,6 @@ get_radolan_url_frequency <- function(
     day <- substr(names(urls_list[[year_label]]), 5, 8)
 
     if (length(day) == 0) {
-
       return(cbind(backbone, Freq = NA_integer_))
     }
 
@@ -52,18 +51,15 @@ get_radolan_urls_for_years <- function(
   #time = "1050";bathing_season_only = TRUE;days_before_start = 5L
   yyyymmdd <- function(x) format(x, "%Y%m%d")
 
-  fmt <- paste0(
-    "Getting URLs to Radolan files for year %s",
-    ifelse(bathing_season_only, " (bathing season only)", "")
-  )
-
   first_day <- ifelse(bathing_season_only, "-05-01", "-01-01")
   last_day <- ifelse(bathing_season_only, "0930", "1231")
+
+  season_info <- ifelse(bathing_season_only, " (bathing season only)", "")
 
   lapply(stats::setNames(nm = sort(unique(years))), function(year) {
 
     kwb.utils::catAndRun(
-      messageText = sprintf(fmt, year),
+      get_text("getting_radolan_urls", year = year, season_info = season_info),
       get_radolan_urls_bucket(
         from = yyyymmdd(as.Date(paste0(year, first_day)) - days_before_start),
         to = paste0(year, last_day),
@@ -73,33 +69,3 @@ get_radolan_urls_for_years <- function(
     )}
   )
 }
-
-# # get_matching_radolan_urls ----------------------------------------------------
-# get_matching_radolan_urls <- function(
-#   dates, time = "1050", days_before_start = 5L
-# )
-# {
-#   yyyymmdd <- function(x) format(x, "%Y%m%d")
-#
-#   date_range <- range(dates)
-#
-#   system.time(urls_1 <- fhpredict::get_radolan_urls_bucket(
-#     from = yyyymmdd(date_range[1] + offset_days),
-#     to = yyyymmdd(date_range[2]),
-#     time = time,
-#     bathing_season_only = TRUE
-#   ))
-#
-#   sort(substr(names(urls_1), 1, 8))
-#
-#   year_strings <- sort(unique(format(dates, "%Y")))
-#
-#   system.time(url_list <- get_radolan_urls_for_years(
-#     years, days_before_start = days_before_start
-#   ))
-#
-#   urls_2 <- unlist(url_list)
-#
-#   head(urls_1)
-#   head(urls_2)
-# }

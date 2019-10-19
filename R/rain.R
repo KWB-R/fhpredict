@@ -40,11 +40,7 @@ api_add_rain <- function(
   values <- kwb.utils::selectColumns(rain, "rain")
 
   kwb.utils::catAndRun(
-
-    messageText = sprintf(
-      "Inserting %d rain data records into the database", length(date_strings)
-    ),
-
+    get_text("inserting_rain", n = length(date_strings)),
     expr = {
 
       # Prepare data frame to be passed to add_timeseries_to_database()

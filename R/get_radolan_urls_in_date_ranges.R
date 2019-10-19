@@ -12,8 +12,8 @@ get_radolan_urls_in_date_ranges <- function(date_ranges, time = "1050")
   lapply(seq_along(dates_from), function(i) {
 
     kwb.utils::catAndRun(
-      sprintf(
-        "Getting URLs to files between %s and %s", dates_from[i], dates_to[i]
+      get_text(
+        "getting_radolan_urls_between", from = dates_from[i], to = dates_to[i]
       ),
       get_radolan_urls_bucket(
         from = yyyymmdd(dates_from[i]),

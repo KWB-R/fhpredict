@@ -17,7 +17,6 @@ predict_quality <- function(user_id, spot_id, date = Sys.Date())
   model <- try(get_last_added_model(user_id, spot_id))
 
   if (inherits(model, "try-error")) {
-
     return(create_failure(model))
   }
 
@@ -36,21 +35,15 @@ predict_quality <- function(user_id, spot_id, date = Sys.Date())
   })
 
   if (inherits(newdata, "try-error")) {
-
     return(create_failure(newdata))
   }
 
   # Get a prediction using the model and the new data
-
-
   path <- path_predictions(user_id, spot_id)
 
   #str(postgres_get(path)$data)
 
-  result <- postgres_post(path, body = list(
-    date = date,
-    prediction = "gut"
-  ))
+  result <- postgres_post(path, body = list(date = date, prediction = "gut"))
 
   if (length(result) == 0) {
 
@@ -75,9 +68,8 @@ get_last_added_model <- function(user_id, spot_id)
   models <- api_get_model(user_id, spot_id)
 
   if (nrow(models) == 0) {
-
-    clean_stop(sprintf(
-      "No models stored for user_id = %d, spot_id = %d", user_id, spot_id
+    clean_stop(get_text(
+      "no_models_stored", user_id = user_id, spot_id = spot_id
     ))
   }
 

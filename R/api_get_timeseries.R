@@ -11,13 +11,10 @@
 api_get_timeseries <- function(path, subject = "timeseries", sort = TRUE)
 {
   df <- kwb.utils::catAndRun(
-
-    paste("Reading", subject, "data from database"), {
-
+    messageText = get_text("reading_data", subject = subject),
+    expr = {
       result <- postgres_get(path)
-
       stop_on_request_failure(result)
-
       flatten_recursive_list(result$data)
     }
   )
@@ -28,22 +25,20 @@ api_get_timeseries <- function(path, subject = "timeseries", sort = TRUE)
   }
 
   df <- kwb.utils::catAndRun(
-
-    "Converting time columns from text to POSIXct", {
-
+    messageText = get_text("converting_time"),
+    expr = {
       df <- convert_time_columns(df)
-
       df$dateTime = get_date_time_from_text_columns(df)
-
       df
     }
   )
 
   if (sort) {
 
-    df <- kwb.utils::catAndRun("Sorting data frame by time", {
-      df[order(df$dateTime), , drop = FALSE]
-    })
+    df <- kwb.utils::catAndRun(
+      messageText = get_text("sorting_by_time"),
+      expr = df[order(df$dateTime), , drop = FALSE]
+    )
   }
 
   kwb.utils::removeColumns(df, c("date", "comment"))
