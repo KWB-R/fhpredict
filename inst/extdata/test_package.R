@@ -128,8 +128,6 @@ if (FALSE)
 {
   str(river_data, 2)
 
-  clear_cache()
-
   # What users are available?
   users <- api_get_users()
 
