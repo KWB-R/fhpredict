@@ -21,16 +21,7 @@ add_timeseries_to_database <- function(path, data)
     one_row_as_list(1)
   })
 
-  response <- attr(result, "response")
-
-  if (! is.null(response) && response$status_code == 500) {
-
-    error <- kwb.utils::selectElements(httr::content(response), "error")
-
-    stop(paste(error$message, error$detail, sep = "\n"))
-  }
-
-  #stop_on_request_failure(result)
+  stop_on_request_failure(result)
 
   # Return the id(s) of the added record(s)
   sapply(result$data, kwb.utils::selectElements, "id")

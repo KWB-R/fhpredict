@@ -122,19 +122,27 @@ stop_on_request_failure <- function(result, error_text = "")
 
   status <- httr::http_status(response)
 
-  if (status$category != "Success") {
-
-    status_message <- paste("HTTP request failed:", status$message)
-
-    text <- if (nzchar(error_text)) {
-
-      sprintf("%s (%s)", error_text, status_message)
-
-    } else {
-
-      status_message
-    }
-
-    clean_stop(text)
+  if (status$category == "Success") {
+    return()
   }
+
+  text <- sprintf(
+    "HTTP request failed.\nstatus_message: %s",
+    new_line_collapsed(status$message)
+  )
+
+  if (! is.null(error <- httr::content(response)$error)) {
+    text <- sprintf(
+      "%s\nerror_message: %s\nerror_detail: %s",
+      text,
+      new_line_collapsed(error$message),
+      new_line_collapsed(error$detail)
+    )
+  }
+
+  if (nzchar(error_text)) {
+    text <- paste0(error_text, "\n", text)
+  }
+
+  clean_stop(text)
 }
