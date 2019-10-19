@@ -54,7 +54,9 @@ postgres_delete <- function(path)
 }
 
 # postgres_request -------------------------------------------------------------
-postgres_request <- function(path, type = "GET", body = NULL, ...)
+postgres_request <- function(
+  path, type = "GET", body = NULL, ..., give_message = FALSE
+)
 {
   stopifnot(type %in% c("GET", "POST", "DELETE"))
 
@@ -81,13 +83,15 @@ postgres_request <- function(path, type = "GET", body = NULL, ...)
 
   if (status$category != "Success") {
 
-    message(
-      sprintf("%s request '%s' returned with error:\n", type, path),
-      sprintf("- status code: %d\n", httr::status_code(response)),
-      sprintf("- category: %s\n", status$category),
-      sprintf("- reason: %s\n", status$reason),
-      sprintf("- message: %s\n", status$message)
-    )
+    if (give_message) {
+      message(
+        sprintf("%s request '%s' returned with error:\n", type, path),
+        sprintf("- status code: %d\n", httr::status_code(response)),
+        sprintf("- category: %s\n", status$category),
+        sprintf("- reason: %s\n", status$reason),
+        sprintf("- message: %s\n", status$message)
+      )
+    }
 
     return(structure(list(), response = response))
   }
