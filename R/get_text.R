@@ -2,7 +2,6 @@
 get_text <- function(keyword, ...)
 {
   texts <- kwb.utils::resolve(..., x = list(
-    available_for_spot = "available for <spot_ident>.",
     converting_time = "Converting time columns from text to POSIXct",
     could_not_build_model = "Could not create a valid model!",
     deleting_data_points = "Deleting <n> <subject> data points",
