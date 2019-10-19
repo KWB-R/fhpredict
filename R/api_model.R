@@ -156,9 +156,7 @@ api_delete_model <- function(user_id, spot_id, model_id)
   stopifnot(all(sapply(list(user_id, spot_id, model_id), is.numeric)))
   stopifnot(all(sapply(list(user_id, spot_id, model_id), `>`, 0)))
 
-  result <- postgres_delete(path_models(user_id, spot_id, model_id))
-
-  stop_on_request_failure(result)
+  result <- safe_postgres_delete(path_models(user_id, spot_id, model_id))
 
   stopifnot(kwb.utils::selectElements(result, "success"))
   stopifnot(length(kwb.utils::selectElements(result, "data")) == 1)

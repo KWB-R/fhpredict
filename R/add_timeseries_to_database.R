@@ -15,13 +15,11 @@ add_timeseries_to_database <- function(path, data)
 
   # POST the data.
   # Convert data frame to a list of lists if more than one record is given.
-  result <- postgres_post(path, body = if (n_records > 1) {
+  result <- safe_postgres_post(path, body = if (n_records > 1) {
     lapply(seq_len(n_records), one_row_as_list)
   } else {
     one_row_as_list(1)
   })
-
-  stop_on_request_failure(result)
 
   # Return the id(s) of the added record(s)
   sapply(result$data, kwb.utils::selectElements, "id")

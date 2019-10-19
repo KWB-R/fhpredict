@@ -26,8 +26,7 @@ api_delete_timeseries <- function(
     get_text("deleting_data_points", n = length(ids), subject = subject),
     dbg = dbg, {
       for (id in ids) {
-        result <- postgres_delete(path = path_function(user_id, spot_id, id))
-        stop_on_request_failure(result)
+        safe_postgres_delete(path = path_function(user_id, spot_id, id))
       }
     }
   )

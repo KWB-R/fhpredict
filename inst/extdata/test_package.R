@@ -93,10 +93,7 @@ if (FALSE)
   View(measurements)
 
   # Is this the same as what the measurement endpoint provides?
-  response <- fhpredict::postgres_get("users/3/bathingspots/100/measurements")
-
-  # Check the response
-  fhpredict:::stop_on_request_failure(response)
+  response <- fhpredict::safe_postgres_get("users/3/bathingspots/100/measurements")
 
   # Convert list structure to a data frame
   measurements2 <- fhpredict:::flatten_recursive_list(response$data)

@@ -11,10 +11,9 @@
 api_get_timeseries <- function(path, subject = "timeseries", sort = TRUE)
 {
   df <- kwb.utils::catAndRun(
-    messageText = get_text("reading_data", subject = subject),
+    get_text("reading_data", subject = subject),
     expr = {
-      result <- postgres_get(path)
-      stop_on_request_failure(result)
+      result <- safe_postgres_get(path)
       flatten_recursive_list(result$data)
     }
   )
@@ -25,7 +24,7 @@ api_get_timeseries <- function(path, subject = "timeseries", sort = TRUE)
   }
 
   df <- kwb.utils::catAndRun(
-    messageText = get_text("converting_time"),
+    get_text("converting_time"),
     expr = {
       df <- convert_time_columns(df)
       df$dateTime = get_date_time_from_text_columns(df)
@@ -36,7 +35,7 @@ api_get_timeseries <- function(path, subject = "timeseries", sort = TRUE)
   if (sort) {
 
     df <- kwb.utils::catAndRun(
-      messageText = get_text("sorting_by_time"),
+      get_text("sorting_by_time"),
       expr = df[order(df$dateTime), , drop = FALSE]
     )
   }

@@ -280,12 +280,10 @@ purification_plants <- lapply(bathing_spots$id, function(spot_id) {
   
   message("spot id = ", spot_id)
   
-  result <- fhpredict::postgres_get(path = sprintf(
+  result <- fhpredict::safe_postgres_get(path = sprintf(
     "%s/purificationPlants", 
     fhpredict:::path_bathingspot(user_id = 3, spot_id = spot_id)
   ))
-  
-  fhpredict:::stop_on_request_failure(result)
   
   result$data
 })
