@@ -34,11 +34,9 @@ get_percentiles_from_prediction <- function(prediction)
 {
   probs <- c("P2.5" = 0.025, P50 = 0.5, P90 = 0.9, P95 = 0.95, "P97.5" = 0.975)
 
-  percentiles <- as.data.frame(10^(t(
-    apply(prediction, 2, stats::quantile, probs = probs)
-  )))
+  percentiles <- 10^(t(apply(prediction, 2, stats::quantile, probs = probs)))
 
-  stats::setNames(percentiles, names(probs))
+  stats::setNames(as.data.frame(percentiles), names(probs))
 }
 
 # get_quality_from_percentiles -------------------------------------------------
