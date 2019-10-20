@@ -52,10 +52,7 @@ api_add_rain <- function(
 
       data$comment <- comment
 
-      add_timeseries_to_database(
-        path = path_rains(user_id, spot_id),
-        data = data
-      )
+      add_timeseries_to_database(path_rains(user_id, spot_id), data)
     }
   )
 }
@@ -70,7 +67,9 @@ api_add_rain <- function(
 #'
 api_get_rain <- function(user_id, spot_id)
 {
-  api_get_timeseries(path = path_rains(user_id, spot_id), subject = "rain")
+  rain <- api_get_timeseries(path_rains(user_id, spot_id), subject = "rain")
+
+  remove_and_reorder_columns(rain, "rain")
 }
 
 # api_delete_rain --------------------------------------------------------------
@@ -82,15 +81,18 @@ api_get_rain <- function(user_id, spot_id)
 #' @param ids optional. Vector of rain ids. If not given or \code{NULL} (the
 #'   default) all rain data for the bathing spot are deleted!
 #' @param dbg if \code{TRUE} debug messages are shown
+#' @param \dots further arguments passed to
+#'   \code{fhpredict:::api_delete_timeseries}
 #' @export
 #'
-api_delete_rain <- function(user_id, spot_id, ids = NULL, dbg = TRUE)
+api_delete_rain <- function(user_id, spot_id, ids = NULL, dbg = TRUE, ...)
 {
   api_delete_timeseries(
     user_id,
     spot_id,
     ids = ids,
     path_function = path_rains,
-    subject = "rain"
+    subject = "rain",
+    ...
   )
 }
