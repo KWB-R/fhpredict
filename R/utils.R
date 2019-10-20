@@ -47,11 +47,7 @@ create_result <- function(
   data = NULL, success = TRUE, message = "Everything ok"
 )
 {
-  list(
-    data = data,
-    sucess = success,
-    message = message
-  )
+  list(data = data, sucess = success, message = message)
 }
 
 # extract_flat_information -----------------------------------------------------
