@@ -4,15 +4,16 @@
 #'
 #' @param path relative path, e.g. \code{bathingspots/1} to get data for
 #'   bathingspot with ID 1
+#' @param \dots further arguments passed to \code{fhpredict:::postgres_request}
 #' @return In case of success this function returns what
 #'   \code{httr::content(response, as = "parsed")} returns. In case of failure
 #'   an empty list with attribute \code{response} (containing the response
 #'   object returned by \code{\link[httr]{GET}}) is returned.
 #' @export
 #'
-postgres_get <- function(path)
+postgres_get <- function(path, ...)
 {
-  postgres_request(path, "GET")
+  postgres_request(path, "GET", ...)
 }
 
 # postgres_post ----------------------------------------------------------------
@@ -25,15 +26,16 @@ postgres_get <- function(path)
 #'   \code{list(name = "lirum larum")}
 #' @param encode passed to \code{\link[httr]{POST}}. Default: "json". Set to
 #'   "multipart" for uploading files!
+#' @param \dots further arguments passed to \code{fhpredict:::postgres_request}
 #' @return In case of success this function returns what
 #'   \code{httr::content(response, as = "parsed")} returns. In case of failure
 #'   an empty list with attribute \code{response} (containing the response
 #'   object returned by \code{\link[httr]{POST}}) is returned.
 #' @export
 #'
-postgres_post <- function(path, body = NULL, encode = "json")
+postgres_post <- function(path, body = NULL, encode = "json", ...)
 {
-  postgres_request(path, "POST", body, encode = encode)
+  postgres_request(path, "POST", body = body, encode = encode, ...)
 }
 
 # postgres_delete --------------------------------------------------------------
@@ -42,27 +44,43 @@ postgres_post <- function(path, body = NULL, encode = "json")
 #'
 #' @param path relative path, e.g. \code{users/3/bathingspots/18/genericInputs}
 #'   to delete a generic input for bathing spot with id 18 of user with id 3
+#' @param \dots further arguments passed to \code{fhpredict:::postgres_request}
 #' @return In case of success this function returns what
 #'   \code{httr::content(response, as = "parsed")} returns. In case of failure
 #'   an empty list with attribute \code{response} (containing the response
 #'   object returned by \code{\link[httr]{DELETE}}) is returned.
 #' @export
 #'
-postgres_delete <- function(path)
+postgres_delete <- function(path, ...)
 {
-  postgres_request(path, "DELETE")
+  postgres_request(path, "DELETE", ...)
 }
 
 # postgres_request -------------------------------------------------------------
+
+#' Do a Request to the Flusshygiene Postgres API
+#'
+#' @param path relative path to endpoint
+#' @param type one of "GET", "POST", "DELETE"
+#' @param \dots further arguments passed to one of \code{\link[httr]{GET}},
+#'   \code{\link[httr]{DELETE}}, \code{\link[httr]{POST}}, depending on
+#'   \code{type}
+#' @param token token required to authenticate for the API. If omitted, a token
+#'   will be provided by a call to \code{fhpredict:::get_postgres_api_token}.
+#' @param verbose if \code{TRUE} (the default is \code{FALSE}), the result of
+#'   the request will be printed
+#' @keywords internal
 postgres_request <- function(
-  path, type = "GET", body = NULL, ..., give_message = FALSE
+  path, type = "GET", ..., token = NULL, verbose = FALSE
 )
 {
   stopifnot(type %in% c("GET", "POST", "DELETE"))
 
-  url <- paste0(assert_final_slash(get_environment_var("API_URL")), path)
+  if (is.null(token)) {
+    token <- get_postgres_api_token()
+  }
 
-  token <- get_postgres_api_token()
+  url <- paste0(assert_final_slash(get_environment_var("API_URL")), path)
 
   config <- httr::add_headers("Authorization" = paste("Bearer", token))
 
@@ -76,14 +94,14 @@ postgres_request <- function(
 
   } else if (type == "POST") {
 
-    httr::POST(url, config = config, body = body, ...)
+    httr::POST(url, config = config, ...)
   }
 
   status <- httr::http_status(response)
 
   if (status$category != "Success") {
 
-    if (give_message) {
+    if (verbose) {
       message(
         sprintf("%s request '%s' returned with error:\n", type, path),
         sprintf("- status code: %d\n", httr::status_code(response)),

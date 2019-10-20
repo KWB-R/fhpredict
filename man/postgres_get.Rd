@@ -4,11 +4,13 @@
 \alias{postgres_get}
 \title{Send GET Request to Postgres API}
 \usage{
-postgres_get(path)
+postgres_get(path, ...)
 }
 \arguments{
 \item{path}{relative path, e.g. \code{bathingspots/1} to get data for
 bathingspot with ID 1}
+
+\item{\dots}{further arguments passed to \code{fhpredict:::postgres_request}}
 }
 \value{
 In case of success this function returns what
