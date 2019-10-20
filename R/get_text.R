@@ -55,6 +55,10 @@ get_text <- function(keyword, ...)
     ),
     no_models_stored = "There are no models stored for <spot_ident>.",
     no_rain_data = "No rain data stored for <spot_ident>.",
+    no_specification = paste0(
+      "No specification found for type '<type>'.\n",
+      "Available types: <typelist>."
+    ),
     no_such_model = paste0(
       "There is no model with id <model_id> stored for <spot_ident>.\n",
       "Call api_get_model(user_id = <user_id>, spot_id = <spot_id>) ",
@@ -94,6 +98,7 @@ get_text <- function(keyword, ...)
     ),
     rmodel_deprecated = "Deprecated. Binary model file has been uploaded.",
     sorting_by_time = "Sorting data frame by time",
+    specify_type = "Please specify 'type' (must be one of: <typelist>)",
     spot_data_expected_type = paste0(
       "The argument 'spot_data' is expected to be a list of data frames!"
     ),
