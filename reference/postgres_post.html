@@ -141,7 +141,7 @@
     <p>Send POST Request to Postgres API</p>
     </div>
 
-    <pre class="usage"><span class='fu'>postgres_post</span>(<span class='no'>path</span>, <span class='kw'>body</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>encode</span> <span class='kw'>=</span> <span class='st'>"json"</span>)</pre>
+    <pre class="usage"><span class='fu'>postgres_post</span>(<span class='no'>path</span>, <span class='kw'>body</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>encode</span> <span class='kw'>=</span> <span class='st'>"json"</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -160,6 +160,10 @@ to create a generic input for bathing spot of user 3 with ID 18</p></td>
       <th>encode</th>
       <td><p>passed to <code><a href='https://httr.r-lib.org/reference/POST.html'>POST</a></code>. Default: "json". Set to
 "multipart" for uploading files!</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>further arguments passed to <code>fhpredict:::postgres_request</code></p></td>
     </tr>
     </table>
 

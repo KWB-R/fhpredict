@@ -142,7 +142,7 @@
     </div>
 
     <pre class="usage"><span class='fu'>api_get_bathingspot</span>(<span class='kw'>user_id</span> <span class='kw'>=</span> -<span class='fl'>1L</span>, <span class='kw'>spot_id</span> <span class='kw'>=</span> -<span class='fl'>1L</span>, <span class='kw'>limit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>skip</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pattern</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
+  <span class='kw'>skip</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pattern</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>check</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -168,6 +168,12 @@
       <td><p>optional. Pattern matching the names of bathing spots to be
 returned. Only considered if no <code>spot_id</code> is given (i.e. has its
 default value <code>-1L</code>).</p></td>
+    </tr>
+    <tr>
+      <th>check</th>
+      <td><p>if <code>TRUE</code> (the default) it is checked first whether the
+given <code>user_id</code> exists. Switching this check off may speed up the
+request.</p></td>
     </tr>
     </table>
 

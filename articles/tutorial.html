@@ -126,16 +126,29 @@
 <a href="#overview-on-available-bathing-spots" class="anchor"></a>Overview on available bathing spots</h3>
 <p>Use the function <code><a href="../reference/api_get_bathingspot.html">api_get_bathingspot()</a></code> to get an overview on the bathing spots that are stored in the postgres database. You need to specify the user to whom the bathing spots are associated. See above for how to get a list of available user ids.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># Get overview on the first "limit" bathingspots associated to user with id 3</span></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">bathing_spots &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_get_bathingspot.html">api_get_bathingspot</a></span>(<span class="dt">user_id =</span> <span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="co"># Number of bathing spots returned</span></a>
-<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(bathing_spots)</a></code></pre></div>
+<a class="sourceLine" id="cb3-2" data-line-number="2">spots &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_get_bathingspot.html">api_get_bathingspot</a></span>(<span class="dt">user_id =</span> <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">spots2 &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_get_bathingspot.html">api_get_bathingspot</a></span>(<span class="dt">user_id =</span> <span class="dv">3</span>, <span class="dt">check =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/base/identical.html">identical</a></span>(spots, spots2)</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_get_bathingspot.html">api_get_bathingspot</a></span>(<span class="dt">user_id =</span> <span class="dv">33</span>)</a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_get_bathingspot.html">api_get_bathingspot</a></span>(<span class="dt">user_id =</span> <span class="dv">33</span>, <span class="dt">check =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co"># Number of bathing spots returned</span></a>
+<a class="sourceLine" id="cb3-10" data-line-number="10"><span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(spots)</a></code></pre></div>
 <p>By default, only the first bathing spots are considered in the returned data frame. Set the argument <code>limit</code> to a high number so that you get a list of all available bathing spots:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># Get overview on all bathing spots associated to user with id 3</span></a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">all_bathing_spots &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_get_bathingspot.html">api_get_bathingspot</a></span>(<span class="dt">user_id =</span> <span class="dv">3</span>, <span class="dt">limit =</span> <span class="dv">10000</span>)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">all_spots &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_get_bathingspot.html">api_get_bathingspot</a></span>(<span class="dt">user_id =</span> <span class="dv">3</span>, <span class="dt">limit =</span> <span class="dv">10000</span>)</a>
 <a class="sourceLine" id="cb4-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co"># Number of bathing spots returned</span></a>
-<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(all_bathing_spots)</a></code></pre></div>
+<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(all_spots)</a></code></pre></div>
+</div>
+<div id="create-a-new-bathing-spot" class="section level3">
+<h3 class="hasAnchor">
+<a href="#create-a-new-bathing-spot" class="anchor"></a>Create a new bathing spot</h3>
+</div>
+<div id="delete-a-bathing-spot" class="section level3">
+<h3 class="hasAnchor">
+<a href="#delete-a-bathing-spot" class="anchor"></a>Delete a bathing spot</h3>
 </div>
 <div id="fetching-data-related-to-one-bathing-spot" class="section level3">
 <h3 class="hasAnchor">
@@ -323,105 +336,126 @@
 <div id="rains-details" class="section level2">
 <h2 class="hasAnchor">
 <a href="#rains-details" class="anchor"></a>Rains: Details</h2>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1">date_from &lt;-<span class="st"> "20080701"</span></a>
-<a class="sourceLine" id="cb24-2" data-line-number="2">date_to &lt;-<span class="st"> "20080703"</span></a></code></pre></div>
+<div id="read-rain-data-stored-for-a-bathing-spot" class="section level3">
+<h3 class="hasAnchor">
+<a href="#read-rain-data-stored-for-a-bathing-spot" class="anchor"></a>Read rain data stored for a bathing spot</h3>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1">(rain &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_get_rain.html">api_get_rain</a></span>(<span class="dt">user_id =</span> <span class="dv">3</span>, <span class="dt">spot_id =</span> <span class="dv">43</span>))</a></code></pre></div>
+</div>
+<div id="delete-all-rain-data-stored-for-a-bathing-spot" class="section level3">
+<h3 class="hasAnchor">
+<a href="#delete-all-rain-data-stored-for-a-bathing-spot" class="anchor"></a>Delete all rain data stored for a bathing spot</h3>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_delete_rain.html">api_delete_rain</a></span>(<span class="dt">user_id =</span> <span class="dv">3</span>, <span class="dt">spot_id =</span> <span class="dv">43</span>))</a></code></pre></div>
+</div>
+<div id="add-some-fake-rain-data" class="section level3">
+<h3 class="hasAnchor">
+<a href="#add-some-fake-rain-data" class="anchor"></a>Add some fake rain data</h3>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">n &lt;-<span class="st"> </span><span class="dv">100</span></a>
+<a class="sourceLine" id="cb26-2" data-line-number="2">new_rain &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
+<a class="sourceLine" id="cb26-3" data-line-number="3">  <span class="dt">datum =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span>(<span class="st">"2019-10-10"</span>), <span class="dt">by =</span> <span class="dv">1</span>, <span class="dt">length.out =</span> n),</a>
+<a class="sourceLine" id="cb26-4" data-line-number="4">  <span class="dt">rain =</span> <span class="fl">0.1</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">size =</span> n, <span class="dt">replace =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb26-5" data-line-number="5">)</a>
+<a class="sourceLine" id="cb26-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb26-7" data-line-number="7">fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_add_rain.html">api_add_rain</a></span>(<span class="dt">user_id =</span> <span class="dv">3</span>, <span class="dt">spot_id =</span> <span class="dv">43</span>, <span class="dt">rain =</span> new_rain)</a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">date_from &lt;-<span class="st"> "20080701"</span></a>
+<a class="sourceLine" id="cb27-2" data-line-number="2">date_to &lt;-<span class="st"> "20080703"</span></a></code></pre></div>
+</div>
 <div id="read-rain-data-from-binary-radolan-files" class="section level3">
 <h3 class="hasAnchor">
 <a href="#read-rain-data-from-binary-radolan-files" class="anchor"></a>Read rain data from binary Radolan files</h3>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="co"># Get URLs to Radolan files to be downloaded and read</span></a>
-<a class="sourceLine" id="cb25-2" data-line-number="2">urls &lt;-<span class="st"> </span>fhpredict<span class="op">:::</span><span class="kw"><a href="../reference/get_radolan_urls_bucket.html">get_radolan_urls_bucket</a></span>(</a>
-<a class="sourceLine" id="cb25-3" data-line-number="3">  <span class="dt">from =</span> date_from, </a>
-<a class="sourceLine" id="cb25-4" data-line-number="4">  <span class="dt">to =</span> date_to, </a>
-<a class="sourceLine" id="cb25-5" data-line-number="5">  <span class="dt">time =</span> sampling_time, </a>
-<a class="sourceLine" id="cb25-6" data-line-number="6">  <span class="dt">bathing_season_only =</span> <span class="ot">TRUE</span></a>
-<a class="sourceLine" id="cb25-7" data-line-number="7">)</a>
-<a class="sourceLine" id="cb25-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb25-9" data-line-number="9"><span class="co"># Read rain data for a certain time period</span></a>
-<a class="sourceLine" id="cb25-10" data-line-number="10">radolan_stack &lt;-<span class="st"> </span>fhpredict<span class="op">:::</span><span class="kw">read_radolan_raster_stack</span>(urls)</a>
-<a class="sourceLine" id="cb25-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb25-12" data-line-number="12"><span class="co"># Show the raster images</span></a>
-<a class="sourceLine" id="cb25-13" data-line-number="13">raster<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span>(radolan_stack)</a></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="co"># Get URLs to Radolan files to be downloaded and read</span></a>
+<a class="sourceLine" id="cb28-2" data-line-number="2">urls &lt;-<span class="st"> </span>fhpredict<span class="op">:::</span><span class="kw"><a href="../reference/get_radolan_urls_bucket.html">get_radolan_urls_bucket</a></span>(</a>
+<a class="sourceLine" id="cb28-3" data-line-number="3">  <span class="dt">from =</span> date_from, </a>
+<a class="sourceLine" id="cb28-4" data-line-number="4">  <span class="dt">to =</span> date_to, </a>
+<a class="sourceLine" id="cb28-5" data-line-number="5">  <span class="dt">time =</span> sampling_time, </a>
+<a class="sourceLine" id="cb28-6" data-line-number="6">  <span class="dt">bathing_season_only =</span> <span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb28-7" data-line-number="7">)</a>
+<a class="sourceLine" id="cb28-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb28-9" data-line-number="9"><span class="co"># Read rain data for a certain time period</span></a>
+<a class="sourceLine" id="cb28-10" data-line-number="10">radolan_stack &lt;-<span class="st"> </span>fhpredict<span class="op">:::</span><span class="kw">read_radolan_raster_stack</span>(urls)</a>
+<a class="sourceLine" id="cb28-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb28-12" data-line-number="12"><span class="co"># Show the raster images</span></a>
+<a class="sourceLine" id="cb28-13" data-line-number="13">raster<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span>(radolan_stack)</a></code></pre></div>
 </div>
 <div id="spacially-select-and-aggregate-rain-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#spacially-select-and-aggregate-rain-data" class="anchor"></a>Spacially select and aggregate rain data</h3>
 <p>We want to use only the rain data that lie within a polygon around the bathing spot. This area is a piece of metadata that are stored in the Postgres database for each bathing spot. We first read all metadata about the bathing spot defined above and provide the area information.</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="co"># Get metadata about the current bathing spot</span></a>
-<a class="sourceLine" id="cb26-2" data-line-number="2">spot &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_get_bathingspot.html">api_get_bathingspot</a></span>(<span class="dt">spot_id =</span> spot_id)</a>
-<a class="sourceLine" id="cb26-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb26-4" data-line-number="4"><span class="co"># Check the name of the bathing spot</span></a>
-<a class="sourceLine" id="cb26-5" data-line-number="5">spot<span class="op">$</span>nameLong</a>
-<a class="sourceLine" id="cb26-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb26-7" data-line-number="7"><span class="co"># Provide the polygon in the same structure as returned by</span></a>
-<a class="sourceLine" id="cb26-8" data-line-number="8"><span class="co"># select_relevant_rain_area(), a function used by Wolfgang to define a polygon</span></a>
-<a class="sourceLine" id="cb26-9" data-line-number="9"><span class="co"># using an R Shiny app</span></a>
-<a class="sourceLine" id="cb26-10" data-line-number="10">area &lt;-<span class="st"> </span>fhpredict<span class="op">:::</span><span class="kw">convert_area_structure</span>(<span class="dt">spot_area =</span> spot<span class="op">$</span>area)</a>
-<a class="sourceLine" id="cb26-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb26-12" data-line-number="12"><span class="co"># Show the structure of the area information (a recursive list)</span></a>
-<a class="sourceLine" id="cb26-13" data-line-number="13"><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(area, <span class="dv">2</span>)</a></code></pre></div>
-<p>In the next step we use the area information to cut the area regions from the rain data that so far comprises whole Germany:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="co"># Crop the polygons from each raster layer</span></a>
-<a class="sourceLine" id="cb27-2" data-line-number="2">cropped &lt;-<span class="st"> </span>fhpredict<span class="op">:::</span><span class="kw">crop_area_from_radolan_stack</span>(area, radolan_stack)</a></code></pre></div>
-<p>We check the result by plotting the areas. <strong>Important note</strong>: It seems that not the polygon is cut but the “extent”, i.e. the smallest possible rectangle that contains the polygon!</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1">raster<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span>(cropped)</a></code></pre></div>
-<p>We now calculate the average rain in each raster layer and provide a simple data frame:</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="co"># Get the mean over all layers for each point on the raster</span></a>
-<a class="sourceLine" id="cb29-2" data-line-number="2">aggregated &lt;-<span class="st"> </span>raster<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/raster/man/cellStats.html">cellStats</a></span>(cropped, <span class="dt">stat =</span> mean)</a>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="co"># Get metadata about the current bathing spot</span></a>
+<a class="sourceLine" id="cb29-2" data-line-number="2">spot &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_get_bathingspot.html">api_get_bathingspot</a></span>(<span class="dt">spot_id =</span> spot_id)</a>
 <a class="sourceLine" id="cb29-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb29-4" data-line-number="4"><span class="co"># The day information can be restored from the names of the layers</span></a>
-<a class="sourceLine" id="cb29-5" data-line-number="5">dates &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/substr.html">substr</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(radolan_stack), <span class="dv">2</span>, <span class="dv">9</span>), <span class="dt">format =</span> <span class="st">"%Y%m%d"</span>)</a>
+<a class="sourceLine" id="cb29-4" data-line-number="4"><span class="co"># Check the name of the bathing spot</span></a>
+<a class="sourceLine" id="cb29-5" data-line-number="5">spot<span class="op">$</span>nameLong</a>
 <a class="sourceLine" id="cb29-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb29-7" data-line-number="7">rain &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
-<a class="sourceLine" id="cb29-8" data-line-number="8">  <span class="dt">datum =</span> dates,</a>
-<a class="sourceLine" id="cb29-9" data-line-number="9">  <span class="dt">rain =</span> <span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(aggregated) <span class="op">/</span><span class="st"> </span><span class="dv">10</span></a>
-<a class="sourceLine" id="cb29-10" data-line-number="10">)</a></code></pre></div>
+<a class="sourceLine" id="cb29-7" data-line-number="7"><span class="co"># Provide the polygon in the same structure as returned by</span></a>
+<a class="sourceLine" id="cb29-8" data-line-number="8"><span class="co"># select_relevant_rain_area(), a function used by Wolfgang to define a polygon</span></a>
+<a class="sourceLine" id="cb29-9" data-line-number="9"><span class="co"># using an R Shiny app</span></a>
+<a class="sourceLine" id="cb29-10" data-line-number="10">area &lt;-<span class="st"> </span>fhpredict<span class="op">:::</span><span class="kw">convert_area_structure</span>(<span class="dt">spot_area =</span> spot<span class="op">$</span>area)</a>
+<a class="sourceLine" id="cb29-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb29-12" data-line-number="12"><span class="co"># Show the structure of the area information (a recursive list)</span></a>
+<a class="sourceLine" id="cb29-13" data-line-number="13"><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(area, <span class="dv">2</span>)</a></code></pre></div>
+<p>In the next step we use the area information to cut the area regions from the rain data that so far comprises whole Germany:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="co"># Crop the polygons from each raster layer</span></a>
+<a class="sourceLine" id="cb30-2" data-line-number="2">cropped &lt;-<span class="st"> </span>fhpredict<span class="op">:::</span><span class="kw">crop_area_from_radolan_stack</span>(area, radolan_stack)</a></code></pre></div>
+<p>We check the result by plotting the areas. <strong>Important note</strong>: It seems that not the polygon is cut but the “extent”, i.e. the smallest possible rectangle that contains the polygon!</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">raster<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span>(cropped)</a></code></pre></div>
+<p>We now calculate the average rain in each raster layer and provide a simple data frame:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="co"># Get the mean over all layers for each point on the raster</span></a>
+<a class="sourceLine" id="cb32-2" data-line-number="2">aggregated &lt;-<span class="st"> </span>raster<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/raster/man/cellStats.html">cellStats</a></span>(cropped, <span class="dt">stat =</span> mean)</a>
+<a class="sourceLine" id="cb32-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb32-4" data-line-number="4"><span class="co"># The day information can be restored from the names of the layers</span></a>
+<a class="sourceLine" id="cb32-5" data-line-number="5">dates &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/substr.html">substr</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(radolan_stack), <span class="dv">2</span>, <span class="dv">9</span>), <span class="dt">format =</span> <span class="st">"%Y%m%d"</span>)</a>
+<a class="sourceLine" id="cb32-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb32-7" data-line-number="7">rain &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
+<a class="sourceLine" id="cb32-8" data-line-number="8">  <span class="dt">datum =</span> dates,</a>
+<a class="sourceLine" id="cb32-9" data-line-number="9">  <span class="dt">rain =</span> <span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(aggregated) <span class="op">/</span><span class="st"> </span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb32-10" data-line-number="10">)</a></code></pre></div>
 <p>Let’s have a look at the created data frame:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1">rain</a></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1">rain</a></code></pre></div>
 </div>
 <div id="store-the-rain-data-in-the-postgres-database" class="section level3">
 <h3 class="hasAnchor">
 <a href="#store-the-rain-data-in-the-postgres-database" class="anchor"></a>Store the rain data in the Postgres database</h3>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="co"># Add rain data frame to the database</span></a>
-<a class="sourceLine" id="cb31-2" data-line-number="2">rain_ids &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_add_rain.html">api_add_rain</a></span>(user_id, spot_id, rain)</a>
-<a class="sourceLine" id="cb31-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb31-4" data-line-number="4"><span class="co"># Read rain from database</span></a>
-<a class="sourceLine" id="cb31-5" data-line-number="5">rain &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_get_rain.html">api_get_rain</a></span>(user_id, spot_id)</a>
-<a class="sourceLine" id="cb31-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb31-7" data-line-number="7"><span class="co"># What should we do with duplicates?</span></a>
-<a class="sourceLine" id="cb31-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/duplicated.html">duplicated</a></span>(kwb.utils<span class="op">::</span><span class="kw">selectColumns</span>(rain, <span class="st">"dateTime"</span>)))</a>
-<a class="sourceLine" id="cb31-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb31-10" data-line-number="10"><span class="co"># Delete rain data with given rain record ids</span></a>
-<a class="sourceLine" id="cb31-11" data-line-number="11">fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_delete_rain.html">api_delete_rain</a></span>(user_id, spot_id, rain_ids)</a>
-<a class="sourceLine" id="cb31-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb31-13" data-line-number="13"><span class="co"># For simplicity reasons: delete all rain data before inserting new data</span></a>
-<a class="sourceLine" id="cb31-14" data-line-number="14"><span class="co">#fhpredict::api_delete_rain(user_id, spot_id)</span></a>
-<a class="sourceLine" id="cb31-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb31-16" data-line-number="16"><span class="co"># </span><span class="al">TODO</span><span class="co">: Remove only the duplicates, keeping the most current values</span></a></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="co"># Add rain data frame to the database</span></a>
+<a class="sourceLine" id="cb34-2" data-line-number="2">rain_ids &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_add_rain.html">api_add_rain</a></span>(user_id, spot_id, rain)</a>
+<a class="sourceLine" id="cb34-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb34-4" data-line-number="4"><span class="co"># Read rain from database</span></a>
+<a class="sourceLine" id="cb34-5" data-line-number="5">rain &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_get_rain.html">api_get_rain</a></span>(user_id, spot_id)</a>
+<a class="sourceLine" id="cb34-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb34-7" data-line-number="7"><span class="co"># What should we do with duplicates?</span></a>
+<a class="sourceLine" id="cb34-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/duplicated.html">duplicated</a></span>(kwb.utils<span class="op">::</span><span class="kw">selectColumns</span>(rain, <span class="st">"dateTime"</span>)))</a>
+<a class="sourceLine" id="cb34-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb34-10" data-line-number="10"><span class="co"># Delete rain data with given rain record ids</span></a>
+<a class="sourceLine" id="cb34-11" data-line-number="11">fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_delete_rain.html">api_delete_rain</a></span>(user_id, spot_id, rain_ids)</a>
+<a class="sourceLine" id="cb34-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb34-13" data-line-number="13"><span class="co"># For simplicity reasons: delete all rain data before inserting new data</span></a>
+<a class="sourceLine" id="cb34-14" data-line-number="14"><span class="co">#fhpredict::api_delete_rain(user_id, spot_id)</span></a>
+<a class="sourceLine" id="cb34-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb34-16" data-line-number="16"><span class="co"># </span><span class="al">TODO</span><span class="co">: Remove only the duplicates, keeping the most current values</span></a></code></pre></div>
 </div>
 </div>
 <div id="discharge-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#discharge-data" class="anchor"></a>Discharge data</h2>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="co"># Get existing discharge data</span></a>
-<a class="sourceLine" id="cb32-2" data-line-number="2">discharge_db &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_get_discharge.html">api_get_discharge</a></span>(user_id, spot_id)</a>
-<a class="sourceLine" id="cb32-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb32-4" data-line-number="4"><span class="co"># Show the first records</span></a>
-<a class="sourceLine" id="cb32-5" data-line-number="5"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(discharge_db)</a>
-<a class="sourceLine" id="cb32-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb32-7" data-line-number="7"><span class="co"># Provide discharge test data</span></a>
-<a class="sourceLine" id="cb32-8" data-line-number="8">discharge &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
-<a class="sourceLine" id="cb32-9" data-line-number="9">  <span class="dt">dateTime =</span> <span class="kw"><a href="https://rdrr.io/r/base/as.POSIXlt.html">as.POSIXct</a></span>(<span class="dt">tz =</span> <span class="st">"Europe/Berlin"</span>, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(</a>
-<a class="sourceLine" id="cb32-10" data-line-number="10">    <span class="st">"2019-09-09 16:02:00"</span>, <span class="st">"2019-09-09 16:03:00"</span></a>
-<a class="sourceLine" id="cb32-11" data-line-number="11">  )),</a>
-<a class="sourceLine" id="cb32-12" data-line-number="12">  <span class="dt">discharge =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1.0</span>, <span class="fl">1.1</span>)</a>
-<a class="sourceLine" id="cb32-13" data-line-number="13">)</a>
-<a class="sourceLine" id="cb32-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb32-15" data-line-number="15"><span class="co"># Add discharge test data to database</span></a>
-<a class="sourceLine" id="cb32-16" data-line-number="16">ids &lt;-<span class="st"> </span>fhpredict<span class="op">:::</span><span class="kw">api_add_discharge</span>(user_id, spot_id, discharge)</a>
-<a class="sourceLine" id="cb32-17" data-line-number="17"></a>
-<a class="sourceLine" id="cb32-18" data-line-number="18"><span class="co"># Delete the records that have just been added. Omitting the IDs will remove</span></a>
-<a class="sourceLine" id="cb32-19" data-line-number="19"><span class="co"># all discharge data related to the bathing spot</span></a>
-<a class="sourceLine" id="cb32-20" data-line-number="20">fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_delete_discharge.html">api_delete_discharge</a></span>(user_id, spot_id, <span class="dt">ids =</span> ids)</a></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="co"># Get existing discharge data</span></a>
+<a class="sourceLine" id="cb35-2" data-line-number="2">discharge_db &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_get_discharge.html">api_get_discharge</a></span>(user_id, spot_id)</a>
+<a class="sourceLine" id="cb35-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb35-4" data-line-number="4"><span class="co"># Show the first records</span></a>
+<a class="sourceLine" id="cb35-5" data-line-number="5"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(discharge_db)</a>
+<a class="sourceLine" id="cb35-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb35-7" data-line-number="7"><span class="co"># Provide discharge test data</span></a>
+<a class="sourceLine" id="cb35-8" data-line-number="8">discharge &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
+<a class="sourceLine" id="cb35-9" data-line-number="9">  <span class="dt">dateTime =</span> <span class="kw"><a href="https://rdrr.io/r/base/as.POSIXlt.html">as.POSIXct</a></span>(<span class="dt">tz =</span> <span class="st">"Europe/Berlin"</span>, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(</a>
+<a class="sourceLine" id="cb35-10" data-line-number="10">    <span class="st">"2019-09-09 16:02:00"</span>, <span class="st">"2019-09-09 16:03:00"</span></a>
+<a class="sourceLine" id="cb35-11" data-line-number="11">  )),</a>
+<a class="sourceLine" id="cb35-12" data-line-number="12">  <span class="dt">discharge =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1.0</span>, <span class="fl">1.1</span>)</a>
+<a class="sourceLine" id="cb35-13" data-line-number="13">)</a>
+<a class="sourceLine" id="cb35-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb35-15" data-line-number="15"><span class="co"># Add discharge test data to database</span></a>
+<a class="sourceLine" id="cb35-16" data-line-number="16">ids &lt;-<span class="st"> </span>fhpredict<span class="op">:::</span><span class="kw">api_add_discharge</span>(user_id, spot_id, discharge)</a>
+<a class="sourceLine" id="cb35-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb35-18" data-line-number="18"><span class="co"># Delete the records that have just been added. Omitting the IDs will remove</span></a>
+<a class="sourceLine" id="cb35-19" data-line-number="19"><span class="co"># all discharge data related to the bathing spot</span></a>
+<a class="sourceLine" id="cb35-20" data-line-number="20">fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_delete_discharge.html">api_delete_discharge</a></span>(user_id, spot_id, <span class="dt">ids =</span> ids)</a></code></pre></div>
 </div>
   </div>
 

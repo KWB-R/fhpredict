@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Send DELETE Request to Postgres API — postgres_delete • fhpredict</title>
+<title>Do a Request to the Flusshygiene Postgres API — postgres_request • fhpredict</title>
 
 
 <!-- jquery -->
@@ -41,8 +41,8 @@
 
 
 
-<meta property="og:title" content="Send DELETE Request to Postgres API — postgres_delete" />
-<meta property="og:description" content="Send DELETE Request to Postgres API" />
+<meta property="og:title" content="Do a Request to the Flusshygiene Postgres API — postgres_request" />
+<meta property="og:description" content="Do a Request to the Flusshygiene Postgres API" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -132,44 +132,53 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Send DELETE Request to Postgres API</h1>
+    <h1>Do a Request to the Flusshygiene Postgres API</h1>
     <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/postgres.R'><code>R/postgres.R</code></a></small>
-    <div class="hidden name"><code>postgres_delete.Rd</code></div>
+    <div class="hidden name"><code>postgres_request.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Send DELETE Request to Postgres API</p>
+    <p>Do a Request to the Flusshygiene Postgres API</p>
     </div>
 
-    <pre class="usage"><span class='fu'>postgres_delete</span>(<span class='no'>path</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>postgres_request</span>(<span class='no'>path</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"GET"</span>, <span class='no'>...</span>, <span class='kw'>token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>path</th>
-      <td><p>relative path, e.g. <code>users/3/bathingspots/18/genericInputs</code>
-to delete a generic input for bathing spot with id 18 of user with id 3</p></td>
+      <td><p>relative path to endpoint</p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p>one of "GET", "POST", "DELETE"</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>further arguments passed to <code>fhpredict:::postgres_request</code></p></td>
+      <td><p>further arguments passed to one of <code><a href='https://httr.r-lib.org/reference/GET.html'>GET</a></code>,
+<code><a href='https://httr.r-lib.org/reference/DELETE.html'>DELETE</a></code>, <code><a href='https://httr.r-lib.org/reference/POST.html'>POST</a></code>, depending on
+<code>type</code></p></td>
+    </tr>
+    <tr>
+      <th>token</th>
+      <td><p>token required to authenticate for the API. If omitted, a token
+will be provided by a call to <code>fhpredict:::get_postgres_api_token</code>.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>if <code>TRUE</code> (the default is <code>FALSE</code>), the result of
+the request will be printed</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>In case of success this function returns what
-  <code><a href='https://httr.r-lib.org/reference/content.html'>httr::content(response, as = "parsed")</a></code> returns. In case of failure
-  an empty list with attribute <code>response</code> (containing the response
-  object returned by <code><a href='https://httr.r-lib.org/reference/DELETE.html'>DELETE</a></code>) is returned.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
     </ul>
 
   </div>

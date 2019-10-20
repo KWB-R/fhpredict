@@ -141,7 +141,7 @@
     <p>Delete Rain Data from Postgres Database Via API</p>
     </div>
 
-    <pre class="usage"><span class='fu'>api_delete_rain</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>, <span class='kw'>ids</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>dbg</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>api_delete_rain</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>, <span class='kw'>ids</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>dbg</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -162,6 +162,11 @@ default) all rain data for the bathing spot are deleted!</p></td>
     <tr>
       <th>dbg</th>
       <td><p>if <code>TRUE</code> debug messages are shown</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>further arguments passed to
+<code>fhpredict:::api_delete_timeseries</code></p></td>
     </tr>
     </table>
 
