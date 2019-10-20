@@ -169,7 +169,7 @@ if (FALSE)
   path_3 <- "users/3/bathingspots/18"
   path_4 <- "bathingspots/18"
 
-  token <- get_postgres_api_token()
+  token <- fhpredict:::get_postgres_api_token()
   config <- httr::add_headers("Authorization" = paste("Bearer", token))
 
   responses <- lapply(c(path_1, path_2, path_3, path_4), function(path) {

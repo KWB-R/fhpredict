@@ -14,3 +14,4 @@ If a token is stored locally it is checked whether this token is valid. If
 the token is valid, it is returned. If the token is not valid or if there is
 no token stored locally, request a new token, store it locally and return it.
 }
+\keyword{internal}
