@@ -7,7 +7,7 @@
 #' no token stored locally, request a new token, store it locally and return it.
 #'
 #' @param dbg if \code{TRUE}, debug messages are shown
-#' @export
+#' @keywords internal
 #'
 get_postgres_api_token <- function(dbg = FALSE)
 {
