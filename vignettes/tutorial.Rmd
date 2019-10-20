@@ -54,12 +54,17 @@ that are stored in the postgres database. You need to specify the user to whom
 the bathing spots are associated. See above for how to get a list of available
 user ids.
 
-```{r}
+```{r error = TRUE}
 # Get overview on the first "limit" bathingspots associated to user with id 3
-bathing_spots <- fhpredict::api_get_bathingspot(user_id = 3)
+spots <- fhpredict::api_get_bathingspot(user_id = 3)
+spots2 <- fhpredict::api_get_bathingspot(user_id = 3, check = FALSE)
+identical(spots, spots2)
+
+fhpredict::api_get_bathingspot(user_id = 33)
+fhpredict::api_get_bathingspot(user_id = 33, check = FALSE)
 
 # Number of bathing spots returned
-nrow(bathing_spots)
+nrow(spots)
 ```
 
 By default, only the first bathing spots are considered in the returned data
@@ -68,10 +73,17 @@ available bathing spots:
 
 ```{r}
 # Get overview on all bathing spots associated to user with id 3
-all_bathing_spots <- fhpredict::api_get_bathingspot(user_id = 3, limit = 10000)
+all_spots <- fhpredict::api_get_bathingspot(user_id = 3, limit = 10000)
 
 # Number of bathing spots returned
-nrow(all_bathing_spots)
+nrow(all_spots)
+```
+
+### Create a new bathing spot
+
+### Delete a bathing spot
+
+```{r}
 ```
 
 ### Fetching data related to one bathing spot
@@ -340,6 +352,30 @@ head(rain)
 ```
 
 ## Rains: Details
+
+### Read rain data stored for a bathing spot
+
+```{r}
+(rain <- fhpredict::api_get_rain(user_id = 3, spot_id = 43))
+```
+
+### Delete all rain data stored for a bathing spot
+
+```{r}
+system.time(fhpredict::api_delete_rain(user_id = 3, spot_id = 43))
+```
+
+### Add some fake rain data
+
+```{r}
+n <- 100
+new_rain <- data.frame(
+  datum = seq(as.Date("2019-10-10"), by = 1, length.out = n),
+  rain = 0.1 * sample(1:10, size = n, replace = TRUE)
+)
+
+fhpredict::api_add_rain(user_id = 3, spot_id = 43, rain = new_rain)
+```
 
 ```{r}
 date_from <- "20080701"

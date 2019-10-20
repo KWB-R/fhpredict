@@ -12,11 +12,12 @@ api_get_users <- function()
   #kwb.utils::assignPackageObjects("fhpredict")
   result <- safe_postgres_get("users")
 
-  users <- dplyr::bind_rows(lapply(
-    kwb.utils::selectElements(result, "data"), extract_flat_information
-  ))
+  # Get the list of users
+  user_list <- kwb.utils::selectElements(result, "data")
 
-  first_columns <- c("id", "firstName", "lastName", "role")
+  # Convert the list of users to a data frame
+  users <- dplyr::bind_rows(lapply(user_list, extract_flat_information))
 
-  kwb.utils::moveColumnsToFront(users, first_columns)
+  # Remove columns of no interest and reorder columns
+  remove_and_reorder_columns(users, "users")
 }
