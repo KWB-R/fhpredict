@@ -16,37 +16,47 @@ build_model <- function(user_id, spot_id, seed = NULL)
   # Get data in the format that is required by build_and_validate_model()
   spot_data <- try(provide_input_data(user_id, spot_id))
 
-  if (inherits(spot_data, "try-error")) {
-
-    return(create_result(success = FALSE, message = as.character(spot_data)))
+  if (is_error(spot_data)) {
+    return(create_failure(spot_data))
   }
 
   # Initialise the random number generator if a seed is given
   if (! is.null(seed)) {
-
     stopifnot(is.numeric(seed))
     set.seed(seed)
   }
 
-  result <- build_and_validate_model(spot_data = spot_data)
+  result <- try(build_and_validate_model(spot_data = spot_data))
+
+  if (is_error(result)) {
+    return(create_failure(result))
+  }
 
   if (length(result) == 0) {
-
     return(create_result(
-      success = FALSE, message = "Could not create a valid model!"
+      success = FALSE, message = get_text("could_not_build_model")
     ))
   }
 
-  model <- kwb.utils::selectElements(result, "stanfit")
+  result <- try({
 
-  api_add_model(
-    user_id = user_id,
-    spot_id = spot_id,
-    model = model,
-    comment = sprintf(
-      "Model created on %s with fhpredict::build_model()", Sys.time()
+    model <- kwb.utils::selectElements(result, "stanfit")
+
+    model_id <- api_add_model(
+      user_id = user_id,
+      spot_id = spot_id,
+      model = model,
+      comment = get_text("model_created", datetime = Sys.time())
     )
-  )
+  })
 
-  create_result(success = TRUE)
+  if (is_error(result)) {
+    return(create_failure(result))
+  }
+
+  create_result(success = TRUE, message = get_text(
+    "model_found",
+    model_id = model_id,
+    formula = utils::capture.output(print(model$formula))[1]
+  ))
 }

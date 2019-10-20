@@ -93,10 +93,7 @@ if (FALSE)
   View(measurements)
 
   # Is this the same as what the measurement endpoint provides?
-  response <- fhpredict::postgres_get("users/3/bathingspots/100/measurements")
-
-  # Check the response
-  fhpredict:::stop_on_request_failure(response)
+  response <- fhpredict::safe_postgres_get("users/3/bathingspots/100/measurements")
 
   # Convert list structure to a data frame
   measurements2 <- fhpredict:::flatten_recursive_list(response$data)
@@ -127,8 +124,6 @@ if (FALSE)
 if (FALSE)
 {
   str(river_data, 2)
-
-  clear_cache()
 
   # What users are available?
   users <- api_get_users()
@@ -174,14 +169,12 @@ if (FALSE)
   path_3 <- "users/3/bathingspots/18"
   path_4 <- "bathingspots/18"
 
-  token <- get_postgres_api_token()
+  token <- fhpredict:::get_postgres_api_token()
   config <- httr::add_headers("Authorization" = paste("Bearer", token))
 
   responses <- lapply(c(path_1, path_2, path_3, path_4), function(path) {
 
-    url <- paste0(assert_final_slash(get_environment_var("API_URL")), path)
-
-    httr::GET(url, config = config)
+    httr::GET(url = fhpredict:::path_to_api_url(path), config = config)
   })
 
   str(responses, 2)

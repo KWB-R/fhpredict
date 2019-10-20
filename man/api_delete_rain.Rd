@@ -4,7 +4,7 @@
 \alias{api_delete_rain}
 \title{Delete Rain Data from Postgres Database Via API}
 \usage{
-api_delete_rain(user_id, spot_id, ids = NULL, dbg = TRUE)
+api_delete_rain(user_id, spot_id, ids = NULL, dbg = TRUE, ...)
 }
 \arguments{
 \item{user_id}{user id}
@@ -15,6 +15,9 @@ api_delete_rain(user_id, spot_id, ids = NULL, dbg = TRUE)
 default) all rain data for the bathing spot are deleted!}
 
 \item{dbg}{if \code{TRUE} debug messages are shown}
+
+\item{\dots}{further arguments passed to
+\code{fhpredict:::api_delete_timeseries}}
 }
 \description{
 Delete Rain Data from Postgres Database Via API

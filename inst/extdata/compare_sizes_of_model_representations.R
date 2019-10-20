@@ -12,7 +12,7 @@ sizes <- lapply(models, function(model) {
   list(
     size_object = object.size(model),
     size_rdata = file.info(file_rdata)$size,
-    size_text = object.size(fhpredict:::model_to_text(model))
+    size_text = object.size(kwb.utils:::objectToText(model))
   )
 })
 

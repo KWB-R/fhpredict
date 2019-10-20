@@ -3,7 +3,8 @@
 #' @importFrom rlang .data
 #' @keywords internal
 build_and_validate_model <- function(
-  river_data = NULL, river = NULL, spot_data, prefix = "", n_folds = 5
+  river_data = NULL, river = NULL, spot_data, prefix = "", n_folds = 5,
+  dbg = TRUE
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
@@ -12,11 +13,16 @@ build_and_validate_model <- function(
   # Check the arguments and stop if anything is not ok
   check_args_build_and_validate(river_data, river, spot_data)
 
-  # Prepare all data frames, among others by calling calc_t()
-  riverdata <- prepare_river_data(spot_data)
+  # Prepare all data frames (select summer season, log-transform rain, add mean,
+  # ...) add merge them to one big data frame
+  model_data <- provide_data_for_lm(
+    riverdata = prepare_river_data(spot_data),
+    pattern = "(i_mean|q_mean|r_mean|ka_mean)",
+    dbg = dbg
+  )
 
   # Step through, forward and backward selection
-  models <- stepwise(riverdata, pattern = "(i_mean|q_mean|r_mean|ka_mean)")
+  models <- stepwise(kwb.utils::removeColumns(model_data, "datum"))
 
   # Number the models
   names(models) <- sprintf("%smodel_%02d", prefix, seq_along(models))
@@ -43,7 +49,7 @@ build_and_validate_model <- function(
 
   if (nrow(sorted_models) == 0) {
 
-    message("Could not create a valid model!")
+    message(get_text("could_not_build_model"))
     return(list())
   }
 
@@ -66,29 +72,56 @@ build_and_validate_model <- function(
 check_args_build_and_validate <- function(river_data, river, spot_data)
 {
   if (! is.null(river_data)) {
-    clean_stop(
-      "The argument 'river_data' is not supported any more. Please use the ",
-      "new argument 'spot_data' to pass a list of data frames related to ONE ",
-      "bathing spot ONLY."
-    )
+    clean_stop(get_text("river_data_not_supported"))
   }
 
   if (! is.null(river)) {
-    clean_stop(
-      "The argument 'river' is not supported any more. You may use the ",
-      "new argument 'prefix' to prefix the names of the returned models."
-    )
+    clean_stop(get_text("river_not_supported"))
   }
 
   if (! all(sapply(spot_data, is.data.frame))) {
-    clean_stop(
-      "spot_data is expected to be a list of data frames!"
-    )
+    clean_stop(get_text("spot_data_expected_type"))
   }
 }
 
 # stepwise ---------------------------------------------------------------------
-stepwise <- function (riverdata, pattern = "", dbg = TRUE)
+stepwise <- function(model_data)
+{
+  # Definition of null and full models
+  null <- stats::lm(log_e.coli ~ 1, data = model_data)
+  full <- stats::lm(log_e.coli ~ .^2, data = model_data)
+
+  # Definition maximum number of steps. 10 at maximum
+  max_steps <- min(round(nrow(model_data) / 10), 10)
+
+  if (max_steps == 0) {
+    clean_stop(get_text("max_steps_is_zero"))
+  }
+
+  # Creating list of candidate models with 1 ... max_steps predictors
+  result <- lapply(X = seq_len(max_steps), FUN = function(steps) {
+    try(stats::step(
+      object = null,
+      scope = list(upper = full, lower = null),
+      direction = "forward",
+      steps = steps
+    ))
+  })
+
+  failed <- sapply(result, is_error)
+
+  if (any(failed)) {
+
+    clean_stop(get_text("step_failed", details = new_line_collapsed(sprintf(
+      "step = %d: %s", which(failed), sapply(result[failed], as.character)
+    ))))
+  }
+
+  result
+}
+
+# provide_data_for_lm ----------------------------------------------------------
+provide_data_for_lm <- function(riverdata, pattern = "", dbg = TRUE)
 {
   unrolled_data <- riverdata %>%
     remove_hygiene_data() %>%
@@ -105,71 +138,42 @@ stepwise <- function (riverdata, pattern = "", dbg = TRUE)
   if (nzchar(pattern)) {
 
     variables <- kwb.utils::catAndRun(
-      dbg = dbg,
-      messageText = sprintf(
-        "Filtering %d variables for those matching '%s'",
-        length(variables), pattern
-      ),
-      expr = grep(pattern, variables, value = TRUE)
+      get_text("filtering_variables", n = length(variables), pattern = pattern),
+      expr = grep(pattern, variables, value = TRUE),
+      dbg = dbg
     )
   }
 
-  kwb.utils::catIf(dbg, sprintf(
-    "Using %d variables:\n- %s",
-    length(variables), kwb.utils::stringList(variables, collapse = "\n- ")
+  kwb.utils::catIf(dbg, get_text(
+    "using_variables",
+    n = length(variables),
+    varlist = kwb.utils::stringList(variables, collapse = "\n- ")
   ))
 
   variables <- c("log_e.coli", variables)
 
   # Prepare formulas
-  data <- kwb.flusshygiene::process_model_riverdata(riverdata, variables) %>%
-    dplyr::select(- .data$datum)
+  data <- kwb.flusshygiene::process_model_riverdata(riverdata, variables)
 
   if (nrow(data) == 0) {
-
     utils::str(riverdata)
-
-    clean_stop(
-      "kwb.flusshygiene::process_model_riverdata() returned an empty data ",
-      "frame! See the structure of 'riverdata' above."
-    )
+    clean_stop(get_text("process_returned_no_data"))
   }
 
-  # Definition of null and full models
-  null <- stats::lm(log_e.coli ~ 1, data = data)
-  full <- stats::lm(log_e.coli ~ .^2, data = data)
+  data
+}
 
-  # Definition maximum number of steps. 10 at maximum
-  max_steps <- min(round(nrow(data) / 10), 10)
+# remove_hygiene_data ----------------------------------------------------------
+remove_hygiene_data <- function(datalist)
+{
+  stopifnot(is_river_data_element(datalist))
 
-  if (max_steps == 0) {
+  hygiene_element <- grep("^hygiene", names(datalist), value = TRUE)
 
-    clean_stop(
-      "max_steps = 0 in stepwise() -> Not enough data points available!"
-    )
-  }
-
-  # Creating list of candidate models with 1 ... max_steps predictors
-  result <- lapply(X = seq_len(max_steps), FUN = function(steps) {
-    try(stats::step(
-      object = null,
-      scope = list(upper = full, lower = null),
-      direction = "forward",
-      steps = steps
-    ))
-  })
-
-  failed <- sapply(result, inherits, "try-error")
-
-  if (any(failed)) {
-
-    clean_stop(
-      "stat::step() failed for the following step numbers:\n",
-      sprintf(
-        "step = %d: %s", which(failed), sapply(result[failed], as.character)
-      )
-    )
-  }
+  result <- kwb.utils::catAndRun(
+    get_text("removing_data_frame", element = hygiene_element),
+    datalist[setdiff(names(datalist), hygiene_element)]
+  )
 
   result
 }
@@ -266,7 +270,7 @@ update_stat_tests <- function(
             .data$log_e.coli > .data$`2.5%`,
           within50 =
             .data$log_e.coli < .data$`75%` &
-            .data$log_e.coli > .data$`25%`,
+            .data$log_e.coli > .data$`25%`
         )
 
       stat_tests$in95[selected] <- stat_tests$in95[selected] +
@@ -289,7 +293,8 @@ update_stat_tests <- function(
 # test_beta --------------------------------------------------------------------
 test_beta <- function(is_true, percentile)
 {
-  stats::pbeta(q = percentile,
+  stats::pbeta(
+    q = percentile,
     shape1 = sum(is_true) + 1,
     shape2 = sum(! is_true) + 1
   ) > 0.05

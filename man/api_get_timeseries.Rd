@@ -4,7 +4,8 @@
 \alias{api_get_timeseries}
 \title{Get Timeseries Data from the Postgres Database Via API}
 \usage{
-api_get_timeseries(path, subject = "timeseries", sort = TRUE)
+api_get_timeseries(path, subject = "timeseries", sort = TRUE,
+  token = NULL, type = NULL)
 }
 \arguments{
 \item{path}{(relative) path to API endpoint}
@@ -13,6 +14,11 @@ api_get_timeseries(path, subject = "timeseries", sort = TRUE)
 
 \item{sort}{if \code{TRUE} (the default), the returned data frame will be
 sorted by the "dateTime" column}
+
+\item{token}{passed to \code{fhpredict:::postgres_request}}
+
+\item{type}{optional. If given, columns are removed and reordered using
+\code{fhpredict:::remove_and_reorder_columns()}}
 }
 \description{
 Get Timeseries Data from the Postgres Database Via API

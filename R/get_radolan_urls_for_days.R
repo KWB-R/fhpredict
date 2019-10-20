@@ -1,7 +1,7 @@
 # get_radolan_urls_for_days ----------------------------------------------------
 # dates <- seq(as.Date("2018-07-01"), as.Date("2018-08-01"), by = 1)
 # urls <- get_radolan_urls_for_days(dates)
-get_radolan_urls_for_days <- function(dates, diff_days = 10)
+get_radolan_urls_for_days <- function(dates, diff_days = 10, time = "1050")
 {
   # Call fhpredict:::test_performance_get_radolan_urls() to find a good value
   # for diff_days
@@ -12,14 +12,13 @@ get_radolan_urls_for_days <- function(dates, diff_days = 10)
   date_ranges <- group_dates_by_diff(dates, diff_days = diff_days)
 
   # Get URLs for each of the ranges
-  urls_list <- get_radolan_urls_in_date_ranges(date_ranges)
+  urls_list <- get_radolan_urls_in_date_ranges(date_ranges, time = time)
 
   # Put all URLs into an atomic vector
   urls <- unlist(urls_list)
 
   # Return if there is not at least one URL
   if (length(urls) == 0) {
-
     return(character())
   }
 

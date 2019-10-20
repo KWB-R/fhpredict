@@ -1,8 +1,8 @@
 # provide_rain_data_for_bathing_spot -------------------------------------------
 
-#' Deprecated
+#' Provide Rain Data for one Bathing Spot
 #'
-#' Use \code{\link{provide_rain_data}} instead
+#' Consider to use \code{\link{provide_rain_data}}. For a description see there.
 #'
 #' @param user_id user id
 #' @param spot_id bathing spot id
@@ -12,9 +12,10 @@
 #'   rain data to be loaded. If \code{NULL} (the default) the range of dates is
 #'   determined from the range of dates for which water quality measurements are
 #'   available.
-#' @return list with element \code{remaining = 0}, just for compatibility
-#'   with \code{\link{provide_rain_data}}
-#'   "rains" database table.
+#' @return list with elements \code{data}, \code{success}, \code{message}. The
+#'   \code{data} element contains a vector of IDs identifying the records in
+#'   the rain data table associated with the bathing spot given by
+#'   \code{user_id} and \code{spot_id}
 #' @export
 #' @examples
 #' \dontrun{
@@ -24,24 +25,35 @@ provide_rain_data_for_bathing_spot <- function(
   user_id, spot_id, sampling_time = "1050", date_range = NULL
 )
 {
-  kwb.utils::warningDeprecated(
-    old_name = "provide_rain_data_for_bathing_spot",
-    new_name = "provide_rain_data"
-  )
+  #kwb.utils::assignPackageObjects("fhpredict")
+  #user_id=3;spot_id=49;sampling_time="1050";date_range=NULL
 
-  control <- provide_rain_data(
+  control <- try(provide_rain_data(
     user_id = user_id,
     spot_id = spot_id,
     sampling_time = sampling_time,
-    date_range = date_range
-  )
+    date_range = date_range,
+    info = FALSE
+  ))
+
+  if (is_error(control)) {
+    return(create_failure(control))
+  }
 
   while (control$remaining > 0) {
 
-    control <- provide_rain_data(control = control)
+    control <- try(provide_rain_data(control = control))
+
+    if (is_error(control)) {
+      return(create_failure(control))
+    }
   }
 
-  return(list(remaining = 0))
+  create_result(
+    data = control$rain_ids,
+    success = TRUE,
+    message = get_text("rain_added", n = length(control$rain_ids))
+  )
 }
 
 # provide_rain_data ------------------------------------------------------------
@@ -73,6 +85,13 @@ provide_rain_data_for_bathing_spot <- function(
 #'   next block of required data is downloaded. When omitted, the function
 #'   returns an object that can be used as a control object for a next call of
 #'   this function. See example.
+#' @param info if \code{TRUE} (the default), a message is shown that describes
+#'   how to use this function in a loop
+#' @param urls vector of URLs to Radolan files. By default, the URLs are
+#'   determined within the function, considering the available measurements.
+#'   However, the user may override this behaviour by giving the URLs here.
+#'   Only used when \code{control = NULL}, otherwise the URLs are taken from
+#'   the \code{control} object.
 #' @return vector of integer containing the IDs of the records inserted into the
 #'   "rains" database table.
 #' @export
@@ -85,29 +104,25 @@ provide_rain_data_for_bathing_spot <- function(
 #' }
 provide_rain_data <- function(
   user_id, spot_id, sampling_time = "1050", date_range = NULL, blocksize = 10,
-  control = NULL
+  control = NULL, info = TRUE, urls = NULL
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
-  #user_id=5;spot_id=41;sampling_time="1050";date_range=NULL;blocksize=10;control=NULL
+  #user_id=5;spot_id=49;sampling_time="1050";date_range=NULL;blocksize=10;control=NULL
 
   if (is.null(control)) {
 
     # Determine the URLs to the Radolan files that are required to calibrate
     # a model. For each day of measurement six files (one for the day of
     # measurements and five for the five days before) are required.
-    urls <- get_radolan_urls_for_measurements(
+    urls <- kwb.utils::defaultIfNULL(urls, get_radolan_urls_for_measurements(
       user_id = user_id,
       spot_id = spot_id,
       sampling_time = sampling_time,
       date_range = date_range,
       all_in_range = FALSE,
       n_days_before = 5
-    )
-
-    # if (length(urls) == 0) {
-    #   return(NULL)
-    # }
+    ))
 
     # Get metadata about the current bathing spot. Convert the area list structure
     # to a matrix with columns "lon" and "lat". Convert area structure given in
@@ -124,17 +139,11 @@ provide_rain_data <- function(
       blocksize = blocksize
     )
 
-    message(
-      "Please use the returned object in a loop to perform the actual data ",
-      "import,\nas in the following code:\n\n",
-      sprintf(
-        "control <- provide_rain_data_for_bathing_spot(%d, %d)\n\n",
-        user_id, spot_id
-      ),
-      "while (control$remaining > 0) {\n",
-      "  control <- provide_rain_data_for_bathing_spot(control = control)\n",
-      "}"
-    )
+    if (info) {
+      message(get_text(
+        "info_provide_rain_data", user_id = user_id, spot_id = spot_id
+      ))
+    }
 
     # Return the control object
     return(list(
@@ -155,9 +164,6 @@ provide_rain_data <- function(
   # if (length(urls) == 0) {
   #   return(NULL)
   # }
-
-  # Loop through the data blocks
-  #for (i in seq_along(blocks)) {
 
   get_object <- function(name) kwb.utils::selectElements(control, name)
 
@@ -192,7 +198,7 @@ provide_rain_data <- function(
 
       # For the days returned in the new rain data frame, replace the
       # corresponding records that exist in the database with the new records
-      api_replace_rain(
+      rain_ids <- api_replace_rain(
         user_id = user_id,
         spot_id = spot_id,
         rain = rain,
@@ -200,9 +206,10 @@ provide_rain_data <- function(
         time_string = sampling_time_to_time_string(get_object("sampling_time")),
         comment = paste("imported:", Sys.time())
       )
+
+      control$rain_ids <- c(control$rain_ids, rain_ids)
     } # end of expression to be evaluated by catAndRun()
   )
-  #}
 
   control$remaining <- control$remaining - 1
 
@@ -230,8 +237,8 @@ read_radolan_data_within_polygon <- function(urls, polygon)
   list_of_cropped <- lapply(seq_along(urls), function(i) {
 
     message(sprintf(
-      "Reading and cropping from %s (%d/%d)...",
-      basename(urls[i]), i, length(urls)
+      "Reading and cropping from %s (%d/%d = %0.1f%%)...",
+      basename(urls[i]), i, length(urls), 100 * i / length(urls)
     ))
 
     # Read the Radolan file and crop the polygon area
@@ -265,10 +272,17 @@ api_replace_rain <- function(
   rain_db <- kwb.utils::defaultIfNULL(rain_db, api_get_rain(user_id, spot_id))
 
   # Find IDs that relate to days for which new data are available
-  rain_ids <- rain_db$id[as.Date(rain_db$dateTime) %in% rain$datum]
+  if (nrow(rain_db)) {
 
-  # Clear existing rain from the database
-  api_delete_rain(user_id, spot_id, ids = rain_ids)
+    # Get IDs of records that exist for the days to be inserted
+    date_strings <- format(rain_db$date, "%Y-%m-%d")
+    ids <- rain_db$id[date_strings %in% as.character(rain$datum)]
+
+    # Clear existing rain from the database
+    if (length(ids)) {
+      api_delete_rain(user_id = user_id, spot_id = spot_id, ids = ids)
+    }
+  }
 
   # Add rain data frame to the database
   api_add_rain(
@@ -279,12 +293,7 @@ api_replace_rain <- function(
 # sampling_time_to_time_string -------------------------------------------------
 sampling_time_to_time_string <- function(sampling_time)
 {
-  paste0(
-    substr(sampling_time, 1, 2),
-    ":",
-    substr(sampling_time, 3, 4),
-    ":00"
-  )
+  sprintf("%s:%s:00", substr(sampling_time, 1, 2), substr(sampling_time, 3, 4))
 }
 
 # check_rain_data_consistency --------------------------------------------------

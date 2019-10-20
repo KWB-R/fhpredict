@@ -2,7 +2,7 @@
 % Please edit documentation in R/provide_rain_data_for_bathing_spot.R
 \name{provide_rain_data_for_bathing_spot}
 \alias{provide_rain_data_for_bathing_spot}
-\title{Deprecated}
+\title{Provide Rain Data for one Bathing Spot}
 \usage{
 provide_rain_data_for_bathing_spot(user_id, spot_id,
   sampling_time = "1050", date_range = NULL)
@@ -21,12 +21,13 @@ determined from the range of dates for which water quality measurements are
 available.}
 }
 \value{
-list with element \code{remaining = 0}, just for compatibility
-  with \code{\link{provide_rain_data}}
-  "rains" database table.
+list with elements \code{data}, \code{success}, \code{message}. The
+  \code{data} element contains a vector of IDs identifying the records in
+  the rain data table associated with the bathing spot given by
+  \code{user_id} and \code{spot_id}
 }
 \description{
-Use \code{\link{provide_rain_data}} instead
+Consider to use \code{\link{provide_rain_data}}. For a description see there.
 }
 \examples{
 \dontrun{

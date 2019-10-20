@@ -7,16 +7,18 @@
 #' @keywords simple
 #' @examples
 #' \dontrun{simple()}
-simple <- function (spot_id, user_id) {
+simple <- function (spot_id, user_id)
+{
   Sys.sleep(0.5)
-  nums = c(1, 2, 3)
-  res <- list(
+
+  result <- list(
     body = list(
-      strArr = c(a, b),
-      numArr = nums
+      strArr = c(spot_id, user_id),
+      numArr = c(1, 2, 3)
     ),
     str = 'baz',
     success = TRUE
   )
-  jsonlite::toJSON(res, auto_unbox = TRUE)
+
+  jsonlite::toJSON(result, auto_unbox = TRUE)
 }

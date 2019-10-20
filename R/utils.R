@@ -1,3 +1,19 @@
+# all_elements_are_data_frames -------------------------------------------------
+all_elements_are_data_frames <- function(x)
+{
+  stopifnot(is.list(x))
+
+  all(sapply(x, is.data.frame))
+}
+
+# all_elements_are_named -------------------------------------------------------
+all_elements_are_named <- function(x)
+{
+  stopifnot(is.list(x))
+
+  length(names(x)) == length(x) && all(nzchar(names(x)))
+}
+
 # assert_final_slash -----------------------------------------------------------
 assert_final_slash <- function(x)
 {
@@ -20,16 +36,18 @@ convert_time_columns <- function(df, columns = c("createdAt", "updatedAt"))
   df
 }
 
+# create_failure: Create a "failure" result object -----------------------------
+create_failure <- function(x)
+{
+  create_result(success = FALSE, message = as.character(x))
+}
+
 # create_result ----------------------------------------------------------------
 create_result <- function(
   data = NULL, success = TRUE, message = "Everything ok"
 )
 {
-  list(
-    data = data,
-    sucess = success,
-    message = message
-  )
+  list(data = data, sucess = success, message = message)
 }
 
 # extract_flat_information -----------------------------------------------------
@@ -118,6 +136,30 @@ get_environment_var <- function(name)
   clean_stop(sprintf("Please set the environment variable '%s'", name))
 }
 
+# get_prefix -------------------------------------------------------------------
+get_prefix <- function(x)
+{
+  parts <- strsplit(x, "_")
+
+  more_than_one_part <- lengths(parts) > 1
+
+  if (! all(more_than_one_part)) {
+
+    stop(
+      "The following strings do not have a prefix (separated by underscore):\n",
+      kwb.utils::stringList(x[! more_than_one_part]), call. = FALSE
+    )
+  }
+
+  sapply(parts , "[", 1)
+}
+
+# is_error ---------------------------------------------------------------------
+is_error <- function(x)
+{
+  inherits(x, "try-error")
+}
+
 # iso_timestamp_to_local_posix -------------------------------------------------
 iso_timestamp_to_local_posix <- function(x, tzone = "Europe/Berlin")
 {
@@ -126,4 +168,18 @@ iso_timestamp_to_local_posix <- function(x, tzone = "Europe/Berlin")
   times <- as.POSIXct(x, format = "%Y-%m-%dT%H:%M:%OSZ", tz = "UTC")
 
   structure(times, tzone = tzone)
+}
+
+# new_line_collapsed -----------------------------------------------------------
+new_line_collapsed <- function(x)
+{
+  paste(x, collapse = "\n")
+}
+
+# reset_time -------------------------------------------------------------------
+reset_time <- function(x)
+{
+  stopifnot(inherits(x, "POSIXct"))
+
+  as.POSIXct(substr(as.character(x), 1, 10), tz = attr(x, "tzone"))
 }

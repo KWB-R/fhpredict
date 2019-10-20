@@ -1,18 +1,25 @@
 # is_valid_postgres_api_token --------------------------------------------------
 is_valid_postgres_api_token <- function(token)
 {
-  url <- get_environment_var("API_URL")
+  content <- postgres_get(path = "", token = token)
 
-  config <- httr::add_headers(Authorization = paste("Bearer", token))
+  if (! is.null(response <- attr(content, "response"))) {
 
-  response <- httr::GET(url, config = config)
+    status_code <- httr::status_code(response)
 
-  success <- httr::content(response, "parsed")$success
-  success <- kwb.utils::defaultIfNULL(success, FALSE)
+    # Expected status code for lacking authorisation
+    if (status_code == 401) {
+      return(FALSE)
+    }
+
+    # Unexpected request failure
+    stop_on_request_failure(response = response)
+  }
+
+  success <- kwb.utils::defaultIfNULL(content$success, FALSE)
 
   if (! success) {
-    message("The token is not valid. The response was:")
-    utils::str(httr::headers(response))
+    message(get_text("invalid_token"))
   }
 
   success

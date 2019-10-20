@@ -4,11 +4,13 @@
 \alias{postgres_delete}
 \title{Send DELETE Request to Postgres API}
 \usage{
-postgres_delete(path)
+postgres_delete(path, ...)
 }
 \arguments{
 \item{path}{relative path, e.g. \code{users/3/bathingspots/18/genericInputs}
 to delete a generic input for bathing spot with id 18 of user with id 3}
+
+\item{\dots}{further arguments passed to \code{fhpredict:::postgres_request}}
 }
 \value{
 In case of success this function returns what

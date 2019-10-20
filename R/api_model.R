@@ -16,8 +16,7 @@ api_add_model <- function(user_id, spot_id, model, comment = "any comment?")
   result <- postgres_post(
     path = path_models(user_id, spot_id),
     body = body_model(
-      rmodel = "Deprecated. Binary model file has been uploaded.",
-               #model_to_text(model),
+      rmodel = get_text("rmodel_deprecated"),
       comment = comment
     )
   )
@@ -26,7 +25,8 @@ api_add_model <- function(user_id, spot_id, model, comment = "any comment?")
   model_data <- kwb.utils::selectElements(result, "data")
 
   if (length(model_data) != 1) {
-    clean_stop("Not exactly one model was returned as expected!")
+
+    clean_stop(get_text("not_one_model"))
   }
 
   # Get the ID of the newly created model
@@ -35,10 +35,7 @@ api_add_model <- function(user_id, spot_id, model, comment = "any comment?")
   # Now that the model ID is available, upload the model object to a binary file
   model_url <- upload_model(user_id, spot_id, model_id, model)
 
-  message(
-    "The model has been stored in the database. It has been given the id ",
-    model_id, "."
-  )
+  message(get_text("model_stored", model_id = model_id))
 
   # Return the model ID
   structure(model_id, model_url = model_url)
@@ -90,17 +87,21 @@ api_get_model <- function(user_id, spot_id, model_id = -1L)
 
   # Send a GET request to the database
   result <- kwb.utils::catAndRun(
-    sprintf(
-      "Reading %s from the database",
-      if (model_id == -1L) "all models" else paste("model with id =", model_id)
-    ),
+    messageText = get_text("reading_model", what = if (model_id == -1L) {
+      "all models"
+    } else {
+      get_text("model_with_id", model_id = model_id)
+    }),
     expr = postgres_get(path = path)
   )
 
-  stop_on_request_failure(result, sprintf(
-    "There is no model with id %d. Call %s for available models.", model_id,
-    sprintf("api_get_model(user_id = %d, spot_id = %d)", user_id, spot_id)
-  ))
+  stop_on_request_failure(result, error_text = if (model_id == -1L) {
+    get_text("no_models_stored", user_id = user_id, spot_id = spot_id)
+  } else {
+    get_text(
+      "no_such_model", model_id = model_id, user_id = user_id, spot_id = spot_id
+    )
+  })
 
   models <- kwb.utils::selectElements(result, "data")
 
@@ -122,7 +123,7 @@ api_get_model <- function(user_id, spot_id, model_id = -1L)
 
   if (n_files == 0) {
 
-    clean_stop("No model file has yet been uploaded for model_id = ", model_id)
+    clean_stop(get_text("no_model_file", model_id = model_id))
   }
 
   # Get the URL to the uploaded model file
@@ -130,24 +131,12 @@ api_get_model <- function(user_id, spot_id, model_id = -1L)
 
   # Read the model file from the URL
   download_model(model_url)
-
-  # Convert the first list element to text
-  #text_to_model(text = kwb.utils::selectElements(models[[1]], "rmodel"))
 }
 
 # download_model ---------------------------------------------------------------
 download_model <- function(model_url)
 {
   readRDS(file(model_url, open = "rb"))
-
-  # # Set path to local file where to put the downloaded model file
-  # model_file_downloaded <- file.path(tempdir(), basename(model_url))
-  #
-  # # Download the model to the local file
-  # download.file(model_url, model_file_downloaded, mode = "wb")
-  #
-  # # Read the model from the downloaded file
-  # readRDS(model_file_downloaded)
 }
 
 # api_delete_model -------------------------------------------------------------
@@ -167,15 +156,14 @@ api_delete_model <- function(user_id, spot_id, model_id)
   stopifnot(all(sapply(list(user_id, spot_id, model_id), is.numeric)))
   stopifnot(all(sapply(list(user_id, spot_id, model_id), `>`, 0)))
 
-  result <- postgres_delete(path_models(user_id, spot_id, model_id))
-
-  stop_on_request_failure(result)
+  result <- safe_postgres_delete(path_models(user_id, spot_id, model_id))
 
   stopifnot(kwb.utils::selectElements(result, "success"))
   stopifnot(length(kwb.utils::selectElements(result, "data")) == 1)
 
-  message(sprintf(
-    "The model with id %d (%s) was deleted.",
-    model_id, kwb.utils::selectElements(result$data[[1]], "comment")
+  message(get_text(
+    "model_deleted",
+    model_id = model_id,
+    comment = kwb.utils::selectElements(result$data[[1]], "comment")
   ))
 }

@@ -39,24 +39,22 @@ api_add_rain <- function(
   date_strings <- as.character(kwb.utils::selectColumns(rain, "datum"))
   values <- kwb.utils::selectColumns(rain, "rain")
 
-  result <- kwb.utils::catAndRun(
-    sprintf(
-      "Inserting %d rain data records into the database", length(date_strings)
-    ),
-    lapply(seq_along(values), function(i) {
-      add_timeseries_point_to_database(
-        path = path_rains(user_id, spot_id),
-        date_string = date_strings[i],
-        time_string = time_string,
-        value = values[i],
-        comment = comment,
-        subject = "rain"
-      )
-    })
-  )
+  kwb.utils::catAndRun(
+    get_text("inserting_rain", n = length(date_strings)),
+    expr = {
 
-  # Return the ids of the rain data records
-  unlist(result)
+      # Prepare data frame to be passed to add_timeseries_to_database()
+      data <- kwb.utils::noFactorDataFrame(
+        date = date_strings,
+        dateTime = time_string,
+        value = values
+      )
+
+      data$comment <- comment
+
+      add_timeseries_to_database(path_rains(user_id, spot_id), data)
+    }
+  )
 }
 
 # api_get_rain -----------------------------------------------------------------
@@ -69,10 +67,9 @@ api_add_rain <- function(
 #'
 api_get_rain <- function(user_id, spot_id)
 {
-  api_get_timeseries(
-    path = path_rains(user_id, spot_id),
-    subject = "rain"
-  )
+  rain <- api_get_timeseries(path_rains(user_id, spot_id), subject = "rain")
+
+  remove_and_reorder_columns(rain, "rain")
 }
 
 # api_delete_rain --------------------------------------------------------------
@@ -84,15 +81,18 @@ api_get_rain <- function(user_id, spot_id)
 #' @param ids optional. Vector of rain ids. If not given or \code{NULL} (the
 #'   default) all rain data for the bathing spot are deleted!
 #' @param dbg if \code{TRUE} debug messages are shown
+#' @param \dots further arguments passed to
+#'   \code{fhpredict:::api_delete_timeseries}
 #' @export
 #'
-api_delete_rain <- function(user_id, spot_id, ids = NULL, dbg = TRUE)
+api_delete_rain <- function(user_id, spot_id, ids = NULL, dbg = TRUE, ...)
 {
   api_delete_timeseries(
     user_id,
     spot_id,
     ids = ids,
     path_function = path_rains,
-    subject = "rain"
+    subject = "rain",
+    ...
   )
 }

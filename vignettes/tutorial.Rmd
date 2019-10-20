@@ -15,7 +15,8 @@ editor_options:
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 7
+  fig.width = 7,
+  eval = FALSE
 )
 ```
 
@@ -53,24 +54,36 @@ that are stored in the postgres database. You need to specify the user to whom
 the bathing spots are associated. See above for how to get a list of available
 user ids.
 
-```{r}
+```{r error = TRUE}
 # Get overview on the first "limit" bathingspots associated to user with id 3
-bathing_spots <- fhpredict::api_get_bathingspot(user_id = 3)
+spots <- fhpredict::api_get_bathingspot(user_id = 3)
+spots2 <- fhpredict::api_get_bathingspot(user_id = 3, check = FALSE)
+identical(spots, spots2)
+
+fhpredict::api_get_bathingspot(user_id = 33)
+fhpredict::api_get_bathingspot(user_id = 33, check = FALSE)
 
 # Number of bathing spots returned
-nrow(bathing_spots)
+nrow(spots)
 ```
 
-By default, only the first `r nrow(bathing_spots)` bathing spots are considered
-in the returned data frame. Set the argument `limit` to a high number so that
-you get a list of all available bathing spots:
+By default, only the first bathing spots are considered in the returned data
+frame. Set the argument `limit` to a high number so that you get a list of all
+available bathing spots:
 
 ```{r}
 # Get overview on all bathing spots associated to user with id 3
-all_bathing_spots <- fhpredict::api_get_bathingspot(user_id = 3, limit = 10000)
+all_spots <- fhpredict::api_get_bathingspot(user_id = 3, limit = 10000)
 
 # Number of bathing spots returned
-nrow(all_bathing_spots)
+nrow(all_spots)
+```
+
+### Create a new bathing spot
+
+### Delete a bathing spot
+
+```{r}
 ```
 
 ### Fetching data related to one bathing spot
@@ -279,12 +292,10 @@ purification_plants <- lapply(bathing_spots$id, function(spot_id) {
   
   message("spot id = ", spot_id)
   
-  result <- fhpredict::postgres_get(path = sprintf(
+  result <- fhpredict::safe_postgres_get(path = sprintf(
     "%s/purificationPlants", 
     fhpredict:::path_bathingspot(user_id = 3, spot_id = spot_id)
   ))
-  
-  fhpredict:::stop_on_request_failure(result)
   
   result$data
 })
@@ -341,6 +352,30 @@ head(rain)
 ```
 
 ## Rains: Details
+
+### Read rain data stored for a bathing spot
+
+```{r}
+(rain <- fhpredict::api_get_rain(user_id = 3, spot_id = 43))
+```
+
+### Delete all rain data stored for a bathing spot
+
+```{r}
+system.time(fhpredict::api_delete_rain(user_id = 3, spot_id = 43))
+```
+
+### Add some fake rain data
+
+```{r}
+n <- 1000
+new_rain <- data.frame(
+  datum = seq(as.Date("2019-10-10"), by = 1, length.out = n),
+  rain = 0.1 * sample(1:10, size = n, replace = TRUE)
+)
+
+fhpredict::api_add_rain(user_id = 3, spot_id = 43, rain = new_rain)
+```
 
 ```{r}
 date_from <- "20080701"
@@ -469,4 +504,54 @@ ids <- fhpredict:::api_add_discharge(user_id, spot_id, discharge)
 # Delete the records that have just been added. Omitting the IDs will remove
 # all discharge data related to the bathing spot
 fhpredict::api_delete_discharge(user_id, spot_id, ids = ids)
+```
+
+## Irradiances and Generic Inputs
+
+```{r}
+# Define user and bathing spot -------------------------------------------------
+user_id <- 3
+spot_id <- 42
+
+# Define artificial time series ------------------------------------------------
+n <- 10
+timeseries <- data.frame(
+  date = seq(as.Date("2018-07-12"), by = 1, length.out = n), 
+  dateTime = "12:13:14",
+  value = rnorm(n, 100)
+)
+
+# Get overview on generic inputs -----------------------------------------------
+fhpredict:::api_get_generic(user_id, spot_id)
+fhpredict:::api_get_generic(user_id, spot_id, generic_id = 5)
+
+# Delete existing generic inputs -----------------------------------------------
+fhpredict:::api_delete_generic(user_id, spot_id, generic_id = 6)
+
+# Delete all generics!
+fhpredict:::api_delete_generic(user_id, spot_id)
+
+# Create a new generic input ---------------------------------------------------
+fhpredict:::api_add_generic(user_id, spot_id, name = "generic_1")
+fhpredict:::api_add_generic(user_id, spot_id, name = "generic_2")
+fhpredict:::api_add_generic(user_id, spot_id, name = "generic_3")
+
+# Add measurements to a specific generic input ---------------------------------
+fhpredict:::api_add_generic_measurements(user_id, spot_id, 16, data = timeseries)
+
+# Read back the generic input. Where are the measurements?
+fhpredict:::postgres_get(
+  fhpredict:::path_generic_measurements(user_id, spot_id, 16)
+)
+
+fhpredict:::api_get_generic(user_id, spot_id, generic_id = 16)
+
+# Get irradiance measurements --------------------------------------------------
+fhpredict:::api_get_irradiances(user_id, spot_id)
+
+# Delete all irradiance measurements -------------------------------------------
+fhpredict:::api_delete_irradiances(user_id, spot_id)
+
+# Add irradiance measurements --------------------------------------------------
+fhpredict:::api_add_irradiances(user_id, spot_id, data = timeseries)
 ```

@@ -1,8 +1,11 @@
 # Test build_and_validate_model() ----------------------------------------------
 if (FALSE)
 {
-  user_id <- 5
-  spot_id <- 41
+  user_id <- 3
+  spot_id <- 50
+
+  # Show available bathing spot IDs
+  fhpredict::api_get_bathingspot(user_id)$id
 
   # Get data in the format that is required by build_and_validate_model()
   spot_data <- fhpredict::provide_input_data(user_id, spot_id)
@@ -10,22 +13,28 @@ if (FALSE)
   set.seed(1)
 
   result <- fhpredict:::build_and_validate_model(
-    spot_data = spot_data# , prefix = "spot18_"
+    spot_data = spot_data
+    # , prefix = "spot18_"
   )
 
-  fhpredict::api_add_model(user_id, spot_id, result$stanfit, comment = "great!")
+  model <- result$stanfit
 
-  object.size(result[[3]])
-  rstanarm::launch_shinystan(result[[3]])
+  fhpredict::api_add_model(user_id, spot_id, model, comment = "great!")
 
-  dn <- data.frame(r_mean_mean_23 = seq(0, 40, .5))
+  object.size(model)
 
-  pp <- apply(rstanarm::posterior_predict(result[[3]], newdata = dn), 2,
-              quantile, probs = c(0.025, 0.5, 0.975))
+  rstanarm::launch_shinystan(model)
 
-  result[[3]]$model
+  dn <- data.frame(r_mean_mean_123 = seq(0, 40, .5),
+                   r_mean_abs_5 = 1)
 
-  plot(dn$r_mean_mean_23, pp[2,])
-  lines(dn$r_mean_mean_23, pp[1,])
-  lines(dn$r_mean_mean_23, pp[3,])
+  prediction <- rstanarm::posterior_predict(model, newdata = dn)
+
+  pp <- apply(prediction, 2, quantile, probs = c(0.025, 0.5, 0.975))
+
+  model$model
+
+  plot(dn[[1]], pp[2, ])
+  lines(dn[[1]], pp[1, ])
+  lines(dn[[1]], pp[3, ])
 }

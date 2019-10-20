@@ -28,56 +28,68 @@ path_bathingspot <- function(
   )
 }
 
-# path_discharges --------------------------------------------------------------
-path_discharges <- function(user_id, spot_id, discharge_id = -1L)
+# path_general -----------------------------------------------------------------
+path_general <- function(type, user_id, spot_id, id)
 {
-  path <- paste0(path_bathingspot(user_id, spot_id), "/discharges")
+  path <- paste0(path_bathingspot(user_id, spot_id), "/", type)
 
-  if (discharge_id == -1L) {
+  if (id == -1L) {
     return(path)
   }
 
-  sprintf("%s/%d", path, discharge_id)
+  paste0(path, "/", id)
+}
+
+# path_discharges --------------------------------------------------------------
+path_discharges <- function(user_id, spot_id, discharge_id = -1L)
+{
+  path_general("discharges", user_id, spot_id, discharge_id)
+}
+
+# path_generics ----------------------------------------------------------------
+path_generics <- function(user_id, spot_id, generic_id = -1L)
+{
+  path_general("genericInputs", user_id, spot_id, generic_id)
+}
+
+# path_generic_measurements ----------------------------------------------------
+path_generic_measurements <- function(user_id, spot_id, generic_id, id = -1L)
+{
+  path <- paste0(path_generics(user_id, spot_id, generic_id), "/measurements")
+
+  if (id == -1L) {
+    return(path)
+  }
+
+  paste0(path, "/", id)
+}
+
+# path_irradiances -------------------------------------------------------------
+path_irradiances <- function(user_id, spot_id, irradiance_id = -1L)
+{
+  path_general("globalIrradiances", user_id, spot_id, irradiance_id)
 }
 
 # path_measurements ------------------------------------------------------------
-path_measurements <- function(user_id, spot_id)
+path_measurements <- function(user_id, spot_id, measurement_id = -1L)
 {
-  paste0(path_bathingspot(user_id, spot_id), "/measurements")
+  path_general("measurements", user_id, spot_id, measurement_id)
 }
 
 # path_models ------------------------------------------------------------------
 path_models <- function(user_id, spot_id, model_id = -1L)
 {
-  path <- paste0(path_bathingspot(user_id, spot_id), "/models")
-
-  if (model_id == -1L) {
-    return(path)
-  }
-
-  sprintf("%s/%d", path, model_id)
+  path_general("models", user_id, spot_id, model_id)
 }
 
 # path_predictions -------------------------------------------------------------
 path_predictions <- function(user_id, spot_id, prediction_id = -1L)
 {
-  path <- paste0(path_bathingspot(user_id, spot_id), "/predictions")
-
-  if (prediction_id == -1L) {
-    return(path)
-  }
-
-  sprintf("%s/%d", path, prediction_id)
+  path_general("predictions", user_id, spot_id, prediction_id)
 }
 
 # path_rains -------------------------------------------------------------------
 path_rains <- function(user_id, spot_id, rain_id = -1L)
 {
-  path <- paste0(path_bathingspot(user_id, spot_id), "/rains")
-
-  if (rain_id == -1L) {
-    return(path)
-  }
-
-  sprintf("%s/%d", path, rain_id)
+  path_general("rains", user_id, spot_id, rain_id)
 }

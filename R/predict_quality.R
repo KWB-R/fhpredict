@@ -10,46 +10,40 @@
 predict_quality <- function(user_id, spot_id, date = Sys.Date())
 {
   #kwb.utils::assignPackageObjects("fhpredict")
-  #user_id=1;spot_id=1
+  #user_id=3;spot_id=42
   #user_id=5;spot_id=41
 
-  # Get available models
-  models <- try(api_get_model(user_id, spot_id))
+  # Try to get the model that was added last (if any)
+  model <- try(get_last_added_model(user_id, spot_id))
 
-  if ((failed <- inherits(model, "try-error")) || nrow(models) == 0) {
-
-    return(create_result(
-      success = FALSE,
-      message = if (failed) {
-        as.character(model)
-      } else {
-        sprintf(
-          "No models stored for user_id = %d, spot_id = %d", user_id, spot_id
-        )
-      }
-    ))
+  if (is_error(model)) {
+    return(create_failure(model))
   }
 
-  model_id <- kwb.utils::selectElements(models, "id")[nrow(models)]
+  # Provide new data for prediction
+  newdata <- try({
 
-  model <- try(api_get_model(user_id, spot_id, model_id))
+    # Collect all data that are available for the given bathing spot
+    spot_data <- provide_input_data(user_id, spot_id)
 
-  if (inherits(model, "try-error")) {
+    # Prepare the data (filter for bathing season, log-transform rain)
+    riverdata <- prepare_river_data(spot_data)
 
-    return(create_result(
-      success = FALSE,
-      message = as.character(model)
-    ))
+    # Use only rain data because currently only rain data will be updated
+    # automatically!
+    provide_data_for_lm(riverdata, pattern = "r_mean")
+  })
+
+  if (is_error(newdata)) {
+    return(create_failure(newdata))
   }
 
+  # Get a prediction using the model and the new data
   path <- path_predictions(user_id, spot_id)
 
   #str(postgres_get(path)$data)
 
-  result <- postgres_post(path, body = list(
-    date = date,
-    prediction = "gut"
-  ))
+  result <- postgres_post(path, body = list(date = date, prediction = "gut"))
 
   if (length(result) == 0) {
 
@@ -65,4 +59,21 @@ predict_quality <- function(user_id, spot_id, date = Sys.Date())
     success = result$success,
     message = result$message
   ))
+}
+
+# get_last_added_model ---------------------------------------------------------
+get_last_added_model <- function(user_id, spot_id)
+{
+  # Get available models
+  models <- api_get_model(user_id, spot_id)
+
+  if (nrow(models) == 0) {
+    clean_stop(get_text(
+      "no_models_stored", user_id = user_id, spot_id = spot_id
+    ))
+  }
+
+  model_id <- kwb.utils::selectElements(models, "id")[nrow(models)]
+
+  api_get_model(user_id, spot_id, model_id)
 }
