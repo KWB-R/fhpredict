@@ -6,20 +6,22 @@
 #' @param subject name of data subject, to be used in messages
 #' @param sort if \code{TRUE} (the default), the returned data frame will be
 #'   sorted by the "dateTime" column
+#' @param token passed to \code{fhpredict:::postgres_request}
 #' @keywords internal
 #'
-api_get_timeseries <- function(path, subject = "timeseries", sort = TRUE)
+api_get_timeseries <- function(
+  path, subject = "timeseries", sort = TRUE, token = NULL
+)
 {
   df <- kwb.utils::catAndRun(
     get_text("reading_data", subject = subject),
     expr = {
-      result <- safe_postgres_get(path)
+      result <- safe_postgres_get(path, token = token)
       flatten_recursive_list(result$data)
     }
   )
 
   if (is.null(df)) {
-
     return(data.frame())
   }
 

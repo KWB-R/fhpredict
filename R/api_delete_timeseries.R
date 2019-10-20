@@ -4,10 +4,15 @@ api_delete_timeseries <- function(
   dbg = TRUE
 )
 {
+  # Request a token to be reused
+  token <- get_postgres_api_token()
+
   # Get all available ids if no ids are given
   if (is.null(ids)) {
 
-    df <- api_get_timeseries(path = path_function(user_id, spot_id), subject)
+    path <- path_function(user_id, spot_id)
+
+    df <- api_get_timeseries(path, subject, token = token)
 
     if (nrow(df) == 0) {
 
@@ -25,8 +30,12 @@ api_delete_timeseries <- function(
   kwb.utils::catAndRun(
     get_text("deleting_data_points", n = length(ids), subject = subject),
     dbg = dbg, {
+
       for (id in ids) {
-        safe_postgres_delete(path = path_function(user_id, spot_id, id))
+
+        path <- path_function(user_id, spot_id, id)
+
+        safe_postgres_delete(path, token = token)
       }
     }
   )
