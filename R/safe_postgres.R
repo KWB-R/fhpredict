@@ -25,10 +25,10 @@ safe_postgres <- function(fun, ...)
 }
 
 # stop_on_request_failure ------------------------------------------------------
-stop_on_request_failure <- function(result, error_text = "")
+stop_on_request_failure <- function(
+  result, error_text = "", response = attr(result, "response")
+)
 {
-  response <- attr(result, "response")
-
   if (is.null(response)) {
     return()
   }
