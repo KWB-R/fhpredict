@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fhpredict</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -349,7 +349,7 @@
 <div id="add-some-fake-rain-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#add-some-fake-rain-data" class="anchor"></a>Add some fake rain data</h3>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">n &lt;-<span class="st"> </span><span class="dv">100</span></a>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">n &lt;-<span class="st"> </span><span class="dv">1000</span></a>
 <a class="sourceLine" id="cb26-2" data-line-number="2">new_rain &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
 <a class="sourceLine" id="cb26-3" data-line-number="3">  <span class="dt">datum =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span>(<span class="st">"2019-10-10"</span>), <span class="dt">by =</span> <span class="dv">1</span>, <span class="dt">length.out =</span> n),</a>
 <a class="sourceLine" id="cb26-4" data-line-number="4">  <span class="dt">rain =</span> <span class="fl">0.1</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">size =</span> n, <span class="dt">replace =</span> <span class="ot">TRUE</span>)</a>
@@ -457,6 +457,55 @@
 <a class="sourceLine" id="cb35-19" data-line-number="19"><span class="co"># all discharge data related to the bathing spot</span></a>
 <a class="sourceLine" id="cb35-20" data-line-number="20">fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_delete_discharge.html">api_delete_discharge</a></span>(user_id, spot_id, <span class="dt">ids =</span> ids)</a></code></pre></div>
 </div>
+<div id="irradiances-and-generic-inputs" class="section level2">
+<h2 class="hasAnchor">
+<a href="#irradiances-and-generic-inputs" class="anchor"></a>Irradiances and Generic Inputs</h2>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1"><span class="co"># Define user and bathing spot -------------------------------------------------</span></a>
+<a class="sourceLine" id="cb36-2" data-line-number="2">user_id &lt;-<span class="st"> </span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb36-3" data-line-number="3">spot_id &lt;-<span class="st"> </span><span class="dv">42</span></a>
+<a class="sourceLine" id="cb36-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb36-5" data-line-number="5"><span class="co"># Define artificial time series ------------------------------------------------</span></a>
+<a class="sourceLine" id="cb36-6" data-line-number="6">n &lt;-<span class="st"> </span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb36-7" data-line-number="7">timeseries &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
+<a class="sourceLine" id="cb36-8" data-line-number="8">  <span class="dt">date =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span>(<span class="st">"2018-07-12"</span>), <span class="dt">by =</span> <span class="dv">1</span>, <span class="dt">length.out =</span> n), </a>
+<a class="sourceLine" id="cb36-9" data-line-number="9">  <span class="dt">dateTime =</span> <span class="st">"12:13:14"</span>,</a>
+<a class="sourceLine" id="cb36-10" data-line-number="10">  <span class="dt">value =</span> <span class="kw"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(n, <span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb36-11" data-line-number="11">)</a>
+<a class="sourceLine" id="cb36-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb36-13" data-line-number="13"><span class="co"># Get overview on generic inputs -----------------------------------------------</span></a>
+<a class="sourceLine" id="cb36-14" data-line-number="14">fhpredict<span class="op">:::</span><span class="kw">api_get_generic</span>(user_id, spot_id)</a>
+<a class="sourceLine" id="cb36-15" data-line-number="15">fhpredict<span class="op">:::</span><span class="kw">api_get_generic</span>(user_id, spot_id, <span class="dt">generic_id =</span> <span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb36-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb36-17" data-line-number="17"><span class="co"># Delete existing generic inputs -----------------------------------------------</span></a>
+<a class="sourceLine" id="cb36-18" data-line-number="18">fhpredict<span class="op">:::</span><span class="kw">api_delete_generic</span>(user_id, spot_id, <span class="dt">generic_id =</span> <span class="dv">6</span>)</a>
+<a class="sourceLine" id="cb36-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb36-20" data-line-number="20"><span class="co"># Delete all generics!</span></a>
+<a class="sourceLine" id="cb36-21" data-line-number="21">fhpredict<span class="op">:::</span><span class="kw">api_delete_generic</span>(user_id, spot_id)</a>
+<a class="sourceLine" id="cb36-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb36-23" data-line-number="23"><span class="co"># Create a new generic input ---------------------------------------------------</span></a>
+<a class="sourceLine" id="cb36-24" data-line-number="24">fhpredict<span class="op">:::</span><span class="kw">api_add_generic</span>(user_id, spot_id, <span class="dt">name =</span> <span class="st">"generic_1"</span>)</a>
+<a class="sourceLine" id="cb36-25" data-line-number="25">fhpredict<span class="op">:::</span><span class="kw">api_add_generic</span>(user_id, spot_id, <span class="dt">name =</span> <span class="st">"generic_2"</span>)</a>
+<a class="sourceLine" id="cb36-26" data-line-number="26">fhpredict<span class="op">:::</span><span class="kw">api_add_generic</span>(user_id, spot_id, <span class="dt">name =</span> <span class="st">"generic_3"</span>)</a>
+<a class="sourceLine" id="cb36-27" data-line-number="27"></a>
+<a class="sourceLine" id="cb36-28" data-line-number="28"><span class="co"># Add measurements to a specific generic input ---------------------------------</span></a>
+<a class="sourceLine" id="cb36-29" data-line-number="29">fhpredict<span class="op">:::</span><span class="kw">api_add_generic_measurements</span>(user_id, spot_id, <span class="dv">16</span>, <span class="dt">data =</span> timeseries)</a>
+<a class="sourceLine" id="cb36-30" data-line-number="30"></a>
+<a class="sourceLine" id="cb36-31" data-line-number="31"><span class="co"># Read back the generic input. Where are the measurements?</span></a>
+<a class="sourceLine" id="cb36-32" data-line-number="32">fhpredict<span class="op">:::</span><span class="kw"><a href="../reference/postgres_get.html">postgres_get</a></span>(</a>
+<a class="sourceLine" id="cb36-33" data-line-number="33">  fhpredict<span class="op">:::</span><span class="kw">path_generic_measurements</span>(user_id, spot_id, <span class="dv">16</span>)</a>
+<a class="sourceLine" id="cb36-34" data-line-number="34">)</a>
+<a class="sourceLine" id="cb36-35" data-line-number="35"></a>
+<a class="sourceLine" id="cb36-36" data-line-number="36">fhpredict<span class="op">:::</span><span class="kw">api_get_generic</span>(user_id, spot_id, <span class="dt">generic_id =</span> <span class="dv">16</span>)</a>
+<a class="sourceLine" id="cb36-37" data-line-number="37"></a>
+<a class="sourceLine" id="cb36-38" data-line-number="38"><span class="co"># Get irradiance measurements --------------------------------------------------</span></a>
+<a class="sourceLine" id="cb36-39" data-line-number="39">fhpredict<span class="op">:::</span><span class="kw">api_get_irradiances</span>(user_id, spot_id)</a>
+<a class="sourceLine" id="cb36-40" data-line-number="40"></a>
+<a class="sourceLine" id="cb36-41" data-line-number="41"><span class="co"># Delete all irradiance measurements -------------------------------------------</span></a>
+<a class="sourceLine" id="cb36-42" data-line-number="42">fhpredict<span class="op">:::</span><span class="kw">api_delete_irradiances</span>(user_id, spot_id)</a>
+<a class="sourceLine" id="cb36-43" data-line-number="43"></a>
+<a class="sourceLine" id="cb36-44" data-line-number="44"><span class="co"># Add irradiance measurements --------------------------------------------------</span></a>
+<a class="sourceLine" id="cb36-45" data-line-number="45">fhpredict<span class="op">:::</span><span class="kw">api_add_irradiances</span>(user_id, spot_id, <span class="dt">data =</span> timeseries)</a></code></pre></div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -474,6 +523,7 @@
       <li><a href="#rains">Rains</a></li>
       <li><a href="#rains-details">Rains: Details</a></li>
       <li><a href="#discharge-data">Discharge data</a></li>
+      <li><a href="#irradiances-and-generic-inputs">Irradiances and Generic Inputs</a></li>
       </ul>
 </div>
       </div>
