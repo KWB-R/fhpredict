@@ -11,15 +11,63 @@
 #'
 get_postgres_api_token <- function(dbg = FALSE)
 {
-  file <- file.path(get_environment_var("TEMP"), ".postgres_api_token")
+  file <- token_file()
 
-  read_token <- function() kwb.utils::catAndRun(
+  # If a token is stored and if it is valid, return the stored token
+  if (file.exists(file)) {
+
+    token <- read_token(file, dbg = dbg)
+
+    if (is_valid_postgres_api_token(token)) {
+      return(token)
+    }
+  }
+
+  new_token <- kwb.utils::catAndRun(
+    get_text("requesting_token"),
+    dbg = dbg,
+    newLine = 1,
+    expr = {
+
+      token_data <- request_token()
+
+      if (! is.null(token_data)) {
+        kwb.utils::selectElements(token_data, "access_token")
+      }
+    }
+  )
+
+  # We expect the new token to be valid!
+  stopifnot(is_valid_postgres_api_token(new_token))
+
+  # If we arrive here, there is no stored token or the stored token is not valid
+  if (! is.null(new_token)) {
+    write_token(token, file, dbg = dbg)
+  }
+
+  token
+}
+
+# token_file -------------------------------------------------------------------
+token_file <- function()
+{
+  file.path(get_environment_var("TEMP"), ".postgres_api_token")
+}
+
+# read_token -------------------------------------------------------------------
+read_token <- function(file = token_file(), dbg = TRUE)
+{
+  kwb.utils::catAndRun(
     get_text("reading_token", file = file),
     dbg = dbg,
     readLines(file)
   )
+}
 
-  write_token <- function(token) kwb.utils::catAndRun(
+# write_token ------------------------------------------------------------------
+write_token <- function(token, file = token_file(), dbg = TRUE)
+{
+  kwb.utils::catAndRun(
     get_text("writing_token", file = file),
     dbg = dbg,
     expr = {
@@ -42,25 +90,4 @@ get_postgres_api_token <- function(dbg = FALSE)
       }
     }
   )
-
-  new_token <- function() kwb.utils::catAndRun(
-    get_text("requesting_token"),
-    dbg = dbg,
-    if (! is.null(token_data <- request_token())) {
-      kwb.utils::selectElements(token_data, "access_token")
-    }
-  )
-
-  # If a token is stored and if it is valid, return the stored token
-  if (file.exists(file) &&
-      is_valid_postgres_api_token(token <- read_token())) {
-    return(token)
-  }
-
-  # If we arrive here, there is no stored token or the stored token is not valid
-  if (! is.null(token <- new_token())) {
-    write_token(token)
-  }
-
-  token
 }
