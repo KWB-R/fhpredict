@@ -9,20 +9,24 @@
 #' @param pattern optional. Pattern matching the names of bathing spots to be
 #'   returned. Only considered if no \code{spot_id} is given (i.e. has its
 #'   default value \code{-1L}).
+#' @param check if \code{TRUE} (the default) it is checked first whether the
+#'   given \code{user_id} exists. Switching this check off may speed up the
+#'   request.
 #' @export
 api_get_bathingspot <- function(
-  user_id = -1L, spot_id = -1L, limit = NULL, skip = NULL, pattern = ""
+  user_id = -1L, spot_id = -1L, limit = NULL, skip = NULL, pattern = "",
+  check = TRUE
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
   #user_id = -1L; spot_id = -1L; limit = NULL; skip = NULL; pattern = ""
   #limit <- 2
 
-  check_user_id(user_id)
+  if (check) {
+    check_user_id(user_id)
+  }
 
-  path <- path_bathingspot(user_id, spot_id, limit, skip)
-
-  content <- safe_postgres_get(path)
+  content <- safe_postgres_get(path_bathingspot(user_id, spot_id, limit, skip))
 
   data <- kwb.utils::selectElements(content, "data")
 
@@ -37,7 +41,9 @@ api_get_bathingspot <- function(
       data <- data[grep(pattern, spot_names, ignore.case = TRUE)]
     }
 
-    return(dplyr::bind_rows(lapply(data, extract_flat_information)))
+    bathingspots <- dplyr::bind_rows(lapply(data, extract_flat_information))
+
+    return(remove_and_reorder_columns(bathingspots, "bathingspots"))
   }
 
   # If we arrive here, there is only one list element

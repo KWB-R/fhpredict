@@ -5,7 +5,7 @@
 \title{Get Bathing Spot(s)}
 \usage{
 api_get_bathingspot(user_id = -1L, spot_id = -1L, limit = NULL,
-  skip = NULL, pattern = "")
+  skip = NULL, pattern = "", check = TRUE)
 }
 \arguments{
 \item{user_id}{user ID or -1L (all users)}
@@ -19,6 +19,10 @@ api_get_bathingspot(user_id = -1L, spot_id = -1L, limit = NULL,
 \item{pattern}{optional. Pattern matching the names of bathing spots to be
 returned. Only considered if no \code{spot_id} is given (i.e. has its
 default value \code{-1L}).}
+
+\item{check}{if \code{TRUE} (the default) it is checked first whether the
+given \code{user_id} exists. Switching this check off may speed up the
+request.}
 }
 \description{
 Get Bathing Spot(s)
