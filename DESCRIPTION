@@ -1,6 +1,6 @@
 Package: fhpredict
 Title: R Package for the Project Flusshygiene
-Version: 0.5.0
+Version: 0.5.0.9000
 Authors@R:
     c(person(given = "Wolfgang",
              family = "Seis",
@@ -37,7 +37,7 @@ Imports:
     httr (>= 1.4.0),
     jsonlite (>= 1.6),
     kwb.dwd (>= 0.1.0),
-    kwb.flusshygiene (>= 0.2.1),
+    kwb.flusshygiene (>= 0.3.0),
     kwb.utils (>= 0.4.2),
     lmtest (>= 0.9-37),
     lubridate (>= 1.7.4),
