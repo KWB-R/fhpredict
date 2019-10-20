@@ -23,7 +23,7 @@ get_postgres_api_token <- function(dbg = FALSE)
     }
   }
 
-  new_token <- kwb.utils::catAndRun(
+  token <- kwb.utils::catAndRun(
     get_text("requesting_token"),
     dbg = dbg,
     newLine = 1,
@@ -38,10 +38,10 @@ get_postgres_api_token <- function(dbg = FALSE)
   )
 
   # We expect the new token to be valid!
-  stopifnot(is_valid_postgres_api_token(new_token))
+  stopifnot(is_valid_postgres_api_token(token))
 
   # If we arrive here, there is no stored token or the stored token is not valid
-  if (! is.null(new_token)) {
+  if (! is.null(token)) {
     write_token(token, file, dbg = dbg)
   }
 
