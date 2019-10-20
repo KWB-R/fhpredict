@@ -5,7 +5,7 @@
 \title{Do a Request to the Flusshygiene Postgres API}
 \usage{
 postgres_request(path, type = "GET", ..., token = NULL,
-  verbose = FALSE)
+  config = NULL, verbose = FALSE)
 }
 \arguments{
 \item{path}{relative path to endpoint}
@@ -18,6 +18,9 @@ postgres_request(path, type = "GET", ..., token = NULL,
 
 \item{token}{token required to authenticate for the API. If omitted, a token
 will be provided by a call to \code{fhpredict:::get_postgres_api_token}.}
+
+\item{config}{optional. Configuration created with
+\code{\link[httr]{add_headers}}}
 
 \item{verbose}{if \code{TRUE} (the default is \code{FALSE}), the result of
 the request will be printed}

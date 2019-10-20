@@ -67,35 +67,35 @@ postgres_delete <- function(path, ...)
 #'   \code{type}
 #' @param token token required to authenticate for the API. If omitted, a token
 #'   will be provided by a call to \code{fhpredict:::get_postgres_api_token}.
+#' @param config optional. Configuration created with
+#'   \code{\link[httr]{add_headers}}
 #' @param verbose if \code{TRUE} (the default is \code{FALSE}), the result of
 #'   the request will be printed
 #' @keywords internal
 postgres_request <- function(
-  path, type = "GET", ..., token = NULL, verbose = FALSE
+  path, type = "GET", ..., token = NULL, config = NULL, verbose = FALSE
 )
 {
-  stopifnot(type %in% c("GET", "POST", "DELETE"))
+  #kwb.utils::assignPackageObjects("fhpredict")
 
-  if (is.null(token)) {
-    token <- get_postgres_api_token()
+  # Select function from httr corresponding to the given type
+  httr_function <- kwb.utils::selectElements(type, x = list(
+    GET = httr::GET,
+    POST = httr::POST,
+    DELETE = httr::DELETE
+  ))
+
+  if (is.null(config)) {
+
+    token <- kwb.utils::defaultIfNULL(token, get_postgres_api_token())
+
+    config <- get_httr_config_with_token(token)
   }
 
-  url <- paste0(assert_final_slash(get_environment_var("API_URL")), path)
+  response <- httr_function(url = path_to_api_url(path), config = config, ...)
 
-  config <- httr::add_headers("Authorization" = paste("Bearer", token))
-
-  response <- if (type == "GET") {
-
-    httr::GET(url, config = config, ...)
-
-  } else if (type == "DELETE") {
-
-    httr::DELETE(url, config = config, ...)
-
-  } else if (type == "POST") {
-
-    httr::POST(url, config = config, ...)
-  }
+  #Call without "..." for debugging:
+  #response <- httr_function(url, config = config)
 
   status <- httr::http_status(response)
 
@@ -115,4 +115,16 @@ postgres_request <- function(
   }
 
   httr::content(response, as = "parsed")
+}
+
+# path_to_api_url --------------------------------------------------------------
+path_to_api_url <- function(path = "")
+{
+  paste0(assert_final_slash(get_environment_var("API_URL")), path)
+}
+
+# get_httr_config_with_token ---------------------------------------------------
+get_httr_config_with_token <- function(token)
+{
+  httr::add_headers("Authorization" = paste("Bearer", token))
 }
