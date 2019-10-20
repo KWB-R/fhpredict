@@ -80,7 +80,7 @@ database. IMPORTANT: Existing rain data will be overwritten in the database!" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fhpredict</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.5.0.9000</span>
       </span>
     </div>
 
@@ -152,7 +152,8 @@ database. IMPORTANT: Existing rain data will be overwritten in the database!</p>
     </div>
 
     <pre class="usage"><span class='fu'>provide_rain_data</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>, <span class='kw'>sampling_time</span> <span class='kw'>=</span> <span class='st'>"1050"</span>,
-  <span class='kw'>date_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>blocksize</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='kw'>date_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>blocksize</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>info</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>urls</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -192,6 +193,19 @@ contains the current state of the import process and takes care that the
 next block of required data is downloaded. When omitted, the function
 returns an object that can be used as a control object for a next call of
 this function. See example.</p></td>
+    </tr>
+    <tr>
+      <th>info</th>
+      <td><p>if <code>TRUE</code> (the default), a message is shown that describes
+how to use this function in a loop</p></td>
+    </tr>
+    <tr>
+      <th>urls</th>
+      <td><p>vector of URLs to Radolan files. By default, the URLs are
+determined within the function, considering the available measurements.
+However, the user may override this behaviour by giving the URLs here.
+Only used when <code>control = NULL</code>, otherwise the URLs are taken from
+the <code>control</code> object.</p></td>
     </tr>
     </table>
 

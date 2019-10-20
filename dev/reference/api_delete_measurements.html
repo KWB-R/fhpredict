@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get a Valid Token to Access the Postgres API — get_postgres_api_token • fhpredict</title>
+<title>Delete Discharge Data from Postgres Database Via API — api_delete_measurements • fhpredict</title>
 
 
 <!-- jquery -->
@@ -41,10 +41,8 @@
 
 
 
-<meta property="og:title" content="Get a Valid Token to Access the Postgres API — get_postgres_api_token" />
-<meta property="og:description" content="If a token is stored locally it is checked whether this token is valid. If
-the token is valid, it is returned. If the token is not valid or if there is
-no token stored locally, request a new token, store it locally and return it." />
+<meta property="og:title" content="Delete Discharge Data from Postgres Database Via API — api_delete_measurements" />
+<meta property="og:description" content="Delete Discharge Data from Postgres Database Via API" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -134,25 +132,36 @@ no token stored locally, request a new token, store it locally and return it." /
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get a Valid Token to Access the Postgres API</h1>
-    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/get_postgres_api_token.R'><code>R/get_postgres_api_token.R</code></a></small>
-    <div class="hidden name"><code>get_postgres_api_token.Rd</code></div>
+    <h1>Delete Discharge Data from Postgres Database Via API</h1>
+    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/api_measurements.R'><code>R/api_measurements.R</code></a></small>
+    <div class="hidden name"><code>api_delete_measurements.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>If a token is stored locally it is checked whether this token is valid. If
-the token is valid, it is returned. If the token is not valid or if there is
-no token stored locally, request a new token, store it locally and return it.</p>
+    <p>Delete Discharge Data from Postgres Database Via API</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_postgres_api_token</span>(<span class='kw'>dbg</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>api_delete_measurements</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>, <span class='kw'>ids</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>dbg</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>user_id</th>
+      <td><p>user id</p></td>
+    </tr>
+    <tr>
+      <th>spot_id</th>
+      <td><p>bathing spot id</p></td>
+    </tr>
+    <tr>
+      <th>ids</th>
+      <td><p>optional. Vector of measurement ids. If not given or <code>NULL</code>
+(the default) all measurements for the bathing spot are deleted!</p></td>
+    </tr>
+    <tr>
       <th>dbg</th>
-      <td><p>if <code>TRUE</code>, debug messages are shown</p></td>
+      <td><p>if <code>TRUE</code> debug messages are shown</p></td>
     </tr>
     </table>
 

@@ -75,7 +75,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fhpredict</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.5.0.9000</span>
       </span>
     </div>
 
@@ -141,7 +141,7 @@
     <p>Send GET Request to Postgres API</p>
     </div>
 
-    <pre class="usage"><span class='fu'>postgres_get</span>(<span class='no'>path</span>)</pre>
+    <pre class="usage"><span class='fu'>postgres_get</span>(<span class='no'>path</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -150,6 +150,10 @@
       <th>path</th>
       <td><p>relative path, e.g. <code>bathingspots/1</code> to get data for
 bathingspot with ID 1</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>further arguments passed to <code>fhpredict:::postgres_request</code></p></td>
     </tr>
     </table>
 

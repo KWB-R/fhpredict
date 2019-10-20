@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Deprecated — provide_rain_data_for_bathing_spot • fhpredict</title>
+<title>Provide Rain Data for one Bathing Spot — provide_rain_data_for_bathing_spot • fhpredict</title>
 
 
 <!-- jquery -->
@@ -41,8 +41,8 @@
 
 
 
-<meta property="og:title" content="Deprecated — provide_rain_data_for_bathing_spot" />
-<meta property="og:description" content="Use provide_rain_data instead" />
+<meta property="og:title" content="Provide Rain Data for one Bathing Spot — provide_rain_data_for_bathing_spot" />
+<meta property="og:description" content="Consider to use provide_rain_data. For a description see there." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -75,7 +75,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fhpredict</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.5.0.9000</span>
       </span>
     </div>
 
@@ -132,13 +132,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Deprecated</h1>
+    <h1>Provide Rain Data for one Bathing Spot</h1>
     <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/provide_rain_data_for_bathing_spot.R'><code>R/provide_rain_data_for_bathing_spot.R</code></a></small>
     <div class="hidden name"><code>provide_rain_data_for_bathing_spot.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Use <code><a href='provide_rain_data.html'>provide_rain_data</a></code> instead</p>
+    <p>Consider to use <code><a href='provide_rain_data.html'>provide_rain_data</a></code>. For a description see there.</p>
     </div>
 
     <pre class="usage"><span class='fu'>provide_rain_data_for_bathing_spot</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>,
@@ -171,9 +171,10 @@ available.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>list with element <code>remaining = 0</code>, just for compatibility
-  with <code><a href='provide_rain_data.html'>provide_rain_data</a></code>
-  "rains" database table.</p>
+    <p>list with elements <code>data</code>, <code>success</code>, <code>message</code>. The
+  <code>data</code> element contains a vector of IDs identifying the records in
+  the rain data table associated with the bathing spot given by
+  <code>user_id</code> and <code>spot_id</code></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
