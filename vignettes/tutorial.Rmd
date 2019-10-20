@@ -368,7 +368,7 @@ system.time(fhpredict::api_delete_rain(user_id = 3, spot_id = 43))
 ### Add some fake rain data
 
 ```{r}
-n <- 100
+n <- 1000
 new_rain <- data.frame(
   datum = seq(as.Date("2019-10-10"), by = 1, length.out = n),
   rain = 0.1 * sample(1:10, size = n, replace = TRUE)
@@ -504,4 +504,54 @@ ids <- fhpredict:::api_add_discharge(user_id, spot_id, discharge)
 # Delete the records that have just been added. Omitting the IDs will remove
 # all discharge data related to the bathing spot
 fhpredict::api_delete_discharge(user_id, spot_id, ids = ids)
+```
+
+## Irradiances and Generic Inputs
+
+```{r}
+# Define user and bathing spot -------------------------------------------------
+user_id <- 3
+spot_id <- 42
+
+# Define artificial time series ------------------------------------------------
+n <- 10
+timeseries <- data.frame(
+  date = seq(as.Date("2018-07-12"), by = 1, length.out = n), 
+  dateTime = "12:13:14",
+  value = rnorm(n, 100)
+)
+
+# Get overview on generic inputs -----------------------------------------------
+fhpredict:::api_get_generic(user_id, spot_id)
+fhpredict:::api_get_generic(user_id, spot_id, generic_id = 5)
+
+# Delete existing generic inputs -----------------------------------------------
+fhpredict:::api_delete_generic(user_id, spot_id, generic_id = 6)
+
+# Delete all generics!
+fhpredict:::api_delete_generic(user_id, spot_id)
+
+# Create a new generic input ---------------------------------------------------
+fhpredict:::api_add_generic(user_id, spot_id, name = "generic_1")
+fhpredict:::api_add_generic(user_id, spot_id, name = "generic_2")
+fhpredict:::api_add_generic(user_id, spot_id, name = "generic_3")
+
+# Add measurements to a specific generic input ---------------------------------
+fhpredict:::api_add_generic_measurements(user_id, spot_id, 16, data = timeseries)
+
+# Read back the generic input. Where are the measurements?
+fhpredict:::postgres_get(
+  fhpredict:::path_generic_measurements(user_id, spot_id, 16)
+)
+
+fhpredict:::api_get_generic(user_id, spot_id, generic_id = 16)
+
+# Get irradiance measurements --------------------------------------------------
+fhpredict:::api_get_irradiances(user_id, spot_id)
+
+# Delete all irradiance measurements -------------------------------------------
+fhpredict:::api_delete_irradiances(user_id, spot_id)
+
+# Add irradiance measurements --------------------------------------------------
+fhpredict:::api_add_irradiances(user_id, spot_id, data = timeseries)
 ```

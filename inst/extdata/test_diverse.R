@@ -23,10 +23,6 @@ if (FALSE)
 
   # All elements are "river data elements"
   sapply(river_data, fhpredict:::is_river_data_element)
-
-  #x = river_data$havel
-  #names(x)[4] <- "ii_me"
-  fhpredict:::is_river_data_element(x)
 }
 
 # Test prediction --------------------------------------------------------------
@@ -64,7 +60,6 @@ if (FALSE)
   )
 
   fhpredict::build_model(user_id, spot_id)
-
 
   model <- fhpredict:::api_get_model(user_id, spot_id)
 
