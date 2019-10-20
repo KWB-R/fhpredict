@@ -174,9 +174,7 @@ if (FALSE)
 
   responses <- lapply(c(path_1, path_2, path_3, path_4), function(path) {
 
-    url <- paste0(assert_final_slash(get_environment_var("API_URL")), path)
-
-    httr::GET(url, config = config)
+    httr::GET(url = fhpredict:::path_to_api_url(path), config = config)
   })
 
   str(responses, 2)
