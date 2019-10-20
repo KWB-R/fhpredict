@@ -11,6 +11,10 @@ remove_and_reorder_columns <- function(df, type = NULL)
         "id", "name", "water", "city", "district"
       )
     ),
+    predictions = list(
+      remove = columns_modtime,
+      first = c("id", "dateTime", "prediction")
+    ),
     rain = list(
       remove = columns_modtime,
       first = c("id")
