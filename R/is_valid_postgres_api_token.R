@@ -7,7 +7,7 @@ is_valid_postgres_api_token <- function(token)
 
   response <- httr::GET(url, config = config)
 
-  success <- httr::content(response, "parsed")$success
+  success <- httr::content(response, "parsed", encoding = "UTF-8")$success
   success <- kwb.utils::defaultIfNULL(success, FALSE)
 
   if (! success) {
