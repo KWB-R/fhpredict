@@ -4,7 +4,10 @@
 \alias{request_token}
 \title{Request a Token to Access the Flusshygiene Postgres API}
 \usage{
-request_token()
+request_token(max_trials = 5)
+}
+\arguments{
+\item{max_trials}{maximum number of attempts to request a token}
 }
 \description{
 The function requires the following envirionment variables to be set:
