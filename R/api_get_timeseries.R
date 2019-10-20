@@ -7,10 +7,12 @@
 #' @param sort if \code{TRUE} (the default), the returned data frame will be
 #'   sorted by the "dateTime" column
 #' @param token passed to \code{fhpredict:::postgres_request}
+#' @param type optional. If given, columns are removed and reordered using
+#'   \code{fhpredict:::remove_and_reorder_columns()}
 #' @keywords internal
 #'
 api_get_timeseries <- function(
-  path, subject = "timeseries", sort = TRUE, token = NULL
+  path, subject = "timeseries", sort = TRUE, token = NULL, type = NULL
 )
 {
   df <- kwb.utils::catAndRun(
@@ -42,7 +44,11 @@ api_get_timeseries <- function(
     )
   }
 
-  kwb.utils::removeColumns(df, c("date", "comment"))
+  if (is.null(type)) {
+    kwb.utils::removeColumns(df, c("date", "comment"))
+  } else {
+    remove_and_reorder_columns(df, type)
+  }
 }
 
 # get_date_time_from_text_columns ----------------------------------------------
