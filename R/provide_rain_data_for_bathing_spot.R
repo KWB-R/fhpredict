@@ -40,6 +40,14 @@ provide_rain_data_for_bathing_spot <- function(
     return(create_failure(control))
   }
 
+  # Delete all rain data beforehand
+  result <- try({
+
+    api_delete_rain(user_id, spot_id)
+
+    control$rain_db <- data.frame()
+  })
+
   while (control$remaining > 0) {
 
     control <- try(provide_rain_data(control = control))
@@ -108,7 +116,7 @@ provide_rain_data <- function(
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
-  #user_id=5;spot_id=49;sampling_time="1050";date_range=NULL;blocksize=10;control=NULL
+  #user_id=3;spot_id=49;sampling_time="1050";date_range=NULL;blocksize=10;control=NULL;urls=NULL
 
   if (is.null(control)) {
 
