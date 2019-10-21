@@ -109,7 +109,12 @@ api_get_model <- function(user_id, spot_id, model_id = -1L)
   # data frame
   if (model_id == -1L) {
 
-    return(flatten_recursive_list(models))
+    model_data <- kwb.utils::removeColumns(
+      dframe = flatten_recursive_list(models),
+      pattern = "updatedAt|version|evaluation|rmodelfiles"
+    )
+
+    return(model_data)
   }
 
   # There should be exactly one element in the list of models
