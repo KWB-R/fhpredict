@@ -350,13 +350,16 @@
 <div id="add-some-fake-rain-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#add-some-fake-rain-data" class="anchor"></a>Add some fake rain data</h3>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">n &lt;-<span class="st"> </span><span class="dv">1000</span></a>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">n &lt;-<span class="st"> </span><span class="dv">10000</span></a>
 <a class="sourceLine" id="cb26-2" data-line-number="2">new_rain &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
 <a class="sourceLine" id="cb26-3" data-line-number="3">  <span class="dt">datum =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span>(<span class="st">"2019-10-10"</span>), <span class="dt">by =</span> <span class="dv">1</span>, <span class="dt">length.out =</span> n),</a>
 <a class="sourceLine" id="cb26-4" data-line-number="4">  <span class="dt">rain =</span> <span class="fl">0.1</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">size =</span> n, <span class="dt">replace =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb26-5" data-line-number="5">)</a>
 <a class="sourceLine" id="cb26-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb26-7" data-line-number="7">fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_add_rain.html">api_add_rain</a></span>(<span class="dt">user_id =</span> <span class="dv">3</span>, <span class="dt">spot_id =</span> <span class="dv">43</span>, <span class="dt">rain =</span> new_rain)</a></code></pre></div>
+<a class="sourceLine" id="cb26-7" data-line-number="7">fhpredict<span class="op">:::</span><span class="kw">is_valid_postgres_api_token</span>(fhpredict<span class="op">:::</span><span class="kw">read_token</span>())</a>
+<a class="sourceLine" id="cb26-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb26-9" data-line-number="9">fhpredict<span class="op">:::</span><span class="kw"><a href="../reference/api_delete_rain.html">api_delete_rain</a></span>(user_id, spot_id)</a>
+<a class="sourceLine" id="cb26-10" data-line-number="10">fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_add_rain.html">api_add_rain</a></span>(<span class="dt">user_id =</span> <span class="dv">3</span>, <span class="dt">spot_id =</span> <span class="dv">43</span>, <span class="dt">rain =</span> new_rain)</a></code></pre></div>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">date_from &lt;-<span class="st"> "20080701"</span></a>
 <a class="sourceLine" id="cb27-2" data-line-number="2">date_to &lt;-<span class="st"> "20080703"</span></a></code></pre></div>
 </div>
@@ -475,7 +478,7 @@
 <a class="sourceLine" id="cb36-12" data-line-number="12"></a>
 <a class="sourceLine" id="cb36-13" data-line-number="13"><span class="co"># Get overview on generic inputs -----------------------------------------------</span></a>
 <a class="sourceLine" id="cb36-14" data-line-number="14">fhpredict<span class="op">:::</span><span class="kw">api_get_generic</span>(user_id, spot_id)</a>
-<a class="sourceLine" id="cb36-15" data-line-number="15">fhpredict<span class="op">:::</span><span class="kw">api_get_generic</span>(user_id, spot_id, <span class="dt">generic_id =</span> <span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb36-15" data-line-number="15">fhpredict<span class="op">:::</span><span class="kw">api_get_generic</span>(user_id, spot_id, <span class="dt">generic_id =</span> <span class="dv">16</span>)</a>
 <a class="sourceLine" id="cb36-16" data-line-number="16"></a>
 <a class="sourceLine" id="cb36-17" data-line-number="17"><span class="co"># Delete existing generic inputs -----------------------------------------------</span></a>
 <a class="sourceLine" id="cb36-18" data-line-number="18">fhpredict<span class="op">:::</span><span class="kw">api_delete_generic</span>(user_id, spot_id, <span class="dt">generic_id =</span> <span class="dv">6</span>)</a>
