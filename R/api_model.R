@@ -1,3 +1,20 @@
+# get_last_added_model ---------------------------------------------------------
+get_last_added_model <- function(user_id, spot_id)
+{
+  # Get available models
+  models <- api_get_model(user_id, spot_id)
+
+  if (nrow(models) == 0) {
+    clean_stop(get_text(
+      "no_models_stored", user_id = user_id, spot_id = spot_id
+    ))
+  }
+
+  model_id <- kwb.utils::selectElements(models, "id")[nrow(models)]
+
+  api_get_model(user_id, spot_id, model_id)
+}
+
 # api_add_model ----------------------------------------------------------------
 
 #' Add a Model to the Database
