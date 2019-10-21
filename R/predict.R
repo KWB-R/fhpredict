@@ -1,3 +1,10 @@
+# api_get_predictions ----------------------------------------------------------
+api_get_predictions <- function(user_id, spot_id)
+{
+  path <- path_predictions(user_id, spot_id)
+  api_get_timeseries(path, type = "predictions")
+}
+
 # api_replace_predictions ------------------------------------------------------
 api_replace_predictions <- function(user_id, spot_id, percentiles)
 {
