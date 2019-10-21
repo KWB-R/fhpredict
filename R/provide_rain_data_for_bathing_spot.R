@@ -132,10 +132,10 @@ provide_rain_data <- function(
       n_days_before = 5
     ))
 
-    # Get metadata about the current bathing spot. Convert the area list structure
-    # to a matrix with columns "lon" and "lat". Convert area structure given in
-    # coordinate reference system "crs_from" to polygons given in coordinate
-    # reference system "crs_to"
+    # Get metadata about the current bathing spot. Convert the area list
+    # structure to a matrix with columns "lon" and "lat". Convert area structure
+    # given in coordinate reference system "crs_from" to polygons given in
+    # coordinate reference system "crs_to"
     polygon <- get_polygon_for_bathing_spot(user_id, spot_id)
 
     # Get rain data that already exists in the database
