@@ -5,6 +5,26 @@ api_get_predictions <- function(user_id, spot_id)
   api_get_timeseries(path, type = "predictions")
 }
 
+#' Delete Prediction Data from Postgres Database Via API
+#'
+#' @param user_id user id
+#' @param spot_id bathing spot id
+#' @param ids optional. Vector of prediction ids. If not given or \code{NULL}
+#'   (the default) all predictions for the bathing spot are deleted!
+#' @param dbg if \code{TRUE} debug messages are shown
+#' @export
+#'
+api_delete_predictions <- function(user_id, spot_id, ids = NULL, dbg = TRUE)
+{
+  api_delete_timeseries(
+    user_id = user_id,
+    spot_id = spot_id,
+    ids = ids,
+    path_function = path_predictions,
+    subject = "predictions"
+  )
+}
+
 # api_replace_predictions ------------------------------------------------------
 api_replace_predictions <- function(user_id, spot_id, percentiles)
 {
@@ -26,9 +46,9 @@ api_replace_predictions <- function(user_id, spot_id, percentiles)
 
     ids <- get(predictions_db, "id")[is_replaced]
 
-    # Clear existing rain from the database
+    # Clear existing predictions from the database
     if (length(ids)) {
-      api_delete_timeseries(user_id, spot_id, path_predictions)
+      api_delete_timeseries(user_id, spot_id, path_predictions, ids = ids)
     }
   }
 
