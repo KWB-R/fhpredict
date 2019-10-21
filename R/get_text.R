@@ -2,7 +2,6 @@
 get_text <- function(keyword, ...)
 {
   texts <- kwb.utils::resolve(..., x = list(
-    converting_time = "Converting time columns from text to POSIXct",
     could_not_build_model = "Could not create a valid model!",
     deleting_data_points = "Deleting <n> <subject> data points",
     filtering_variables = paste0(
@@ -28,10 +27,10 @@ get_text <- function(keyword, ...)
     max_steps_is_zero = paste0(
       "max_steps = 0 in stepwise() -> Not enough data points available!"
     ),
-    model_created = "Model created on <datetime> with fhpredict::build_model()",
     model_deleted = "The model with id <model_id> (<comment>) was deleted.",
     model_found = paste0(
-      "A model was found and saved (model_id = <model_id>):\n<formula>"
+      "A valid model was found and saved (model_id = <model_id>):\n",
+      "<description>"
     ),
     model_stored = paste0(
       "The model has been stored in the database. ",
@@ -98,7 +97,6 @@ get_text <- function(keyword, ...)
       "new argument 'prefix' to prefix the names of the returned models."
     ),
     rmodel_deprecated = "Deprecated. Binary model file has been uploaded.",
-    sorting_by_time = "Sorting data frame by time",
     specify_type = "Please specify 'type' (must be one of: <typelist>)",
     spot_data_expected_type = paste0(
       "The argument 'spot_data' is expected to be a list of data frames!"

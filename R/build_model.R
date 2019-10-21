@@ -11,7 +11,7 @@
 build_model <- function(user_id, spot_id, seed = NULL)
 {
   #kwb.utils::assignPackageObjects("fhpredict")
-  #user_id=5;spot_id=41;seed=NULL
+  #user_id=3;spot_id=43;seed=NULL
 
   # Get data in the format that is required by build_and_validate_model()
   spot_data <- try(provide_input_data(user_id, spot_id))
@@ -42,11 +42,17 @@ build_model <- function(user_id, spot_id, seed = NULL)
 
     model <- kwb.utils::selectElements(result, "stanfit")
 
+    formula <- utils::capture.output(print(model$formula))[1]
+
+    indicators <- get_model_quality_string(x = result$sorted_models[1, ])
+
+    description <- sprintf("Model formula: %s (%s)", formula, indicators)
+
     model_id <- api_add_model(
       user_id = user_id,
       spot_id = spot_id,
       model = model,
-      comment = get_text("model_created", datetime = Sys.time())
+      comment = description
     )
   })
 
@@ -57,6 +63,20 @@ build_model <- function(user_id, spot_id, seed = NULL)
   create_result(success = TRUE, message = get_text(
     "model_found",
     model_id = model_id,
-    formula = utils::capture.output(print(model$formula))[1]
+    description = description
   ))
+}
+
+# get_model_quality_string -----------------------------------------------------
+get_model_quality_string <- function(x)
+{
+  stopifnot(is.data.frame(x))
+  stopifnot(nrow(x) == 1)
+
+  get <- kwb.utils::selectColumns
+
+  sprintf(
+    "n_obs: %d, N: %0.3f, BP: %0.3f, R2: %0.3f",
+    get(x, "n_obs"), get(x, "N"), get(x, "BP"), get(x, "R2")
+  )
 }
