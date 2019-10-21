@@ -37,7 +37,15 @@ get_radolan_urls_for_measurements <- function(
 {
   # Get the dates for which E. coli measurements are available
   if (is.null(date_range) || ! all_in_range) {
+
     dates_all <- get_unique_measurement_dates(user_id, spot_id)
+
+    if (length(dates_all) == 0) {
+
+      clean_stop(get_text(
+        "no_measurements", user_id = user_id, spot_id = spot_id
+      ))
+    }
   }
 
   # Determine URLs to Radolan files to be downloaded and read
@@ -101,9 +109,8 @@ get_unique_measurement_dates <- function(user_id, spot_id)
 {
   measurements <- api_get_measurements(user_id, spot_id)
 
-  if (is.null(measurements)) {
-    message(get_text("no_measurements", user_id = user_id, spot_id = spot_id))
-    return()
+  if (length(measurements) == 0) {
+    return(NULL)
   }
 
   timestamps <- kwb.utils::selectColumns(measurements, "date")
