@@ -510,6 +510,30 @@
 <a class="sourceLine" id="cb36-44" data-line-number="44"><span class="co"># Add irradiance measurements --------------------------------------------------</span></a>
 <a class="sourceLine" id="cb36-45" data-line-number="45">fhpredict<span class="op">:::</span><span class="kw">api_add_irradiances</span>(user_id, spot_id, <span class="dt">data =</span> timeseries)</a></code></pre></div>
 </div>
+<div id="get-overview-on-available-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#get-overview-on-available-data" class="anchor"></a>Get overview on available data</h2>
+<p>The following function reads all timeseries that are stored for a bathing spot and returns the range of dates covered as well as the number <code>n</code>of data points.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1">fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/get_data_summary.html">get_data_summary</a></span>(<span class="dt">user_id =</span> <span class="dv">3</span>, <span class="dt">spot_id =</span> <span class="dv">42</span>)</a>
+<a class="sourceLine" id="cb37-2" data-line-number="2"><span class="co">#&gt; Reading rain data from database ... ok. (1.17s) </span></a>
+<a class="sourceLine" id="cb37-3" data-line-number="3"><span class="co">#&gt; Converting time columns from text to POSIXct ... ok. (0.01s) </span></a>
+<a class="sourceLine" id="cb37-4" data-line-number="4"><span class="co">#&gt; Sorting data frame by time ... ok. (0.00s) </span></a>
+<a class="sourceLine" id="cb37-5" data-line-number="5"><span class="co">#&gt; Reading discharge data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-6" data-line-number="6"><span class="co">#&gt; Converting time columns from text to POSIXct ... ok. (0.00s) </span></a>
+<a class="sourceLine" id="cb37-7" data-line-number="7"><span class="co">#&gt; Sorting data frame by time ... ok. (0.00s) </span></a>
+<a class="sourceLine" id="cb37-8" data-line-number="8"><span class="co">#&gt; Reading irradiances data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-9" data-line-number="9"><span class="co">#&gt; Converting time columns from text to POSIXct ... ok. (0.00s) </span></a>
+<a class="sourceLine" id="cb37-10" data-line-number="10"><span class="co">#&gt; Sorting data frame by time ... ok. (0.00s) </span></a>
+<a class="sourceLine" id="cb37-11" data-line-number="11"><span class="co">#&gt; Reading timeseries data from database ... ok. (0.33s) </span></a>
+<a class="sourceLine" id="cb37-12" data-line-number="12"><span class="co">#&gt; Converting time columns from text to POSIXct ... ok. (0.00s) </span></a>
+<a class="sourceLine" id="cb37-13" data-line-number="13"><span class="co">#&gt; Sorting data frame by time ... ok. (0.00s)</span></a>
+<a class="sourceLine" id="cb37-14" data-line-number="14"><span class="co">#&gt;                   from         to   n</span></a>
+<a class="sourceLine" id="cb37-15" data-line-number="15"><span class="co">#&gt; hygiene     2008-04-15 2019-08-01 184</span></a>
+<a class="sourceLine" id="cb37-16" data-line-number="16"><span class="co">#&gt; rain        2008-05-10 2019-08-01 848</span></a>
+<a class="sourceLine" id="cb37-17" data-line-number="17"><span class="co">#&gt; discharges  1986-11-01 2019-07-15  16</span></a>
+<a class="sourceLine" id="cb37-18" data-line-number="18"><span class="co">#&gt; irradiances 2018-07-12 2018-07-21  10</span></a>
+<a class="sourceLine" id="cb37-19" data-line-number="19"><span class="co">#&gt; predictions 2010-05-26 2016-09-13  95</span></a></code></pre></div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -528,6 +552,7 @@
       <li><a href="#rains-details">Rains: Details</a></li>
       <li><a href="#discharge-data">Discharge data</a></li>
       <li><a href="#irradiances-and-generic-inputs">Irradiances and Generic Inputs</a></li>
+      <li><a href="#get-overview-on-available-data">Get overview on available data</a></li>
       </ul>
 </div>
       </div>
