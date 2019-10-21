@@ -27,21 +27,12 @@ api_get_timeseries <- function(
     return(data.frame())
   }
 
-  df <- kwb.utils::catAndRun(
-    get_text("converting_time"),
-    expr = {
-      df <- convert_time_columns(df)
-      df$dateTime = get_date_time_from_text_columns(df)
-      df
-    }
-  )
+  # Converting time columns
+  df <- convert_time_columns(df)
+  df$dateTime <- get_date_time_from_text_columns(df)
 
   if (sort) {
-
-    df <- kwb.utils::catAndRun(
-      get_text("sorting_by_time"),
-      expr = df[order(df$dateTime), , drop = FALSE]
-    )
+    df <- df[order(df$dateTime), , drop = FALSE]
   }
 
   if (is.null(type)) {
