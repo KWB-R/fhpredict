@@ -60,6 +60,17 @@ provide_input_data <- function(user_id, spot_id)
     )
   }
 
+  # Look for global irradiation data
+  irradiances <- api_get_irradiances(user_id, spot_id)
+
+  # Add irradiances to the result if there are any irradiances
+  if (nrow(irradiances)) {
+    result[[result_element("i")]] <- data.frame(
+      datum = reset_time(get(irradiances, "dateTime")),
+      i_1 = get(irradiances, "value")
+    )
+  }
+
   # Rename the elements in the result data frame?
 
   # Return the result data structure
