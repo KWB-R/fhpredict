@@ -20,13 +20,20 @@ build_model <- function(user_id, spot_id, seed = NULL)
     return(create_failure(spot_data))
   }
 
-  # Initialise the random number generator if a seed is given
-  if (! is.null(seed)) {
-    stopifnot(is.numeric(seed))
-    set.seed(seed)
-  }
+  result <- try({
 
-  result <- try(build_and_validate_model(spot_data = spot_data))
+    # Exclude measurements with NA in column e.coli
+    spot_data[[1]] <- remove_missing_ecoli(hygiene = spot_data[[1]])
+
+    # Initialise the random number generator if a seed is given
+    if (! is.null(seed)) {
+      stopifnot(is.numeric(seed))
+      set.seed(seed)
+    }
+
+    # Build and validate a model from the data
+    build_and_validate_model(spot_data = spot_data)
+  })
 
   if (is_error(result)) {
     return(create_failure(result))
