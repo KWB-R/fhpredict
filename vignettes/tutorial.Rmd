@@ -565,6 +565,8 @@ The following function reads all timeseries that are stored for a bathing spot
 and returns the range of dates covered as well as the number `n`of data points.
 
 ```{r eval = TRUE}
-fhpredict::get_data_summary(user_id = 3, spot_id = 42)
+user_id <- 3
+spot_ids <- fhpredict::api_get_bathingspot(user_id)$id
+summaries <- lapply(spot_ids, fhpredict::get_data_summary, user_id = user_id)
 ```
 

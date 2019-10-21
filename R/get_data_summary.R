@@ -19,7 +19,13 @@ get_data_summary <- function(user_id, spot_id)
   predictions <- api_get_predictions(user_id, spot_id)
 
   get_date_range <- function(x) {
-    date_range <- range(as.Date(substr(x, 1, 10)))
+
+    date_range <- if (is.null(x)) {
+      as.Date(c(NA, NA))
+    } else {
+      range(as.Date(substr(x, 1, 10)))
+    }
+
     data.frame(from = date_range[1], to = date_range[2], n = length(x))
   }
 
