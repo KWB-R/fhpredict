@@ -368,12 +368,15 @@ system.time(fhpredict::api_delete_rain(user_id = 3, spot_id = 43))
 ### Add some fake rain data
 
 ```{r}
-n <- 1000
+n <- 10000
 new_rain <- data.frame(
   datum = seq(as.Date("2019-10-10"), by = 1, length.out = n),
   rain = 0.1 * sample(1:10, size = n, replace = TRUE)
 )
 
+fhpredict:::is_valid_postgres_api_token(fhpredict:::read_token())
+
+fhpredict:::api_delete_rain(user_id, spot_id)
 fhpredict::api_add_rain(user_id = 3, spot_id = 43, rain = new_rain)
 ```
 
@@ -523,7 +526,7 @@ timeseries <- data.frame(
 
 # Get overview on generic inputs -----------------------------------------------
 fhpredict:::api_get_generic(user_id, spot_id)
-fhpredict:::api_get_generic(user_id, spot_id, generic_id = 5)
+fhpredict:::api_get_generic(user_id, spot_id, generic_id = 16)
 
 # Delete existing generic inputs -----------------------------------------------
 fhpredict:::api_delete_generic(user_id, spot_id, generic_id = 6)

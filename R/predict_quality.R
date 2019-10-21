@@ -31,33 +31,31 @@ predict_quality <- function(user_id, spot_id, date = Sys.Date())
 
     # Use only rain data because currently only rain data will be updated
     # automatically!
-    provide_data_for_lm(riverdata, pattern = "r_mean")
+    newdata <- provide_data_for_lm(riverdata)#, pattern = "r_mean")
+    newdata
   })
 
   if (is_error(newdata)) {
     return(create_failure(newdata))
   }
 
-  # Get a prediction using the model and the new data
-  path <- path_predictions(user_id, spot_id)
+  result <- try({
 
-  #str(postgres_get(path)$data)
+    # Get a prediction using the model and the new data
+    prediction <- rstanarm::posterior_predict(model, newdata = newdata)
 
-  result <- postgres_post(path, body = list(date = date, prediction = "gut"))
+    percentiles <- finish_prediction(prediction, newdata)
 
-  if (length(result) == 0) {
+    api_replace_predictions(user_id, spot_id, percentiles)
+  })
 
-    response <- kwb.utils::getAttribute(result, "response")
-
-    return(create_result(
-      success = FALSE,
-      message = httr::content(response)$error$message
-    ))
+  if (is_error(result) == 0) {
+    return(create_failure(result))
   }
 
   return(create_result(
-    success = result$success,
-    message = result$message
+    success = TRUE,
+    message = get_text("predictions_posted", n = length(result))
   ))
 }
 
@@ -76,4 +74,26 @@ get_last_added_model <- function(user_id, spot_id)
   model_id <- kwb.utils::selectElements(models, "id")[nrow(models)]
 
   api_get_model(user_id, spot_id, model_id)
+}
+
+# finish_prediction ------------------------------------------------------------
+finish_prediction <- function(prediction, newdata)
+{
+  stopifnot(ncol(prediction) == nrow(newdata))
+
+  percentiles <- get_percentiles_from_prediction(prediction)
+
+  percentiles$prediction <- get_quality_from_percentiles(percentiles)
+
+  names(percentiles) <- kwb.utils::multiSubstitute(
+    strings = names(percentiles),
+    replacements = list("^P" = "percentile", "\\." = "_")
+  )
+
+  dates <- kwb.utils::selectColumns(newdata, "datum")
+
+  percentiles$date <- dates
+  percentiles$dateTime <- dates
+
+  percentiles
 }
