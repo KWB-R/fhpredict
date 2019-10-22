@@ -72,6 +72,16 @@ build_model <- function(user_id, spot_id, seed = NULL)
     return(create_failure(result))
   }
 
+  # After successful model creation, delete all rain data. We do so just to
+  # avoid long loading times (freezing) in the frontend due to too many
+  # raining points (as we assume)
+  result <- try(fhpredict::api_delete_rain(user_id, spot_id))
+
+  if (is_error(result)) {
+    return(create_failure(result))
+  }
+
+  # will respond in a rea
   create_result(success = TRUE, message = get_text(
     "model_found",
     model_id = model_id,
