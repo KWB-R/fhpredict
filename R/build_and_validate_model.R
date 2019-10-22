@@ -120,64 +120,6 @@ stepwise <- function(model_data)
   result
 }
 
-# provide_data_for_lm ----------------------------------------------------------
-provide_data_for_lm <- function(riverdata, pattern = "", dbg = TRUE)
-{
-  unrolled_data <- riverdata %>%
-    remove_hygiene_data() %>%
-    kwb.flusshygiene::unroll_physical_data()
-
-  # Prepare variables out of all combinations (given by pattern)
-  # Variables for interaction get replaced by q_new (remove q_old)
-  all_columns <- lapply(unrolled_data, names)
-
-  # Determine variable names: all different column names except "datum"
-  variables <- setdiff(unique(unlist(all_columns)), "datum")
-
-  # Filter for variables matching the pattern
-  if (nzchar(pattern)) {
-
-    variables <- kwb.utils::catAndRun(
-      get_text("filtering_variables", n = length(variables), pattern = pattern),
-      expr = grep(pattern, variables, value = TRUE),
-      dbg = dbg
-    )
-  }
-
-  kwb.utils::catIf(dbg, get_text(
-    "using_variables",
-    n = length(variables),
-    varlist = kwb.utils::stringList(variables, collapse = "\n- ")
-  ))
-
-  variables <- c("log_e.coli", variables)
-
-  # Prepare formulas
-  data <- kwb.flusshygiene::process_model_riverdata(riverdata, variables)
-
-  if (nrow(data) == 0) {
-    utils::str(riverdata)
-    clean_stop(get_text("process_returned_no_data"))
-  }
-
-  data
-}
-
-# remove_hygiene_data ----------------------------------------------------------
-remove_hygiene_data <- function(datalist)
-{
-  stopifnot(is_river_data_element(datalist))
-
-  hygiene_element <- grep("^hygiene", names(datalist), value = TRUE)
-
-  result <- kwb.utils::catAndRun(
-    get_text("removing_data_frame", element = hygiene_element),
-    datalist[setdiff(names(datalist), hygiene_element)]
-  )
-
-  result
-}
-
 # init_stat_tests_data ---------------------------------------------------------
 #' @importFrom rlang .data
 #' @keywords internal
