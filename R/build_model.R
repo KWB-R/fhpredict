@@ -51,16 +51,21 @@ build_model <- function(user_id, spot_id, seed = NULL)
 
     formula <- utils::capture.output(print(model$formula))[1]
 
-    indicators <- get_model_quality_string(x = result$sorted_models[1, ])
-
-    description <- sprintf("Model formula: %s (%s)", formula, indicators)
+    comment <- jsonlite::toJSON(auto_unbox = TRUE, c(
+      list(formula = formula),
+      kwb.utils::removeColumns(result$sorted_models[1, ], c("river", "model"))
+    ))
 
     model_id <- api_add_model(
       user_id = user_id,
       spot_id = spot_id,
       model = model,
-      comment = description
+      comment = comment
     )
+
+    # Compose a description for the output of this function
+    indicators <- get_model_quality_string(x = result$sorted_models[1, ])
+    description <- sprintf("Model formula: %s (%s)", formula, indicators)
   })
 
   if (is_error(result)) {
