@@ -14,12 +14,8 @@ crop_area_from_radolan_stack <- function(area, radolan_stack, use_mask = TRUE)
     crs_to = as.character(raster::crs(radolan_stack))
   )
 
-  # Crop the polygon areas from the raster stack
-  if (use_mask) {
-    raster::mask(x = radolan_stack, mask = polygon)
-  } else {
-    raster::crop(x = radolan_stack, y = polygon)
-  }
+  # Crop or mask the polygon areas from the raster stack
+  crop_or_mask(radolan_stack, polygon, use_mask)
 }
 
 # area_to_longitude_latitude_matrix --------------------------------------------

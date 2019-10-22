@@ -50,6 +50,19 @@ create_result <- function(
   list(data = data, sucess = success, message = message)
 }
 
+# crop_or_mask -----------------------------------------------------------------
+crop_or_mask <- function(x, polygon, use_mask = TRUE)
+{
+  if (use_mask) {
+
+    raster::mask(x, mask = polygon)
+
+  } else {
+
+    raster::crop(x, y = polygon)
+  }
+}
+
 # extract_flat_information -----------------------------------------------------
 extract_flat_information <- function(x, keep_null = FALSE)
 {

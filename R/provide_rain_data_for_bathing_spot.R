@@ -71,7 +71,7 @@ provide_rain_data_for_bathing_spot <- function(
 #' The function considers (i) the "catchment" area that is defined for the
 #' bathing spot and (ii) the date range that is taken from the range of dates
 #' for which measurements are available. Rain data are read from binary Radolan
-#' files, cropped around the "catchment" area and and averaged over all layears
+#' files, masked around the "catchment" area and and averaged over all layears
 #' for each raster cell. The resulting rain data are then stored in the Postgres
 #' database. IMPORTANT: Existing rain data will be overwritten in the database!
 #'
@@ -84,7 +84,7 @@ provide_rain_data_for_bathing_spot <- function(
 #'   determined from the range of dates for which water quality measurements are
 #'   available.
 #' @param blocksize number of Radolan files to be downloaded and processed
-#'   "at once", i.e. this number of files is downloaded, read, cropped, averaged
+#'   "at once", i.e. this number of files is downloaded, read, masked, averaged
 #'   and written to the database before loading new files. By doing so, at least
 #'   some data will be available in the database in case that too many files
 #'   cause a crash.
@@ -202,7 +202,10 @@ provide_rain_data <- function(
       urls <- stats::setNames(blocks[[i]]$url, rownames(blocks[[i]]))
 
       # Provide rain data in a data frame
-      rain <- read_radolan_data_within_polygon(urls, get_object("polygon"))
+      rain <- read_radolan_data_within_polygon(
+        urls,
+        polygon = get_object("polygon")
+      )
 
       # For the days returned in the new rain data frame, replace the
       # corresponding records that exist in the database with the new records
@@ -239,28 +242,28 @@ get_polygon_for_bathing_spot <- function(user_id, spot_id)
 }
 
 # read_radolan_data_within_polygon ---------------------------------------------
-read_radolan_data_within_polygon <- function(urls, polygon)
+read_radolan_data_within_polygon <- function(urls, polygon, use_mask = TRUE)
 {
   # For each URL, read the file and crop the polygon
-  list_of_cropped <- lapply(seq_along(urls), function(i) {
+  raster_objects <- lapply(seq_along(urls), function(i) {
 
     message(sprintf(
-      "Reading and cropping from %s (%d/%d = %0.1f%%)...",
+      "Reading and masking from %s (%d/%d = %0.1f%%)...",
       basename(urls[i]), i, length(urls), 100 * i / length(urls)
     ))
 
     # Read the Radolan file and crop the polygon area
     radolan <- kwb.dwd::read_binary_radolan_file(urls[i])
 
-    # Crop the polygon area
-    raster::crop(x = radolan, polygon)
+    # Crop or mask the polygon area
+    crop_or_mask(radolan, polygon, use_mask)
   })
 
-  # Stack the cropped areas
-  cropped <- raster::stack(list_of_cropped)
+  # Stack the raster objects
+  stack <- raster::stack(raster_objects)
 
   # Get the mean over all layers for each point on the raster
-  aggregated <- raster::cellStats(cropped, stat = mean)
+  aggregated <- raster::cellStats(stack, stat = "mean")
 
   # The day information can be restored from the names of the layers
   dates <- as.Date(substr(names(urls), 1, 8), format = "%Y%m%d")
