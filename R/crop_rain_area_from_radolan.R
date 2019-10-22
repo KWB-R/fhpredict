@@ -1,6 +1,8 @@
 # crop_area_from_radolan_stack -------------------------------------------------
-crop_area_from_radolan_stack <- function(area, radolan_stack)
+crop_area_from_radolan_stack <- function(area, radolan_stack, use_mask = TRUE)
 {
+  #kwb.utils::assignPackageObjects("fhpredict")
+
   # Convert the area list structure to a matrix with columns "lon" and "lat"
   lonlat <- area_to_longitude_latitude_matrix(area)
 
@@ -13,7 +15,11 @@ crop_area_from_radolan_stack <- function(area, radolan_stack)
   )
 
   # Crop the polygon areas from the raster stack
-  raster::crop(x = radolan_stack, y = polygon)
+  if (use_mask) {
+    raster::mask(x = radolan_stack, mask = polygon)
+  } else {
+    raster::crop(x = radolan_stack, y = polygon)
+  }
 }
 
 # area_to_longitude_latitude_matrix --------------------------------------------
