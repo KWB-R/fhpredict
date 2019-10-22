@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fhpredict</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
@@ -349,13 +349,16 @@
 <div id="add-some-fake-rain-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#add-some-fake-rain-data" class="anchor"></a>Add some fake rain data</h3>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">n &lt;-<span class="st"> </span><span class="dv">1000</span></a>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">n &lt;-<span class="st"> </span><span class="dv">10000</span></a>
 <a class="sourceLine" id="cb26-2" data-line-number="2">new_rain &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
 <a class="sourceLine" id="cb26-3" data-line-number="3">  <span class="dt">datum =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span>(<span class="st">"2019-10-10"</span>), <span class="dt">by =</span> <span class="dv">1</span>, <span class="dt">length.out =</span> n),</a>
 <a class="sourceLine" id="cb26-4" data-line-number="4">  <span class="dt">rain =</span> <span class="fl">0.1</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">size =</span> n, <span class="dt">replace =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb26-5" data-line-number="5">)</a>
 <a class="sourceLine" id="cb26-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb26-7" data-line-number="7">fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_add_rain.html">api_add_rain</a></span>(<span class="dt">user_id =</span> <span class="dv">3</span>, <span class="dt">spot_id =</span> <span class="dv">43</span>, <span class="dt">rain =</span> new_rain)</a></code></pre></div>
+<a class="sourceLine" id="cb26-7" data-line-number="7">fhpredict<span class="op">:::</span><span class="kw">is_valid_postgres_api_token</span>(fhpredict<span class="op">:::</span><span class="kw">read_token</span>())</a>
+<a class="sourceLine" id="cb26-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb26-9" data-line-number="9">fhpredict<span class="op">:::</span><span class="kw"><a href="../reference/api_delete_rain.html">api_delete_rain</a></span>(user_id, spot_id)</a>
+<a class="sourceLine" id="cb26-10" data-line-number="10">fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_add_rain.html">api_add_rain</a></span>(<span class="dt">user_id =</span> <span class="dv">3</span>, <span class="dt">spot_id =</span> <span class="dv">43</span>, <span class="dt">rain =</span> new_rain)</a></code></pre></div>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">date_from &lt;-<span class="st"> "20080701"</span></a>
 <a class="sourceLine" id="cb27-2" data-line-number="2">date_to &lt;-<span class="st"> "20080703"</span></a></code></pre></div>
 </div>
@@ -474,7 +477,7 @@
 <a class="sourceLine" id="cb36-12" data-line-number="12"></a>
 <a class="sourceLine" id="cb36-13" data-line-number="13"><span class="co"># Get overview on generic inputs -----------------------------------------------</span></a>
 <a class="sourceLine" id="cb36-14" data-line-number="14">fhpredict<span class="op">:::</span><span class="kw">api_get_generic</span>(user_id, spot_id)</a>
-<a class="sourceLine" id="cb36-15" data-line-number="15">fhpredict<span class="op">:::</span><span class="kw">api_get_generic</span>(user_id, spot_id, <span class="dt">generic_id =</span> <span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb36-15" data-line-number="15">fhpredict<span class="op">:::</span><span class="kw">api_get_generic</span>(user_id, spot_id, <span class="dt">generic_id =</span> <span class="dv">16</span>)</a>
 <a class="sourceLine" id="cb36-16" data-line-number="16"></a>
 <a class="sourceLine" id="cb36-17" data-line-number="17"><span class="co"># Delete existing generic inputs -----------------------------------------------</span></a>
 <a class="sourceLine" id="cb36-18" data-line-number="18">fhpredict<span class="op">:::</span><span class="kw">api_delete_generic</span>(user_id, spot_id, <span class="dt">generic_id =</span> <span class="dv">6</span>)</a>
@@ -506,6 +509,59 @@
 <a class="sourceLine" id="cb36-44" data-line-number="44"><span class="co"># Add irradiance measurements --------------------------------------------------</span></a>
 <a class="sourceLine" id="cb36-45" data-line-number="45">fhpredict<span class="op">:::</span><span class="kw">api_add_irradiances</span>(user_id, spot_id, <span class="dt">data =</span> timeseries)</a></code></pre></div>
 </div>
+<div id="get-overview-on-available-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#get-overview-on-available-data" class="anchor"></a>Get overview on available data</h2>
+<p>The following function reads all timeseries that are stored for a bathing spot and returns the range of dates covered as well as the number <code>n</code>of data points.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1">user_id &lt;-<span class="st"> </span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb37-2" data-line-number="2">spots &lt;-<span class="st"> </span>fhpredict<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/fhpredict/man/api_get_bathingspot.html">api_get_bathingspot</a></span>(user_id)</a>
+<a class="sourceLine" id="cb37-3" data-line-number="3">spot_ids &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span>(spots<span class="op">$</span>id, spots<span class="op">$</span>name)</a>
+<a class="sourceLine" id="cb37-4" data-line-number="4">summaries &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(spot_ids, fhpredict<span class="op">::</span>get_data_summary, <span class="dt">user_id =</span> user_id)</a>
+<a class="sourceLine" id="cb37-5" data-line-number="5"><span class="co">#&gt; Reading rain data from database ... ok. (0.26s) </span></a>
+<a class="sourceLine" id="cb37-6" data-line-number="6"><span class="co">#&gt; Reading discharge data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-7" data-line-number="7"><span class="co">#&gt; Reading irradiances data from database ... ok. (0.26s) </span></a>
+<a class="sourceLine" id="cb37-8" data-line-number="8"><span class="co">#&gt; Reading timeseries data from database ... ok. (0.26s) </span></a>
+<a class="sourceLine" id="cb37-9" data-line-number="9"><span class="co">#&gt; Reading rain data from database ... ok. (0.33s) </span></a>
+<a class="sourceLine" id="cb37-10" data-line-number="10"><span class="co">#&gt; Reading discharge data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-11" data-line-number="11"><span class="co">#&gt; Reading irradiances data from database ... ok. (0.26s) </span></a>
+<a class="sourceLine" id="cb37-12" data-line-number="12"><span class="co">#&gt; Reading timeseries data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-13" data-line-number="13"><span class="co">#&gt; Reading rain data from database ... ok. (0.91s) </span></a>
+<a class="sourceLine" id="cb37-14" data-line-number="14"><span class="co">#&gt; Reading discharge data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-15" data-line-number="15"><span class="co">#&gt; Reading irradiances data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-16" data-line-number="16"><span class="co">#&gt; Reading timeseries data from database ... ok. (0.26s) </span></a>
+<a class="sourceLine" id="cb37-17" data-line-number="17"><span class="co">#&gt; Reading rain data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-18" data-line-number="18"><span class="co">#&gt; Reading discharge data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-19" data-line-number="19"><span class="co">#&gt; Reading irradiances data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-20" data-line-number="20"><span class="co">#&gt; Reading timeseries data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-21" data-line-number="21"><span class="co">#&gt; Reading rain data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-22" data-line-number="22"><span class="co">#&gt; Reading discharge data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-23" data-line-number="23"><span class="co">#&gt; Reading irradiances data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-24" data-line-number="24"><span class="co">#&gt; Reading timeseries data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-25" data-line-number="25"><span class="co">#&gt; Reading rain data from database ... ok. (0.43s) </span></a>
+<a class="sourceLine" id="cb37-26" data-line-number="26"><span class="co">#&gt; Reading discharge data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-27" data-line-number="27"><span class="co">#&gt; Reading irradiances data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-28" data-line-number="28"><span class="co">#&gt; Reading timeseries data from database ... ok. (0.26s) </span></a>
+<a class="sourceLine" id="cb37-29" data-line-number="29"><span class="co">#&gt; Reading rain data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-30" data-line-number="30"><span class="co">#&gt; Reading discharge data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-31" data-line-number="31"><span class="co">#&gt; Reading irradiances data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-32" data-line-number="32"><span class="co">#&gt; Reading timeseries data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-33" data-line-number="33"><span class="co">#&gt; Reading rain data from database ... ok. (0.39s) </span></a>
+<a class="sourceLine" id="cb37-34" data-line-number="34"><span class="co">#&gt; Reading discharge data from database ... ok. (0.26s) </span></a>
+<a class="sourceLine" id="cb37-35" data-line-number="35"><span class="co">#&gt; Reading irradiances data from database ... ok. (0.26s) </span></a>
+<a class="sourceLine" id="cb37-36" data-line-number="36"><span class="co">#&gt; Reading timeseries data from database ... ok. (0.27s) </span></a>
+<a class="sourceLine" id="cb37-37" data-line-number="37"><span class="co">#&gt; Reading rain data from database ... ok. (0.40s) </span></a>
+<a class="sourceLine" id="cb37-38" data-line-number="38"><span class="co">#&gt; Reading discharge data from database ... ok. (0.26s) </span></a>
+<a class="sourceLine" id="cb37-39" data-line-number="39"><span class="co">#&gt; Reading irradiances data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-40" data-line-number="40"><span class="co">#&gt; Reading timeseries data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-41" data-line-number="41"><span class="co">#&gt; Reading rain data from database ... ok. (0.32s) </span></a>
+<a class="sourceLine" id="cb37-42" data-line-number="42"><span class="co">#&gt; Reading discharge data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-43" data-line-number="43"><span class="co">#&gt; Reading irradiances data from database ... ok. (0.26s) </span></a>
+<a class="sourceLine" id="cb37-44" data-line-number="44"><span class="co">#&gt; Reading timeseries data from database ... ok. (0.27s) </span></a>
+<a class="sourceLine" id="cb37-45" data-line-number="45"><span class="co">#&gt; Reading rain data from database ... ok. (0.46s) </span></a>
+<a class="sourceLine" id="cb37-46" data-line-number="46"><span class="co">#&gt; Reading discharge data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-47" data-line-number="47"><span class="co">#&gt; Reading irradiances data from database ... ok. (0.25s) </span></a>
+<a class="sourceLine" id="cb37-48" data-line-number="48"><span class="co">#&gt; Reading timeseries data from database ... ok. (0.25s)</span></a></code></pre></div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -524,6 +580,7 @@
       <li><a href="#rains-details">Rains: Details</a></li>
       <li><a href="#discharge-data">Discharge data</a></li>
       <li><a href="#irradiances-and-generic-inputs">Irradiances and Generic Inputs</a></li>
+      <li><a href="#get-overview-on-available-data">Get overview on available data</a></li>
       </ul>
 </div>
       </div>

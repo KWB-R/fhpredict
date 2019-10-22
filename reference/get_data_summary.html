@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Add Rain Data Frame to Postgres Database Via API — api_add_rain • fhpredict</title>
+<title>Get Overview on Available Data — get_data_summary • fhpredict</title>
 
 
 <!-- jquery -->
@@ -41,8 +41,8 @@
 
 
 
-<meta property="og:title" content="Add Rain Data Frame to Postgres Database Via API — api_add_rain" />
-<meta property="og:description" content="Add Rain Data Frame to Postgres Database Via API" />
+<meta property="og:title" content="Get Overview on Available Data — get_data_summary" />
+<meta property="og:description" content="Get Overview on Available Data" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -132,55 +132,44 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Add Rain Data Frame to Postgres Database Via API</h1>
-    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/rain.R'><code>R/rain.R</code></a></small>
-    <div class="hidden name"><code>api_add_rain.Rd</code></div>
+    <h1>Get Overview on Available Data</h1>
+    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/get_data_summary.R'><code>R/get_data_summary.R</code></a></small>
+    <div class="hidden name"><code>get_data_summary.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Add Rain Data Frame to Postgres Database Via API</p>
+    <p>Get Overview on Available Data</p>
     </div>
 
-    <pre class="usage"><span class='fu'>api_add_rain</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>, <span class='no'>rain</span>, <span class='kw'>time_string</span> <span class='kw'>=</span> <span class='st'>"12:00:00"</span>,
-  <span class='kw'>comment</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>get_data_summary</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>user_id</th>
-      <td><p>user id</p></td>
+      <td><p>user identifier (see <code><a href='api_get_users.html'>api_get_users</a></code> for available
+users)</p></td>
     </tr>
     <tr>
       <th>spot_id</th>
-      <td><p>bathing spot id</p></td>
-    </tr>
-    <tr>
-      <th>rain</th>
-      <td><p>data frame containing rain data (columns <code>datum</code>,
-<code>rain</code>)</p></td>
-    </tr>
-    <tr>
-      <th>time_string</th>
-      <td><p>time to which rain data values relate, default:
-<code>"12:00:00"</code></p></td>
-    </tr>
-    <tr>
-      <th>comment</th>
-      <td><p>character string to be written to the field "comment" of the
-rain database table.</p></td>
+      <td><p>bathing spot identifier (see
+<code><a href='api_get_bathingspot.html'>api_get_bathingspot</a></code> for available bathing spots</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"></pre>
+    <p>data frame with one row per type of data and columns <code>from</code>
+  (date of earliest record), <code>to</code> (date of latest record), <code>n</code>
+  (number of records)</p>
+
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#examples">Examples</a></li>
+      <li><a href="#value">Value</a></li>
     </ul>
 
   </div>

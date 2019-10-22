@@ -42,7 +42,11 @@
 
 
 <meta property="og:title" content="Predict Water Quality for Bathing Spot Using Stored Model — predict_quality" />
-<meta property="og:description" content="Predict Water Quality for Bathing Spot Using Stored Model" />
+<meta property="og:description" content="If no time period is specified, the function will first check the
+measurements for missing E.coli values and do the prediction for the days
+for which an E.coli value of -1 has been uploaded. If all E.coli measurements
+are valid, the prediction will be done for the current day
+(Sys.Date())." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -75,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fhpredict</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
@@ -138,10 +142,14 @@
     </div>
 
     <div class="ref-description">
-    <p>Predict Water Quality for Bathing Spot Using Stored Model</p>
+    <p>If no time period is specified, the function will first check the
+measurements for missing E.coli values and do the prediction for the days
+for which an E.coli value of -1 has been uploaded. If all E.coli measurements
+are valid, the prediction will be done for the current day
+(<code><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date()</a></code>).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>predict_quality</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>, <span class='kw'>date</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>())</pre>
+    <pre class="usage"><span class='fu'>predict_quality</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>, <span class='kw'>from</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>to</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -155,8 +163,14 @@
       <td><p>bathing spot ID</p></td>
     </tr>
     <tr>
-      <th>date</th>
-      <td><p>Date object or date string in format yyyy-mm-dd</p></td>
+      <th>from</th>
+      <td><p>Date object or date string in format yyyy-mm-dd giving the first
+day of the time period to be predicted.</p></td>
+    </tr>
+    <tr>
+      <th>to</th>
+      <td><p>Date object or date string in format yyyy-mm-dd giving the last day
+of the time period to be predicted.</p></td>
     </tr>
     </table>
 
