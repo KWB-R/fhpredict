@@ -1,10 +1,12 @@
 # get_last_added_model ---------------------------------------------------------
 get_last_added_model <- function(user_id, spot_id)
 {
+  #user_id=3;spot_id=56
+
   # Get available models
   models <- api_get_model(user_id, spot_id)
 
-  if (nrow(models) == 0) {
+  if (is.null(models) || nrow(models) == 0) {
     clean_stop(get_text(
       "no_models_stored", user_id = user_id, spot_id = spot_id
     ))
