@@ -22,7 +22,7 @@ determined from the range of dates for which water quality measurements are
 available.}
 
 \item{blocksize}{number of Radolan files to be downloaded and processed
-"at once", i.e. this number of files is downloaded, read, cropped, averaged
+"at once", i.e. this number of files is downloaded, read, masked, averaged
 and written to the database before loading new files. By doing so, at least
 some data will be available in the database in case that too many files
 cause a crash.}
@@ -50,7 +50,7 @@ vector of integer containing the IDs of the records inserted into the
 The function considers (i) the "catchment" area that is defined for the
 bathing spot and (ii) the date range that is taken from the range of dates
 for which measurements are available. Rain data are read from binary Radolan
-files, cropped around the "catchment" area and and averaged over all layears
+files, masked around the "catchment" area and and averaged over all layears
 for each raster cell. The resulting rain data are then stored in the Postgres
 database. IMPORTANT: Existing rain data will be overwritten in the database!
 }

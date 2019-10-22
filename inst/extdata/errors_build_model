@@ -1,0 +1,7 @@
+Possible errors from build_model:
+
+--------------------------------------------------------------------------------
+Error in lmtest::bptest(model) :
+  the auxiliary variance regression requires at least an intercept and a regressor
+--------------------------------------------------------------------------------
+

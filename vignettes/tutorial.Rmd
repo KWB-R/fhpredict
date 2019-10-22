@@ -368,12 +368,15 @@ system.time(fhpredict::api_delete_rain(user_id = 3, spot_id = 43))
 ### Add some fake rain data
 
 ```{r}
-n <- 1000
+n <- 10000
 new_rain <- data.frame(
   datum = seq(as.Date("2019-10-10"), by = 1, length.out = n),
   rain = 0.1 * sample(1:10, size = n, replace = TRUE)
 )
 
+fhpredict:::is_valid_postgres_api_token(fhpredict:::read_token())
+
+fhpredict:::api_delete_rain(user_id, spot_id)
 fhpredict::api_add_rain(user_id = 3, spot_id = 43, rain = new_rain)
 ```
 
@@ -523,7 +526,7 @@ timeseries <- data.frame(
 
 # Get overview on generic inputs -----------------------------------------------
 fhpredict:::api_get_generic(user_id, spot_id)
-fhpredict:::api_get_generic(user_id, spot_id, generic_id = 5)
+fhpredict:::api_get_generic(user_id, spot_id, generic_id = 16)
 
 # Delete existing generic inputs -----------------------------------------------
 fhpredict:::api_delete_generic(user_id, spot_id, generic_id = 6)
@@ -555,3 +558,16 @@ fhpredict:::api_delete_irradiances(user_id, spot_id)
 # Add irradiance measurements --------------------------------------------------
 fhpredict:::api_add_irradiances(user_id, spot_id, data = timeseries)
 ```
+
+## Get overview on available data
+
+The following function reads all timeseries that are stored for a bathing spot
+and returns the range of dates covered as well as the number `n`of data points.
+
+```{r eval = TRUE}
+user_id <- 3
+spots <- fhpredict::api_get_bathingspot(user_id)
+spot_ids <- setNames(spots$id, spots$name)
+summaries <- lapply(spot_ids, fhpredict::get_data_summary, user_id = user_id)
+```
+

@@ -42,7 +42,7 @@ if (FALSE)
   control <- fhpredict::provide_rain_data(user_id, spot_id, urls = urls)
 
   while (control$remaining > 0) {
-    control <- provide_rain_data(control = control)
+    control <- fhpredict::provide_rain_data(control = control)
   }
 
   spot_data <- fhpredict:::provide_input_data(user_id, spot_id)
@@ -203,7 +203,7 @@ if (FALSE)
 
   fhpredict:::add_timeseries_to_database(
     path = fhpredict:::path_measurements(user_id, spot_id),
-    data = data[1:10, ]
+    data = data[100:150, ]
   )
 
   # 1c check

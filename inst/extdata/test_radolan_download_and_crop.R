@@ -34,7 +34,7 @@ if (FALSE)
   )
 
   # Get bathing spot object
-  spot <- fhpredict::api_get_bathingspot(5, 41)
+  spot <- fhpredict::api_get_bathingspot(3, 43)
 
   # Create lonlat table, indirectly
   area <- fhpredict:::convert_area_structure(spot_area = spot$area)

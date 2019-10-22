@@ -1,4 +1,15 @@
-# fhpredict 0.4.0
+# fhpredict 0.7.0
+
+* consider global irradiances
+* post actual prediction (5 last days of bathing season) instead of fake 
+  prediction
+* add get_data_summary()
+* add api_delete_predictions()
+* delete all rain data before providing new rain data
+* remove invalid e.coli values -1 values befor
+* allow to switch between raster::crop() and mask() 
+
+# fhpredict 0.5.0
 
 * provide_rain_data_for_bathing_spot(): Return object with elements "success",
   "data", "message"

@@ -1,3 +1,22 @@
+# get_last_added_model ---------------------------------------------------------
+get_last_added_model <- function(user_id, spot_id)
+{
+  #user_id=3;spot_id=56
+
+  # Get available models
+  models <- api_get_model(user_id, spot_id)
+
+  if (is.null(models) || nrow(models) == 0) {
+    clean_stop(get_text(
+      "no_models_stored", user_id = user_id, spot_id = spot_id
+    ))
+  }
+
+  model_id <- kwb.utils::selectElements(models, "id")[nrow(models)]
+
+  api_get_model(user_id, spot_id, model_id)
+}
+
 # api_add_model ----------------------------------------------------------------
 
 #' Add a Model to the Database
@@ -109,7 +128,12 @@ api_get_model <- function(user_id, spot_id, model_id = -1L)
   # data frame
   if (model_id == -1L) {
 
-    return(flatten_recursive_list(models))
+    model_data <- kwb.utils::removeColumns(
+      dframe = flatten_recursive_list(models),
+      pattern = "updatedAt|version|evaluation|rmodelfiles"
+    )
+
+    return(model_data)
   }
 
   # There should be exactly one element in the list of models

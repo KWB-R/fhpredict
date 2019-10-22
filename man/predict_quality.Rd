@@ -4,18 +4,26 @@
 \alias{predict_quality}
 \title{Predict Water Quality for Bathing Spot Using Stored Model}
 \usage{
-predict_quality(user_id, spot_id, date = Sys.Date())
+predict_quality(user_id, spot_id, from = NULL, to = NULL)
 }
 \arguments{
 \item{user_id}{user ID}
 
 \item{spot_id}{bathing spot ID}
 
-\item{date}{Date object or date string in format yyyy-mm-dd}
+\item{from}{Date object or date string in format yyyy-mm-dd giving the first
+day of the time period to be predicted.}
+
+\item{to}{Date object or date string in format yyyy-mm-dd giving the last day
+of the time period to be predicted.}
 }
 \value{
 list with elements \code{data}, \code{success}, \code{message}
 }
 \description{
-Predict Water Quality for Bathing Spot Using Stored Model
+If no time period is specified, the function will first check the
+measurements for missing E.coli values and do the prediction for the days
+for which an E.coli value of -1 has been uploaded. If all E.coli measurements
+are valid, the prediction will be done for the current day
+(\code{Sys.Date()}).
 }

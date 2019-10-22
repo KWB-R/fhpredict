@@ -7,9 +7,8 @@ api_get_measurements <- function(user_id = -1, spot_id = -1)
 
   if (length(result$data) == 0) {
 
-    clean_stop(get_text(
-      "no_measurements", spot_id = spot_id, user_id = user_id
-    ))
+    #message(get_text("no_measurements", spot_id = spot_id, user_id = user_id))
+    return(data.frame())
   }
 
   measurements <- kwb.utils::safeRowBindAll(lapply(result$data, function(x) {
