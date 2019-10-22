@@ -4,7 +4,7 @@
 \alias{predict_quality}
 \title{Predict Water Quality for Bathing Spot Using Stored Model}
 \usage{
-predict_quality(user_id, spot_id, from = NULL, to = from)
+predict_quality(user_id, spot_id, from = NULL, to = NULL)
 }
 \arguments{
 \item{user_id}{user ID}

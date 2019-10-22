@@ -16,10 +16,10 @@
 #'   of the time period to be predicted.
 #' @return list with elements \code{data}, \code{success}, \code{message}
 #' @export
-predict_quality <- function(user_id, spot_id, from = NULL, to = from)
+predict_quality <- function(user_id, spot_id, from = NULL, to = NULL)
 {
   #kwb.utils::assignPackageObjects("fhpredict")
-  #user_id=3;spot_id=42
+  #user_id=3;spot_id=42;from=NULL;to=NULL
 
   # Try to get the model that was added last (if any)
   model <- try(get_last_added_model(user_id, spot_id))
@@ -28,23 +28,16 @@ predict_quality <- function(user_id, spot_id, from = NULL, to = from)
     return(create_failure(model))
   }
 
-  # Collect all data that are available for the given bathing spot
-  spot_data <- try(provide_input_data(user_id, spot_id))
-
-  if (is_error(spot_data)) {
-    return(create_failure(spot_data))
-  }
-
   # Provide new data for prediction
   newdata <- try({
 
     # Determine the days to be predicted
-    days_to_predict <- determine_days_to_predict(from, to, spot_data[[1]])
+    (days_to_predict <- determine_days_to_predict(from, to))
 
     # Load new data for the dates to predict
     import_new_data(user_id, spot_id, days_to_predict)
 
-    # Collect all data again
+    # Collect all data that are available for the given bathing spot
     spot_data <- provide_input_data(user_id, spot_id)
 
     # Prepare the data (filter for bathing season, log-transform rain)
@@ -52,11 +45,14 @@ predict_quality <- function(user_id, spot_id, from = NULL, to = from)
 
     # Use only rain data because currently only rain data will be updated
     # automatically!
-    newdata <- provide_data_for_lm(riverdata)#, pattern = "r_mean")
+    newdata <- provide_data_for_lm(riverdata, for_model_building = FALSE)#, pattern = "r_mean")
 
     # Filter for the days to predict!
+    all_dates <- substr(newdata$datum, 1, 10)
 
-    newdata
+    to_be_predicted <- all_dates %in% as.character(days_to_predict)
+
+    kwb.utils::removeColumns(newdata[to_be_predicted, ], "log_e.coli")
   })
 
   if (is_error(newdata)) {
@@ -82,19 +78,21 @@ predict_quality <- function(user_id, spot_id, from = NULL, to = from)
     #api_replace_predictions(user_id, spot_id, percentiles)
   })
 
-  if (is_error(result) == 0) {
+  if (is_error(result)) {
     return(create_failure(result))
   }
 
   return(create_result(
+    data = result,
     success = TRUE,
     message = get_text("predictions_posted", n = length(result))
   ))
 }
 
 # determine_days_to_predict ----------------------------------------------------
-determine_days_to_predict <- function(from = NULL, to = NULL, hygiene = NULL)
+determine_days_to_predict <- function(from = NULL, to = NULL, user_id = 3L)
 {
+  #kwb.utils::assignPackageObjects("fhpredict");from=NULL;to=NULL;user_id=3
   from_missing <- is.null(from)
   to_missing <- is.null(to)
 
@@ -108,18 +106,40 @@ determine_days_to_predict <- function(from = NULL, to = NULL, hygiene = NULL)
     return(seq(as.Date(from), as.Date(to), by = 1L))
   }
 
-  # If hygiene data are given, look for days with missing E.coli values
-  days <- if (! is.null(hygiene)) {
-    get_days_with_missing_values(hygiene)
+  # Look for days of measurements at spot "Vorhersagedatum"
+  if (user_id != -1L) {
+
+    spots <- api_get_bathingspot(user_id)
+
+    spot_id <- spots$id[spots$name == "Vorhersagedatum"]
+
+    # Code to set new dates for prediction
+    # api_delete_measurements(user_id, spot_id)
+    # add_timeseries_to_database(
+    #   path = path_measurements(user_id, spot_id),
+    #   data = data.frame(
+    #     date = paste(
+    #       seq(as.Date("2019-09-26"), by = 1, length.out = 5), "12:00:00"
+    #     ),
+    #     conc_ec = -1L,
+    #     conc_ie = -1L
+    #   )
+    # )
+
+    if (length(spot_id)) {
+
+      measurements <- api_get_measurements(user_id, spot_id)
+
+      # If there are such days, return them
+      if (nrow(measurements)) {
+        return(as.Date(measurements$date))
+      }
+    }
   }
 
-  # If there are such days, return them
-  if (length(days)) {
-    return(days)
-  }
-
-  # If no days were determined yet, return the current day
-  return(Sys.Date())
+  # If no days were determined yet, return the five last days of the bathing
+  # season
+  seq(as.Date("2019-09-26"), by = 1, length.out = 5)
 }
 
 # get_days_with_missing_values -------------------------------------------------
@@ -146,7 +166,7 @@ import_new_data <- function(user_id, spot_id, days)
 
   urls <- get_radolan_urls_for_days(dates = dates, time = "1050")
 
-  control <- provide_rain_data(user_id, spot_id, urls = urls)
+  control <- provide_rain_data(user_id, spot_id, urls = urls, info = FALSE)
 
   while (control$remaining > 0) {
     control <- provide_rain_data(control = control)

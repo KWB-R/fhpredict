@@ -203,7 +203,7 @@ if (FALSE)
 
   fhpredict:::add_timeseries_to_database(
     path = fhpredict:::path_measurements(user_id, spot_id),
-    data = data
+    data = data[100:150, ]
   )
 
   # 1c check
