@@ -189,6 +189,20 @@ new_line_collapsed <- function(x)
   paste(x, collapse = "\n")
 }
 
+# plot_to_svg ------------------------------------------------------------------
+plot_to_svg <- function(expr, ..., temp_dir = tempdir())
+{
+  file <- tempfile("modelplot_", tmpdir = temp_dir, fileext = ".svg")
+
+  grDevices::svg(file, ...)
+
+  on.exit(grDevices::dev.off())
+
+  eval(expr, envir = -1)
+
+  file
+}
+
 # reset_time -------------------------------------------------------------------
 reset_time <- function(x)
 {
