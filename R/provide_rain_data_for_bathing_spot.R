@@ -280,6 +280,13 @@ read_radolan_data_within_polygon <- function(urls, polygon, use_mask = TRUE)
 #'
 #' This function reads existing rain data with \code{\link{api_get_rain}}
 #'
+#' @param user_id user identifier
+#' @param spot_id bathing spot identifier
+#' @param rain data frame with new rain data
+#' @param rain_db optional. Data frame with existing rain data
+#' @param time_string passed to \code{\link{api_add_rain}}
+#' @param comment passed to \code{\link{api_add_rain}}
+#'
 api_replace_rain <- function(
   user_id, spot_id, rain, rain_db = NULL, time_string, comment = ""
 )

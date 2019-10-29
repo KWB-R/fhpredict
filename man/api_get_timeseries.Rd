@@ -21,6 +21,21 @@ sorted by the "dateTime" column}
 \code{fhpredict:::remove_and_reorder_columns()}}
 }
 \description{
-Get Timeseries Data from the Postgres Database Via API
+This function calls \code{\link{postgres_get}} to get data from the endpoint
+given by \code{path} and calls \code{fhpredict:::flatten_recursive_list} to
+convert the list structure into a data frame. The time columns "createdAt"
+and "updatedAt" are converted from a text timestamp given in ISO 8601 format
+(e.g. "2019-10-22T23:38:29.003Z") to POSIXct objects in time zone
+"Europe/Berlin". A new POSIXct column \code{dateTime} is created from the
+original text columns \code{date} and \code{dateTime} as they are returned by
+the API:
+\itemize{
+  \item{\code{(original) date} column: date and time information as text,
+  e.g. "2019-09-21T00:00:00.000Z"}
+  \item{\code{(original) dateTime} column: only time information as text,
+  e.g. "10:50:00"}
+  \item{\code{(new) dateTime} column: date and time as POSIXct in time zone
+  "Europe/Berlin"}
+}
 }
 \keyword{internal}

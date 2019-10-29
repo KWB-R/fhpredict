@@ -12,5 +12,8 @@ api_get_rain(user_id, spot_id)
 \item{spot_id}{bathing spot id}
 }
 \description{
-Get Rain Data from the Postgres Database Via API
+This function calls \code{\link{api_get_timeseries}} to get rain data records
+from the "rains" endpoint and calls
+\code{fhpredict:::remove_and_reorder_columns} to order the records
+chronologically and to select only the relevant columns
 }
