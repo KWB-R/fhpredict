@@ -116,7 +116,7 @@ provide_rain_data <- function(
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
-  #user_id=3;spot_id=49;sampling_time="1050";date_range=NULL;blocksize=10;control=NULL;urls=NULL
+  #user_id=3;spot_id=49;sampling_time="1050";date_range=NULL;blocksize=10;control=NULL;urls=NULL;info=TRUE
 
   if (is.null(control)) {
 
@@ -275,6 +275,11 @@ read_radolan_data_within_polygon <- function(urls, polygon, use_mask = TRUE)
 }
 
 # api_replace_rain -------------------------------------------------------------
+
+#' Add Rain Data Replacing Records for Existing Times
+#'
+#' This function reads existing rain data with \code{\link{api_get_rain}}
+#'
 api_replace_rain <- function(
   user_id, spot_id, rain, rain_db = NULL, time_string, comment = ""
 )
