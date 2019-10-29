@@ -70,8 +70,8 @@ upload_model <- function(user_id, spot_id, model_id, model)
   saveRDS(model, model_file)
 
   # Upload the model file using the "upload" endpoint
-  result <- postgres_post(
-    path = paste0(path_models(user_id, spot_id, model_id), "/upload"),
+  result <- safe_postgres_post(
+    path = paste0(path_models(user_id, spot_id, model_id), "/upload/rmodel"),
     body = list(upload = httr::upload_file(model_file)),
     encode = "multipart"
   )
