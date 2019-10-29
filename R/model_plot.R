@@ -23,6 +23,7 @@ upload_model_plot <- function(
 # show_model_plots -------------------------------------------------------------
 show_model_plots <- function(user_id, spot_id, model_id)
 {
+  #kwb.utils::assignPackageObjects("fhpredict")
   model_plot_info <- get_model_plot_info(user_id, spot_id, model_id)
 
   if (nrow(model_plot_info) == 0) {
@@ -44,6 +45,8 @@ show_model_plots <- function(user_id, spot_id, model_id)
   })
 
   titles <- lapply(model_plot_info$title, grid::textGrob)
+
+  assign("prefix", "", envir = grImport2:::.grImport2Env)
 
   grobs <- lapply(pictures, grImport2::grobify)
 
