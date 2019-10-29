@@ -42,7 +42,22 @@
 
 
 <meta property="og:title" content="Get Timeseries Data from the Postgres Database Via API — api_get_timeseries" />
-<meta property="og:description" content="Get Timeseries Data from the Postgres Database Via API" />
+<meta property="og:description" content="This function calls postgres_get to get data from the endpoint
+given by path and calls fhpredict:::flatten_recursive_list to
+convert the list structure into a data frame. The time columns &quot;createdAt&quot;
+and &quot;updatedAt&quot; are converted from a text timestamp given in ISO 8601 format
+(e.g. &quot;2019-10-22T23:38:29.003Z&quot;) to POSIXct objects in time zone
+&quot;Europe/Berlin&quot;. A new POSIXct column dateTime is created from the
+original text columns date and dateTime as they are returned by
+the API:
+(original) date column: date and time information as text,
+  e.g. &quot;2019-09-21T00:00:00.000Z&quot;
+(original) dateTime column: only time information as text,
+  e.g. &quot;10:50:00&quot;
+(new) dateTime column: date and time as POSIXct in time zone
+  &quot;Europe/Berlin&quot;
+
+" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -75,7 +90,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fhpredict</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
       </span>
     </div>
 
@@ -138,7 +153,22 @@
     </div>
 
     <div class="ref-description">
-    <p>Get Timeseries Data from the Postgres Database Via API</p>
+    <p>This function calls <code><a href='postgres_get.html'>postgres_get</a></code> to get data from the endpoint
+given by <code>path</code> and calls <code>fhpredict:::flatten_recursive_list</code> to
+convert the list structure into a data frame. The time columns "createdAt"
+and "updatedAt" are converted from a text timestamp given in ISO 8601 format
+(e.g. "2019-10-22T23:38:29.003Z") to POSIXct objects in time zone
+"Europe/Berlin". A new POSIXct column <code>dateTime</code> is created from the
+original text columns <code>date</code> and <code>dateTime</code> as they are returned by
+the API:</p><ul>
+<li><p><code>(original) date</code> column: date and time information as text,
+  e.g. "2019-09-21T00:00:00.000Z"</p></li>
+<li><p><code>(original) dateTime</code> column: only time information as text,
+  e.g. "10:50:00"</p></li>
+<li><p><code>(new) dateTime</code> column: date and time as POSIXct in time zone
+  "Europe/Berlin"</p></li>
+</ul>
+
     </div>
 
     <pre class="usage"><span class='fu'>api_get_timeseries</span>(<span class='no'>path</span>, <span class='kw'>subject</span> <span class='kw'>=</span> <span class='st'>"timeseries"</span>, <span class='kw'>sort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,

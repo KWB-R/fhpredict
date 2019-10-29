@@ -42,7 +42,10 @@
 
 
 <meta property="og:title" content="Get Rain Data from the Postgres Database Via API — api_get_rain" />
-<meta property="og:description" content="Get Rain Data from the Postgres Database Via API" />
+<meta property="og:description" content="This function calls api_get_timeseries to get rain data records
+from the &quot;rains&quot; endpoint and calls
+fhpredict:::remove_and_reorder_columns to order the records
+chronologically and to select only the relevant columns" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -75,7 +78,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fhpredict</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
       </span>
     </div>
 
@@ -138,7 +141,10 @@
     </div>
 
     <div class="ref-description">
-    <p>Get Rain Data from the Postgres Database Via API</p>
+    <p>This function calls <code><a href='api_get_timeseries.html'>api_get_timeseries</a></code> to get rain data records
+from the "rains" endpoint and calls
+<code>fhpredict:::remove_and_reorder_columns</code> to order the records
+chronologically and to select only the relevant columns</p>
     </div>
 
     <pre class="usage"><span class='fu'>api_get_rain</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>)</pre>

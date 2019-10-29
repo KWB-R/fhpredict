@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Path to Bathing Spot API endpoint — path_bathingspot • fhpredict</title>
+<title>Get Predictions — api_get_predictions • fhpredict</title>
 
 
 <!-- jquery -->
@@ -41,8 +41,8 @@
 
 
 
-<meta property="og:title" content="Path to Bathing Spot API endpoint — path_bathingspot" />
-<meta property="og:description" content="Path to Bathing Spot API endpoint" />
+<meta property="og:title" content="Get Predictions — api_get_predictions" />
+<meta property="og:description" content="Get Predictions" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -132,27 +132,36 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Path to Bathing Spot API endpoint</h1>
-    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/api_paths.R'><code>R/api_paths.R</code></a></small>
-    <div class="hidden name"><code>path_bathingspot.Rd</code></div>
+    <h1>Get Predictions</h1>
+    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/predict.R'><code>R/predict.R</code></a></small>
+    <div class="hidden name"><code>api_get_predictions.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Path to Bathing Spot API endpoint</p>
+    <p>Get Predictions</p>
     </div>
 
-    <pre class="usage"><span class='fu'>path_bathingspot</span>(<span class='kw'>user_id</span> <span class='kw'>=</span> -<span class='fl'>1L</span>, <span class='kw'>spot_id</span> <span class='kw'>=</span> -<span class='fl'>1L</span>, <span class='kw'>limit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>skip</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>"/"</span>)</pre>
+    <pre class="usage"><span class='fu'>api_get_predictions</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>)</pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>user_id</th>
+      <td><p>user ID or -1L (all users)</p></td>
+    </tr>
+    <tr>
+      <th>spot_id</th>
+      <td><p>bathing spot ID or -1L (all bathing spots)</p></td>
+    </tr>
+    </table>
 
 
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw pkg'>fhpredict</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/fhpredict/man/path_bathingspot.html'>path_bathingspot</a></span>()</div><div class='output co'>#&gt; [1] "bathingspots"</div><div class='input'><span class='kw pkg'>fhpredict</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/fhpredict/man/path_bathingspot.html'>path_bathingspot</a></span>(<span class='kw'>spot_id</span> <span class='kw'>=</span> <span class='fl'>3</span>)</div><div class='output co'>#&gt; [1] "bathingspots/3"</div><div class='input'><span class='kw pkg'>fhpredict</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/fhpredict/man/path_bathingspot.html'>path_bathingspot</a></span>(<span class='kw'>user_id</span> <span class='kw'>=</span> <span class='fl'>7</span>)</div><div class='output co'>#&gt; [1] "users/7/bathingspots"</div><div class='input'><span class='kw pkg'>fhpredict</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/fhpredict/man/path_bathingspot.html'>path_bathingspot</a></span>(<span class='kw'>user_id</span> <span class='kw'>=</span> <span class='fl'>22</span>, <span class='kw'>spot_id</span> <span class='kw'>=</span> <span class='fl'>33</span>)</div><div class='output co'>#&gt; [1] "users/22/bathingspots/33"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#examples">Examples</a></li>
+      <li><a href="#arguments">Arguments</a></li>
     </ul>
 
   </div>
