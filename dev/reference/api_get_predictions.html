@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Add a Model to the Database — api_add_model • fhpredict</title>
+<title>Get Predictions — api_get_predictions • fhpredict</title>
 
 
 <!-- jquery -->
@@ -41,8 +41,8 @@
 
 
 
-<meta property="og:title" content="Add a Model to the Database — api_add_model" />
-<meta property="og:description" content="Add a Model to the Database" />
+<meta property="og:title" content="Get Predictions — api_get_predictions" />
+<meta property="og:description" content="Get Predictions" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -132,50 +132,36 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Add a Model to the Database</h1>
-    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/api_model.R'><code>R/api_model.R</code></a></small>
-    <div class="hidden name"><code>api_add_model.Rd</code></div>
+    <h1>Get Predictions</h1>
+    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/predict.R'><code>R/predict.R</code></a></small>
+    <div class="hidden name"><code>api_get_predictions.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Add a Model to the Database</p>
+    <p>Get Predictions</p>
     </div>
 
-    <pre class="usage"><span class='fu'>api_add_model</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>, <span class='no'>model</span>, <span class='kw'>comment</span> <span class='kw'>=</span> <span class='st'>"any comment?"</span>)</pre>
+    <pre class="usage"><span class='fu'>api_get_predictions</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>user_id</th>
-      <td><p>user ID</p></td>
+      <td><p>user ID or -1L (all users)</p></td>
     </tr>
     <tr>
       <th>spot_id</th>
-      <td><p>bathing spot ID</p></td>
-    </tr>
-    <tr>
-      <th>model</th>
-      <td><p>model object</p></td>
-    </tr>
-    <tr>
-      <th>comment</th>
-      <td><p>description of the model. Default: "any comment?"</p></td>
+      <td><p>bathing spot ID or -1L (all bathing spots)</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>This function returns the ID of the added model. The URL to the
-  uploaded binary file is returned in attribute "model_url". From there,
-  the model can be read back with <code><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></code>.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
     </ul>
 
   </div>

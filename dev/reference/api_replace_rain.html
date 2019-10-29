@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Add a Model to the Database — api_add_model • fhpredict</title>
+<title>Add Rain Data Replacing Records for Existing Times — api_replace_rain • fhpredict</title>
 
 
 <!-- jquery -->
@@ -41,8 +41,8 @@
 
 
 
-<meta property="og:title" content="Add a Model to the Database — api_add_model" />
-<meta property="og:description" content="Add a Model to the Database" />
+<meta property="og:title" content="Add Rain Data Replacing Records for Existing Times — api_replace_rain" />
+<meta property="og:description" content="This function reads existing rain data with api_get_rain" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -132,50 +132,53 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Add a Model to the Database</h1>
-    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/api_model.R'><code>R/api_model.R</code></a></small>
-    <div class="hidden name"><code>api_add_model.Rd</code></div>
+    <h1>Add Rain Data Replacing Records for Existing Times</h1>
+    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/provide_rain_data_for_bathing_spot.R'><code>R/provide_rain_data_for_bathing_spot.R</code></a></small>
+    <div class="hidden name"><code>api_replace_rain.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Add a Model to the Database</p>
+    <p>This function reads existing rain data with <code><a href='api_get_rain.html'>api_get_rain</a></code></p>
     </div>
 
-    <pre class="usage"><span class='fu'>api_add_model</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>, <span class='no'>model</span>, <span class='kw'>comment</span> <span class='kw'>=</span> <span class='st'>"any comment?"</span>)</pre>
+    <pre class="usage"><span class='fu'>api_replace_rain</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>, <span class='no'>rain</span>, <span class='kw'>rain_db</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>time_string</span>,
+  <span class='kw'>comment</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>user_id</th>
-      <td><p>user ID</p></td>
+      <td><p>user identifier</p></td>
     </tr>
     <tr>
       <th>spot_id</th>
-      <td><p>bathing spot ID</p></td>
+      <td><p>bathing spot identifier</p></td>
     </tr>
     <tr>
-      <th>model</th>
-      <td><p>model object</p></td>
+      <th>rain</th>
+      <td><p>data frame with new rain data</p></td>
+    </tr>
+    <tr>
+      <th>rain_db</th>
+      <td><p>optional. Data frame with existing rain data</p></td>
+    </tr>
+    <tr>
+      <th>time_string</th>
+      <td><p>passed to <code><a href='api_add_rain.html'>api_add_rain</a></code></p></td>
     </tr>
     <tr>
       <th>comment</th>
-      <td><p>description of the model. Default: "any comment?"</p></td>
+      <td><p>passed to <code><a href='api_add_rain.html'>api_add_rain</a></code></p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>This function returns the ID of the added model. The URL to the
-  uploaded binary file is returned in attribute "model_url". From there,
-  the model can be read back with <code><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></code>.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
     </ul>
 
   </div>
