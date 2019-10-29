@@ -12,8 +12,11 @@ get_area_coordinates <- function(bathing_spot)
   area <- kwb.utils::selectElements(bathing_spot, "area")
 
   coordinates_list <- kwb.utils::selectElements(area, "coordinates")
+  type <- kwb.utils::selectElements(area, "type")
 
-  stopifnot(length(coordinates_list) == 1)
+  if (length(coordinates_list) == 0) {
+    return(structure(matrix(numeric(0), nrow = 0, ncol = 2), type = type))
+  }
 
   points <- coordinates_list[[1]]
 
@@ -22,5 +25,5 @@ get_area_coordinates <- function(bathing_spot)
     c(point[[1]], point[[2]])
   }))
 
-  structure(coordinates, type = kwb.utils::selectElements(area, "type"))
+  structure(coordinates, type = type)
 }
