@@ -166,7 +166,11 @@ if (FALSE)
   if (exists("build_and_validate_model")) {
 
     set.seed(1)
-    result1 <- build_and_validate_model(river_data, river = "havel")
+
+    result1 <- build_and_validate_model(
+      spot_data = kwb.utils::selectElements(river_data, "havel")
+    )
+
     store(result1)
 
     # Compare original result with result from calling the function in fhpredict
