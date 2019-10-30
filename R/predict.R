@@ -1,4 +1,10 @@
 # api_get_predictions ----------------------------------------------------------
+
+#' Get Predictions
+#'
+#' @param user_id user ID or -1L (all users)
+#' @param spot_id bathing spot ID or -1L (all bathing spots)
+#' @export
 api_get_predictions <- function(user_id, spot_id)
 {
   path <- path_predictions(user_id, spot_id)

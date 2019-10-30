@@ -50,6 +50,9 @@ Imports:
     stringr (>= 1.4.0)
 Suggests: 
     covr (>= 3.2.1),
+    grid,
+    gridExtra,
+    grImport2,
     testthat (>= 2.2.1),
     knitr (>= 1.22),
     rmarkdown (>= 1.14)

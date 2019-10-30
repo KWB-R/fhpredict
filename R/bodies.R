@@ -10,10 +10,13 @@ body_measurement <- function(date, dateTime, value, comment = "any comment?")
 }
 
 # body_model -------------------------------------------------------------------
-body_model <- function(rmodel, comment = "any comment?")
+body_model <- function(
+  rmodel, comment = "any comment?", parameter = "conc_ec or conc_ie?"
+)
 {
   list(
     rmodel = rmodel,
-    comment = comment
+    comment = comment,
+    parameter = parameter
   )
 }
