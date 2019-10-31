@@ -1,3 +1,19 @@
+# upload_model_plots -----------------------------------------------------------
+upload_model_plots <- function(user_id, spot_id, model_id, model_plots)
+{
+  get <- kwb.utils::selectElements
+
+  for (model_plot in model_plots) {
+
+    upload_model_plot(
+      user_id, spot_id, model_id,
+      plot_file = plot_to_svg(get(model_plot, "gg_plot")),
+      title = get(model_plot, "title"),
+      description = get(model_plot, "description")
+    )
+  }
+}
+
 # upload_model_plot ------------------------------------------------------------
 upload_model_plot <- function(
   user_id, spot_id, model_id, plot_file, title = "title?",

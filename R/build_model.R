@@ -72,8 +72,11 @@ build_model <- function(user_id, spot_id, seed = NULL, delete_rain = FALSE)
     # Provide the data frame containing the results of the statistical tests
     tests <- kwb.utils::selectElements(result, "stat_tests")
 
-    # Create the plots describing the model and upload them to the database
-    create_and_upload_model_plots(tests, model, user_id, spot_id, model_id)
+    # Create the plots describing the model, with titles and descriptions
+    model_plots <- create_model_plots(tests, model)
+
+    # Upload Plots to the database
+    upload_model_plots(model_plots)
 
     # Compose a description for the output of this function
     indicators <- get_model_quality_string(x = result$sorted_models[1, ])
