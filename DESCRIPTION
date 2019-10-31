@@ -52,9 +52,6 @@ Imports:
     tidyr (>= 1.0.0)
 Suggests: 
     covr (>= 3.2.1),
-    grid,
-    gridExtra (>= 2.3),
-    grImport2 (>= 0.1.5),
     testthat (>= 2.2.1),
     knitr (>= 1.22),
     rmarkdown (>= 1.14)
