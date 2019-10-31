@@ -41,7 +41,8 @@ prepare_river_data <- function(river_list)
     river_list[[element]] <- df
   }
 
-  river_list
+  # Remove empty data frames
+  remove_empty_data_frames(river_list)
 }
 
 # filter_for_months ------------------------------------------------------------

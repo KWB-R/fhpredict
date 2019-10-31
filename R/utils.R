@@ -194,13 +194,40 @@ plot_to_svg <- function(expr, ..., temp_dir = tempdir())
 {
   file <- tempfile("modelplot_", tmpdir = temp_dir, fileext = ".svg")
 
-  grDevices::svg(file, ...)
+  if (inherits(expr, "ggplot")) {
 
-  on.exit(grDevices::dev.off())
+    ggplot2::ggsave(file, plot = expr)
 
-  eval(expr, envir = -1)
+  } else {
+
+    grDevices::svg(file, ...)
+    on.exit(grDevices::dev.off())
+    eval(expr, envir = -1)
+  }
 
   file
+}
+
+# remove_empty_data_frames -----------------------------------------------------
+remove_empty_data_frames <- function(x)
+{
+  stopifnot(is.list(x))
+  stopifnot(all(sapply(x, is.data.frame)))
+
+  has_no_rows <- sapply(x, nrow) == 0
+
+  if (! any(has_no_rows)) {
+    return(x)
+  }
+
+  kwb.utils::catAndRun(
+    sprintf(
+      "Removing %d empty data frames from '%s': %s",
+      sum(has_no_rows), deparse(substitute(x)),
+      kwb.utils::stringList(names(x)[has_no_rows])
+    ),
+    expr = x[! has_no_rows]
+  )
 }
 
 # reset_time -------------------------------------------------------------------
