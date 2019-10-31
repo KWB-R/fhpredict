@@ -6,9 +6,12 @@
 #' @param spot_id bathing spot ID
 #' @param seed if \code{TRUE} the random number generate is initialised using
 #'   this value in a call to \code{\link{set.seed}}
+#' @param delete_rain if \code{TRUE}, all rain data are deleted after successful
+#'   model creation. This was used to avoid long loading times (freezing) in the
+#'   frontend but should not be necessary any more! The default is \code{FALSE}.
 #' @return list with elements \code{data}, \code{success}, \code{message}
 #' @export
-build_model <- function(user_id, spot_id, seed = NULL)
+build_model <- function(user_id, spot_id, seed = NULL, delete_rain = FALSE)
 {
   #kwb.utils::assignPackageObjects("fhpredict")
   #user_id=3;spot_id=43;seed=NULL
@@ -71,13 +74,23 @@ build_model <- function(user_id, spot_id, seed = NULL)
       ref_model = kwb.utils::selectColumns(result[[1]], "model")[1]
     )
 
+    data_overview_plot <- plot_data_overview(model)
+
     upload_model_plot(
       user_id, spot_id, model_id,
       plot_file = plot_to_svg(calibration_plot),
-      title = "Calibration Plot",
+      title = "\u00dcberblick \u00fcber getestete Modelle",
       description = paste(
-        "These  models have been tested during the calibration and validation",
-        "procedure."
+        "Diese Funktion stellt die getesteten Modelle grafisch dar."
+      )
+    )
+
+    upload_model_plot(
+      user_id, spot_id, model_id,
+      plot_file = plot_to_svg(data_overview_plot),
+      title = "Datenqualit\u00e4t und Kalibrationsbereich",
+      description = paste(
+        "Diese Abbildung zeigt die Anzahl Regenassoziierter Datenpunkte"
       )
     )
 
@@ -90,13 +103,14 @@ build_model <- function(user_id, spot_id, seed = NULL)
     return(create_failure(result))
   }
 
-  # After successful model creation, delete all rain data. We do so just to
-  # avoid long loading times (freezing) in the frontend due to too many
-  # raining points (as we assume)
-  result <- try(fhpredict::api_delete_rain(user_id, spot_id))
+  # Delete all rain data if requested
+  if (delete_rain) {
 
-  if (is_error(result)) {
-    return(create_failure(result))
+    result <- try(fhpredict::api_delete_rain(user_id, spot_id))
+
+    if (is_error(result)) {
+      return(create_failure(result))
+    }
   }
 
   # will respond in a rea
