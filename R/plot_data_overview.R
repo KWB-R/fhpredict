@@ -43,10 +43,7 @@ plot_data_overview <- function(model)
 
   n_bins <- nrow(rain_long) / 5
 
-  ggplot2::ggplot(
-    rain_long,
-    ggplot2::aes(x = rescale(.data$Wert))
-  ) +
+  gg <- ggplot2::ggplot(rain_long, ggplot2::aes(x = rescale(.data$Wert))) +
     ggplot2::geom_histogram(bins = n_bins, fill = "steelblue", col = "black") +
     ggplot2::facet_wrap( . ~ Regen) +
     ggplot2::xlab("Niederschlagsdaten [mm]") +
@@ -60,12 +57,14 @@ plot_data_overview <- function(model)
         group = .data$Regen,
         label = sprintf("Obere Kalibrationsgrenze = %0.1f mm", .data$max)
       )
-    ) +
-    ggplot2::ggtitle(
-      "Genutzte Regenvariablen",
-      subtitle = sprintf(
-        "Anteil der Tage mit Regen > 5 mm im Vorfeld der Messung = %f %%",
-        max(rain_summary$Anteil_regen)
-      )
-    )
+    ) # +
+    # ggplot2::ggtitle(
+    #   "Genutzte Regenvariablen",
+    #   subtitle = sprintf(
+    #     "Anteil der Tage mit Regen > 5 mm im Vorfeld der Messung = %f %%",
+    #     max(rain_summary$Anteil_regen)
+    #   )
+    # )
+
+  structure(gg, rain_summary = rain_summary)
 }

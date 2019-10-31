@@ -25,7 +25,7 @@ plot_fit_vs_data <- function(model)
     #                                "ausreichend" = "orange",
     #                                "ausgezeichnet" ="forest green")) +
     ggplot2::ylab("Vorhergesagtes Interval") +
-    ggplot2::ggtitle("Modelbewertung gegen Messwerte") +
+    #ggplot2::ggtitle("Modelbewertung gegen Messwerte") +
     ggplot2::xlab("Messwerte lg[MPN/100mL]") +
     ggplot2::geom_abline(slope = 1, intercept = 0, lty = 2)
 }
