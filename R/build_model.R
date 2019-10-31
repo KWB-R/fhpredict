@@ -76,7 +76,7 @@ build_model <- function(user_id, spot_id, seed = NULL, delete_rain = FALSE)
     model_plots <- create_model_plots(tests, model)
 
     # Upload Plots to the database
-    upload_model_plots(model_plots)
+    upload_model_plots(user_id, spot_id, model_id, model_plots)
 
     # Compose a description for the output of this function
     indicators <- get_model_quality_string(x = result$sorted_models[1, ])
