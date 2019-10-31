@@ -63,6 +63,16 @@ crop_or_mask <- function(x, polygon, use_mask = TRUE)
   }
 }
 
+# empty_ggplot -----------------------------------------------------------------
+empty_ggplot <- function(text = "Nothing to plot.")
+{
+  data <- data.frame(x = 0, y = 0, label = text)
+
+  ggplot2::ggplot(data, ggplot2::aes(.data$x, .data$y)) +
+    ggplot2::geom_text(ggplot2::aes(label = .data$label)) +
+    ggplot2::theme_void()
+}
+
 # extract_flat_information -----------------------------------------------------
 extract_flat_information <- function(x, keep_null = FALSE)
 {
