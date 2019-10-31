@@ -56,11 +56,29 @@ build_model <- function(user_id, spot_id, seed = NULL)
       kwb.utils::removeColumns(result$sorted_models[1, ], c("river", "model"))
     ))
 
+    parameter <- "conc_ec"
+
     model_id <- api_add_model(
       user_id = user_id,
       spot_id = spot_id,
       model = model,
-      comment = comment
+      comment = comment,
+      parameter = parameter
+    )
+
+    calibration_plot <- plot_model_calibration(
+      tests = kwb.utils::selectElements(result, "stat_tests"),
+      ref_model = kwb.utils::selectColumns(result[[1]], "model")[1]
+    )
+
+    upload_model_plot(
+      user_id, spot_id, model_id,
+      plot_file = plot_to_svg(calibration_plot),
+      title = "Calibration Plot",
+      description = paste(
+        "These  models have been tested during the calibration and validation",
+        "procedure."
+      )
     )
 
     # Compose a description for the output of this function
