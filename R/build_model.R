@@ -69,30 +69,11 @@ build_model <- function(user_id, spot_id, seed = NULL, delete_rain = FALSE)
       parameter = parameter
     )
 
-    calibration_plot <- plot_model_calibration(
-      tests = kwb.utils::selectElements(result, "stat_tests"),
-      ref_model = kwb.utils::selectColumns(result[[1]], "model")[1]
-    )
+    # Provide the data frame containing the results of the statistical tests
+    tests <- kwb.utils::selectElements(result, "stat_tests")
 
-    data_overview_plot <- plot_data_overview(model)
-
-    upload_model_plot(
-      user_id, spot_id, model_id,
-      plot_file = plot_to_svg(calibration_plot),
-      title = "\u00dcberblick \u00fcber getestete Modelle",
-      description = paste(
-        "Diese Funktion stellt die getesteten Modelle grafisch dar."
-      )
-    )
-
-    upload_model_plot(
-      user_id, spot_id, model_id,
-      plot_file = plot_to_svg(data_overview_plot),
-      title = "Datenqualit\u00e4t und Kalibrationsbereich",
-      description = paste(
-        "Diese Abbildung zeigt die Anzahl Regenassoziierter Datenpunkte"
-      )
-    )
+    # Create the plots describing the model and upload them to the database
+    create_and_upload_model_plots(tests, model, user_id, spot_id, model_id)
 
     # Compose a description for the output of this function
     indicators <- get_model_quality_string(x = result$sorted_models[1, ])
