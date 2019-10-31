@@ -190,17 +190,17 @@ new_line_collapsed <- function(x)
 }
 
 # plot_to_svg ------------------------------------------------------------------
-plot_to_svg <- function(expr, ..., temp_dir = tempdir())
+plot_to_svg <- function(expr, width = 8, height = 6, ..., temp_dir = tempdir())
 {
   file <- tempfile("modelplot_", tmpdir = temp_dir, fileext = ".svg")
 
   if (inherits(expr, "ggplot")) {
 
-    ggplot2::ggsave(file, plot = expr)
+    ggplot2::ggsave(file, plot = expr, width = width, height = height, ...)
 
   } else {
 
-    grDevices::svg(file, ...)
+    grDevices::svg(file, width = width, height = height, ...)
     on.exit(grDevices::dev.off())
     eval(expr, envir = -1)
   }
