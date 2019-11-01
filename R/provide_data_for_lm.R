@@ -3,7 +3,7 @@ provide_data_for_lm <- function(
   riverdata, pattern = "", dbg = TRUE, for_model_building = TRUE
 )
 {
-  #pattern="";dbg=TRUE
+  #pattern="";dbg=TRUE;for_model_building=TRUE
   `%>%` <- magrittr::`%>%`
 
   unrolled_data <- riverdata %>%

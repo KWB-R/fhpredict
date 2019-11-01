@@ -63,7 +63,8 @@ build_and_validate_model <- function(
   list(
     sorted_models = sorted_models,
     best_model = best_model,
-    stanfit = stanfit
+    stanfit = stanfit,
+    stat_tests = stat_tests
   )
 }
 

@@ -1,3 +1,19 @@
+# upload_model_plots -----------------------------------------------------------
+upload_model_plots <- function(user_id, spot_id, model_id, model_plots)
+{
+  get <- kwb.utils::selectElements
+
+  for (model_plot in model_plots) {
+
+    upload_model_plot(
+      user_id, spot_id, model_id,
+      plot_file = plot_to_svg(get(model_plot, "gg_plot")),
+      title = get(model_plot, "title"),
+      description = get(model_plot, "description")
+    )
+  }
+}
+
 # upload_model_plot ------------------------------------------------------------
 upload_model_plot <- function(
   user_id, spot_id, model_id, plot_file, title = "title?",
@@ -24,37 +40,32 @@ upload_model_plot <- function(
 show_model_plots <- function(user_id, spot_id, model_id)
 {
   #kwb.utils::assignPackageObjects("fhpredict")
+  #user_id=3;spot_id=67;model_id=80
   model_plot_info <- get_model_plot_info(user_id, spot_id, model_id)
 
-  if (nrow(model_plot_info) == 0) {
+  body <- if (nrow(model_plot_info) == 0) {
 
-    graphics::plot(gridExtra::arrangeGrob(
-      grobs = list(grid::textGrob("No plots available."))
-    ))
+    "<h2>No plots available.</h2>"
 
-    return()
+  } else {
+
+    sprintf(
+      "<h2>%s</h2><img src=\"%s\" height=\"300px\" width=\"400px\"><h4>%s</h4>",
+      model_plot_info$title, model_plot_info$url, model_plot_info$description
+    )
   }
 
-  pictures <- lapply(model_plot_info$url, function(url) {
-
-    destfile <- file.path(tempdir(), basename(url))
-
-    download.file(url, destfile)
-
-    grImport2::readPicture(destfile)
-  })
-
-  titles <- lapply(model_plot_info$title, grid::textGrob)
-
-  assign("prefix", "", envir = grImport2:::.grImport2Env)
-
-  grobs <- lapply(pictures, grImport2::grobify)
-
-  descriptions <- lapply(model_plot_info$description, grid::textGrob)
-
-  graphics::plot(gridExtra::arrangeGrob(
-    grobs = c(titles, grobs, descriptions), nrow = 3, heights = c(1, 3, 3)
+  html_content <- paste(collapse = "<br>\n", c(
+    "<html><head><meta charset=\"UTF-8\"></head><body>",
+    body,
+    "</body></html>"
   ))
+
+  html_file <- tempfile(fileext = ".html")
+
+  writeLines(html_content, con = file(html_file, encoding = "UTF-8"))
+
+  utils::browseURL(html_file)
 }
 
 # get_model_plot_info ----------------------------------------------------------
