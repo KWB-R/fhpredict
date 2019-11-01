@@ -68,8 +68,10 @@ plot_model_calibration <- function(tests, ref_model = "model_01")
     ggplot2::coord_flip() +
     ggplot2::facet_grid(. ~ test, labeller = labeller) +
     ggplot2::xlab("")+
-    ggplot2::scale_color_manual(values = colour_values) +
+    ggplot2::scale_shape(name = "Benutzt")+
+    ggplot2::scale_color_manual(values = colour_values,
+                                name = "Teststatistik") +
     #ggplot2::ggtitle("Auswertung Teststatistiken und Bestimmtheitsma\u00df") +
     ggplot2::theme_bw(base_size = 16) +
-    ggplot2::ylab("Bestimmtheitsma\u00df R2")
+    ggplot2::ylab(expression("Bestimmtheitsma\u00df R"^2))
 }
