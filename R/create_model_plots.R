@@ -38,7 +38,7 @@ create_model_plots <- function(tests, model)
       description = paste(
         "Die Grafik stellt die vom Modell vorhergesagten",
         "Konzentrationsbereiche den tats\u00e4chlichen Messwerten",
-        "gegen\u00fcber."
+        "gegen\u00fcber. Genau."
       )
     ),
     # Plot 4
