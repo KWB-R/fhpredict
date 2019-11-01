@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Build Water Quality Model for Bathing Spot — build_model • fhpredict</title>
+<title>Abbildung Datenqualität und Kalibrationsbereich — plot_data_overview • fhpredict</title>
 
 
 <!-- jquery -->
@@ -41,8 +41,8 @@
 
 
 
-<meta property="og:title" content="Build Water Quality Model for Bathing Spot — build_model" />
-<meta property="og:description" content="Build Water Quality Model for Bathing Spot" />
+<meta property="og:title" content="Abbildung Datenqualität und Kalibrationsbereich — plot_data_overview" />
+<meta property="og:description" content="Diese Abbildung zeigt die Anzahl Regenassoziierter Datenpunkte" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -132,51 +132,32 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Build Water Quality Model for Bathing Spot</h1>
-    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/build_model.R'><code>R/build_model.R</code></a></small>
-    <div class="hidden name"><code>build_model.Rd</code></div>
+    <h1>Abbildung Datenqualität und Kalibrationsbereich</h1>
+    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/plot_data_overview.R'><code>R/plot_data_overview.R</code></a></small>
+    <div class="hidden name"><code>plot_data_overview.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Build Water Quality Model for Bathing Spot</p>
+    <p>Diese Abbildung zeigt die Anzahl Regenassoziierter Datenpunkte</p>
     </div>
 
-    <pre class="usage"><span class='fu'>build_model</span>(<span class='no'>user_id</span>, <span class='no'>spot_id</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>delete_rain</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>plot_data_overview</span>(<span class='no'>model</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>user_id</th>
-      <td><p>user ID</p></td>
-    </tr>
-    <tr>
-      <th>spot_id</th>
-      <td><p>bathing spot ID</p></td>
-    </tr>
-    <tr>
-      <th>seed</th>
-      <td><p>if <code>TRUE</code> the random number generate is initialised using
-this value in a call to <code><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></code></p></td>
-    </tr>
-    <tr>
-      <th>delete_rain</th>
-      <td><p>if <code>TRUE</code>, all rain data are deleted after successful
-model creation. This was used to avoid long loading times (freezing) in the
-frontend but should not be necessary any more! The default is <code>FALSE</code>.</p></td>
+      <th>model</th>
+      <td><p>model object as returned by <code><a href='api_get_model.html'>api_get_model</a></code></p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>list with elements <code>data</code>, <code>success</code>, <code>message</code></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
     </ul>
 
   </div>
