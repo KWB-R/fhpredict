@@ -4,7 +4,8 @@
 \alias{api_add_model}
 \title{Add a Model to the Database}
 \usage{
-api_add_model(user_id, spot_id, model, comment = "any comment?")
+api_add_model(user_id, spot_id, model, comment = "any comment?",
+  parameter = "conc_ec or conc_ie?")
 }
 \arguments{
 \item{user_id}{user ID}
@@ -14,6 +15,9 @@ api_add_model(user_id, spot_id, model, comment = "any comment?")
 \item{model}{model object}
 
 \item{comment}{description of the model. Default: "any comment?"}
+
+\item{parameter}{name of column containing the variable to be predicted.
+Must be one of "conc_ec" (E. coli) or "conc_ie" (intestinale enterococci).}
 }
 \value{
 This function returns the ID of the added model. The URL to the

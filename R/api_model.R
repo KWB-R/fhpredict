@@ -25,18 +25,24 @@ get_last_added_model <- function(user_id, spot_id)
 #' @param spot_id bathing spot ID
 #' @param model model object
 #' @param comment description of the model. Default: "any comment?"
+#' @param parameter name of column containing the variable to be predicted.
+#'   Must be one of "conc_ec" (E. coli) or "conc_ie" (intestinale enterococci).
 #' @return This function returns the ID of the added model. The URL to the
 #'   uploaded binary file is returned in attribute "model_url". From there,
 #'   the model can be read back with \code{\link{readRDS}}.
 #' @export
-api_add_model <- function(user_id, spot_id, model, comment = "any comment?")
+api_add_model <- function(
+  user_id, spot_id, model, comment = "any comment?",
+  parameter = "conc_ec or conc_ie?"
+)
 {
   # Send a POST request to the database
-  result <- postgres_post(
+  result <- safe_postgres_post(
     path = path_models(user_id, spot_id),
     body = body_model(
       rmodel = get_text("rmodel_deprecated"),
-      comment = comment
+      comment = comment,
+      parameter = parameter
     )
   )
 
@@ -70,8 +76,8 @@ upload_model <- function(user_id, spot_id, model_id, model)
   saveRDS(model, model_file)
 
   # Upload the model file using the "upload" endpoint
-  result <- postgres_post(
-    path = paste0(path_models(user_id, spot_id, model_id), "/upload"),
+  result <- safe_postgres_post(
+    path = paste0(path_models(user_id, spot_id, model_id), "/upload/rmodel"),
     body = list(upload = httr::upload_file(model_file)),
     encode = "multipart"
   )

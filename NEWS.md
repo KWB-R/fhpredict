@@ -1,3 +1,9 @@
+# fhpredict 0.9.0 (2019-11-19)
+
+* add plot functions
+* add sleep()
+* use R package aws.s3 to download Radolan files
+
 # fhpredict 0.7.0
 
 * consider global irradiances

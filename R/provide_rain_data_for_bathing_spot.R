@@ -1,3 +1,5 @@
+#install.packages("aws.s3", repos = c("cloudyr" = "http://cloudyr.github.io/drat"))
+
 # provide_rain_data_for_bathing_spot -------------------------------------------
 
 #' Provide Rain Data for one Bathing Spot
@@ -26,7 +28,7 @@ provide_rain_data_for_bathing_spot <- function(
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
-  #user_id=3;spot_id=49;sampling_time="1050";date_range=NULL
+  #user_id=9;spot_id=26;sampling_time="1050";date_range=NULL
 
   control <- try(provide_rain_data(
     user_id = user_id,
@@ -116,7 +118,7 @@ provide_rain_data <- function(
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
-  #user_id=3;spot_id=49;sampling_time="1050";date_range=NULL;blocksize=10;control=NULL;urls=NULL
+  #user_id=9;spot_id=26;sampling_time="1050";date_range=NULL;blocksize=10;control=NULL;urls=NULL;info=TRUE
 
   if (is.null(control)) {
 
@@ -242,7 +244,10 @@ get_polygon_for_bathing_spot <- function(user_id, spot_id)
 }
 
 # read_radolan_data_within_polygon ---------------------------------------------
-read_radolan_data_within_polygon <- function(urls, polygon, use_mask = TRUE)
+read_radolan_data_within_polygon <- function(
+  urls, polygon, use_mask = TRUE,
+  public = is.na(Sys.getenv("AWS_ACCESS_KEY_ID", unset = NA))
+)
 {
   # For each URL, read the file and crop the polygon
   raster_objects <- lapply(seq_along(urls), function(i) {
@@ -252,8 +257,25 @@ read_radolan_data_within_polygon <- function(urls, polygon, use_mask = TRUE)
       basename(urls[i]), i, length(urls), 100 * i / length(urls)
     ))
 
-    # Read the Radolan file and crop the polygon area
-    radolan <- kwb.dwd::read_binary_radolan_file(urls[i])
+    # Use the URL directly in case of public access
+    path <- if (public) {
+      urls[i]
+    } else {
+      #aws.s3::bucketlist()
+      #bucket <- aws.s3::get_bucket(bucket = "flsshygn-radolan-recent-prod")
+      kwb.utils::catAndRun(
+        paste("Downloading", basename(urls[i]), "with access key"),
+        expr = {
+          parts <- split_aws_s3_url(url = urls[i])
+          file <- file.path(tempdir(), basename(parts$object))
+          aws.s3::save_object(parts$object, parts$bucket, file = file)
+          file
+        }
+      )
+    }
+
+    # Read the Radolan file
+    radolan <- kwb.dwd::read_binary_radolan_file(path)
 
     # Crop or mask the polygon area
     crop_or_mask(radolan, polygon, use_mask)
@@ -274,7 +296,35 @@ read_radolan_data_within_polygon <- function(urls, polygon, use_mask = TRUE)
   )
 }
 
+# split_aws_s3_url -------------------------------------------------------------
+split_aws_s3_url <- function(url)
+{
+  stopifnot(is.character(url), length(url) == 1)
+
+  parts <- strsplit(gsub("^https://", "", url), "/")[[1]]
+
+  region <- get_environment_var("AWS_DEFAULT_REGION")
+  server_name <- sprintf(".s3.%s.amazonaws.com", region)
+
+  list(
+    bucket = substr(parts[1], 1, nchar(parts[1]) - nchar(server_name)),
+    object = paste(parts[-1], collapse = "/")
+  )
+}
+
 # api_replace_rain -------------------------------------------------------------
+
+#' Add Rain Data Replacing Records for Existing Times
+#'
+#' This function reads existing rain data with \code{\link{api_get_rain}}
+#'
+#' @param user_id user identifier
+#' @param spot_id bathing spot identifier
+#' @param rain data frame with new rain data
+#' @param rain_db optional. Data frame with existing rain data
+#' @param time_string passed to \code{\link{api_add_rain}}
+#' @param comment passed to \code{\link{api_add_rain}}
+#'
 api_replace_rain <- function(
   user_id, spot_id, rain, rain_db = NULL, time_string, comment = ""
 )

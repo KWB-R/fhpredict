@@ -35,6 +35,13 @@ environment variables to be set:
 * `AUTH0_CLIENT_SECRET`
 * `AUTH0_AUDIENCE`
 
+The following additional envirionment variables are required to download Radolan
+files from the AWS S3 server:
+
+* `AWS_ACCESS_KEY_ID`
+* `AWS_SECRET_ACCESS_KEY`
+* `AWS_DEFAULT_REGION`
+
 ## Main functions
 
 * [`provide_rain_data()`](https://kwb-r.github.io/fhpredict/dev/reference/provide_rain_data.html)

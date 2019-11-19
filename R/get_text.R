@@ -87,15 +87,6 @@ get_text <- function(keyword, ...)
       "Request for token failed. Status: <status>. Returning NULL."
     ),
     requesting_token = "Requesting a new access token",
-    river_data_not_supported = paste0(
-      "The argument 'river_data' is not supported any more. Please use the ",
-      "new argument 'spot_data' to pass a list of data frames related to ONE ",
-      "bathing spot ONLY."
-    ),
-    river_not_supported = paste0(
-      "The argument 'river' is not supported any more. You may use the ",
-      "new argument 'prefix' to prefix the names of the returned models."
-    ),
     rmodel_deprecated = "Deprecated. Binary model file has been uploaded.",
     specify_type = "Please specify 'type' (must be one of: <typelist>)",
     spot_data_expected_type = paste0(

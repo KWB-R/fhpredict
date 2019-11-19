@@ -47,7 +47,7 @@ create_result <- function(
   data = NULL, success = TRUE, message = "Everything ok"
 )
 {
-  list(data = data, sucess = success, message = message)
+  list(data = data, success = success, message = message)
 }
 
 # crop_or_mask -----------------------------------------------------------------
@@ -61,6 +61,16 @@ crop_or_mask <- function(x, polygon, use_mask = TRUE)
 
     raster::crop(x, y = polygon)
   }
+}
+
+# empty_ggplot -----------------------------------------------------------------
+empty_ggplot <- function(text = "Nothing to plot.")
+{
+  data <- data.frame(x = 0, y = 0, label = text)
+
+  ggplot2::ggplot(data, ggplot2::aes(.data$x, .data$y)) +
+    ggplot2::geom_text(ggplot2::aes(label = .data$label)) +
+    ggplot2::theme_void()
 }
 
 # extract_flat_information -----------------------------------------------------
@@ -187,6 +197,47 @@ iso_timestamp_to_local_posix <- function(x, tzone = "Europe/Berlin")
 new_line_collapsed <- function(x)
 {
   paste(x, collapse = "\n")
+}
+
+# plot_to_svg ------------------------------------------------------------------
+plot_to_svg <- function(expr, width = 8, height = 6, ..., temp_dir = tempdir())
+{
+  file <- tempfile("modelplot_", tmpdir = temp_dir, fileext = ".svg")
+
+  if (inherits(expr, "ggplot")) {
+
+    ggplot2::ggsave(file, plot = expr, width = width, height = height, ...)
+
+  } else {
+
+    grDevices::svg(file, width = width, height = height, ...)
+    on.exit(grDevices::dev.off())
+    eval(expr, envir = -1)
+  }
+
+  file
+}
+
+# remove_empty_data_frames -----------------------------------------------------
+remove_empty_data_frames <- function(x)
+{
+  stopifnot(is.list(x))
+  stopifnot(all(sapply(x, is.data.frame)))
+
+  has_no_rows <- sapply(x, nrow) == 0
+
+  if (! any(has_no_rows)) {
+    return(x)
+  }
+
+  kwb.utils::catAndRun(
+    sprintf(
+      "Removing %d empty data frames from '%s': %s",
+      sum(has_no_rows), deparse(substitute(x)),
+      kwb.utils::stringList(names(x)[has_no_rows])
+    ),
+    expr = x[! has_no_rows]
+  )
 }
 
 # reset_time -------------------------------------------------------------------

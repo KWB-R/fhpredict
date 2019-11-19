@@ -1,4 +1,10 @@
 # api_get_predictions ----------------------------------------------------------
+
+#' Get Predictions
+#'
+#' @param user_id user ID or -1L (all users)
+#' @param spot_id bathing spot ID or -1L (all bathing spots)
+#' @export
 api_get_predictions <- function(user_id, spot_id)
 {
   path <- path_predictions(user_id, spot_id)
@@ -70,19 +76,45 @@ get_percentiles_from_prediction <- function(prediction)
 }
 
 # get_quality_from_percentiles -------------------------------------------------
-get_quality_from_percentiles <- function(percentiles)
+get_quality_from_percentiles <- function(percentiles, version = 1)
 {
   p90 <- kwb.utils::selectColumns(percentiles, "P90")
   p95 <- kwb.utils::selectColumns(percentiles, "P95")
 
-  ifelse(
-    p90 > 900, "mangelhaft",
+  if (version == 1) {
+
     ifelse(
-      p90 < 900 & p95 >= 1000, "ausreichend",
+      p90 > 900,
+      "mangelhaft",
       ifelse(
-        p95 < 1000 & p95 >= 500, "gut",
-        "ausgezeichnet"
+        p90 < 900 & p95 >= 1000,
+        "ausreichend",
+        ifelse(
+          p95 < 1000 & p95 >= 500,
+          "gut",
+          "ausgezeichnet"
+        )
       )
     )
-  )
+
+  } else if (version == 2) {
+
+    ifelse(
+      p95 < log10(500),
+      "ausgezeichnet",
+      ifelse(
+        p95 < log10(1000) & p90 < log10(900),
+        "gut",
+        ifelse(
+          p95 > log10(1000) & p90 < log10(900),
+          "ausreichend",
+          "mangelhaft"
+        )
+      )
+    )
+
+  } else {
+
+    clean_stop("version must be either 1 or 2 but was: ", version)
+  }
 }
