@@ -41,8 +41,10 @@ get_radolan_urls_bucket <- function(
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
-  endpoint <- get_environment_var("ENDPOINT_PROD")
-  token <- get_environment_var("TOKEN_PROD")
+  #endpoint <- get_environment_var("ENDPOINT_PROD")
+  #token <- get_environment_var("TOKEN_PROD")
+  endpoint <- get_environment_var("FHPREDICT_RADOLAN_API_URL_PROD")
+  token <- get_environment_var("FHPREDICT_RADOLAN_API_TOKEN_PROD")
 
   request <- sprintf(
     "%s?from=%s&to=%s&time=%s",

@@ -23,13 +23,15 @@ remotes::install_github("KWB-R/fhpredict")
 The function `get_radolan_urls_bucket()` requires two environment variables to 
 be set:
 
-* `ENDPOINT_PROD`: Endpoint to the service that returns URLs to Radolan files, 
-* `TOKEN_PROD`: token that is required to access the endpoint. 
+* `FHPREDICT_RADOLAN_API_URL_PROD`: Endpoint to the service that returns URLs to
+Radolan files, 
+* `FHPREDICT_RADOLAN_API_TOKEN_PROD`: token that is required to access the 
+endpoint. 
 
 All functions that make requests to the Postgres API require the following
 environment variables to be set:
 
-* `API_URL`
+* `FHPREDICT_PG_API_URL`
 * `AUTH0_REQ_URL`
 * `AUTH0_CLIENT_ID` 
 * `AUTH0_CLIENT_SECRET`
