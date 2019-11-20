@@ -54,7 +54,15 @@ get_radolan_urls_bucket <- function(
 
   response <- httr::GET(request, httr::add_headers("x-api-key" = token))
 
-  urls <- sapply(httr::content(response, "parsed")$files, "[[", "url")
+  content <- httr::content(response, "parsed")
+
+  if (is.null(content$files)) {
+    clean_stop(sprintf(
+      "Could not get URLs to Radolan files. Message: '%s'", content$message
+    ))
+  }
+
+  urls <- sapply(content$files, "[[", "url")
 
   if (length(urls) == 0) {
     return(character())
