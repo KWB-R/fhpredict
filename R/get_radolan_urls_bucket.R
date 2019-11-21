@@ -41,8 +41,10 @@ get_radolan_urls_bucket <- function(
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
-  endpoint <- get_environment_var("ENDPOINT_PROD")
-  token <- get_environment_var("TOKEN_PROD")
+  #endpoint <- get_environment_var("ENDPOINT_PROD")
+  #token <- get_environment_var("TOKEN_PROD")
+  endpoint <- get_environment_var("FHPREDICT_RADOLAN_API_URL_PROD")
+  token <- get_environment_var("FHPREDICT_RADOLAN_API_TOKEN_PROD")
 
   request <- sprintf(
     "%s?from=%s&to=%s&time=%s",
@@ -54,7 +56,15 @@ get_radolan_urls_bucket <- function(
 
   response <- httr::GET(request, httr::add_headers("x-api-key" = token))
 
-  urls <- sapply(httr::content(response, "parsed")$files, "[[", "url")
+  content <- httr::content(response, "parsed")
+
+  if (is.null(content$files)) {
+    clean_stop(sprintf(
+      "Could not get URLs to Radolan files. Message: '%s'", content$message
+    ))
+  }
+
+  urls <- sapply(content$files, "[[", "url")
 
   if (length(urls) == 0) {
     return(character())

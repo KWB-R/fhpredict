@@ -120,7 +120,8 @@ postgres_request <- function(
 # path_to_api_url --------------------------------------------------------------
 path_to_api_url <- function(path = "")
 {
-  paste0(assert_final_slash(get_environment_var("API_URL")), path)
+  #paste0(assert_final_slash(get_environment_var("API_URL")), path)
+  paste0(assert_final_slash(get_environment_var("FHPREDICT_PG_API_URL")), path)
 }
 
 # get_httr_config_with_token ---------------------------------------------------
