@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get Timeseries Data from the Postgres Database Via API — api_get_timeseries • fhpredict</title>
+<title>Wait a Given Number of Seconds — sleep • fhpredict</title>
 
 
 <!-- jquery -->
@@ -41,23 +41,8 @@
 
 
 
-<meta property="og:title" content="Get Timeseries Data from the Postgres Database Via API — api_get_timeseries" />
-<meta property="og:description" content="This function calls postgres_get to get data from the endpoint
-given by path and calls fhpredict:::flatten_recursive_list to
-convert the list structure into a data frame. The time columns &quot;createdAt&quot;
-and &quot;updatedAt&quot; are converted from a text timestamp given in ISO 8601 format
-(e.g. &quot;2019-10-22T23:38:29.003Z&quot;) to POSIXct objects in time zone
-&quot;Europe/Berlin&quot;. A new POSIXct column dateTime is created from the
-original text columns date and dateTime as they are returned by
-the API:
-(original) date column: date and time information as text,
-  e.g. &quot;2019-09-21T00:00:00.000Z&quot;
-(original) dateTime column: only time information as text,
-  e.g. &quot;10:50:00&quot;
-(new) dateTime column: date and time as POSIXct in time zone
-  &quot;Europe/Berlin&quot;
-
-" />
+<meta property="og:title" content="Wait a Given Number of Seconds — sleep" />
+<meta property="og:description" content="Wait a Given Number of Seconds" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -147,66 +132,36 @@ the API:
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get Timeseries Data from the Postgres Database Via API</h1>
-    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/api_get_timeseries.R'><code>R/api_get_timeseries.R</code></a></small>
-    <div class="hidden name"><code>api_get_timeseries.Rd</code></div>
+    <h1>Wait a Given Number of Seconds</h1>
+    <small class="dont-index">Source: <a href='https://github.com/KWB-R/fhpredict/blob/master/R/sleep.R'><code>R/sleep.R</code></a></small>
+    <div class="hidden name"><code>sleep.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function calls <code><a href='postgres_get.html'>postgres_get</a></code> to get data from the endpoint
-given by <code>path</code> and calls <code>fhpredict:::flatten_recursive_list</code> to
-convert the list structure into a data frame. The time columns "createdAt"
-and "updatedAt" are converted from a text timestamp given in ISO 8601 format
-(e.g. "2019-10-22T23:38:29.003Z") to POSIXct objects in time zone
-"Europe/Berlin". A new POSIXct column <code>dateTime</code> is created from the
-original text columns <code>date</code> and <code>dateTime</code> as they are returned by
-the API:</p><ul>
-<li><p><code>(original) date</code> column: date and time information as text,
-  e.g. "2019-09-21T00:00:00.000Z"</p></li>
-<li><p><code>(original) dateTime</code> column: only time information as text,
-  e.g. "10:50:00"</p></li>
-<li><p><code>(new) dateTime</code> column: date and time as POSIXct in time zone
-  "Europe/Berlin"</p></li>
-</ul>
-
+    <p>Wait a Given Number of Seconds</p>
     </div>
 
-    <pre class="usage"><span class='fu'>api_get_timeseries</span>(<span class='no'>path</span>, <span class='kw'>subject</span> <span class='kw'>=</span> <span class='st'>"timeseries"</span>, <span class='kw'>sort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>sleep</span>(<span class='no'>seconds</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>path</th>
-      <td><p>(relative) path to API endpoint</p></td>
-    </tr>
-    <tr>
-      <th>subject</th>
-      <td><p>name of data subject, to be used in messages</p></td>
-    </tr>
-    <tr>
-      <th>sort</th>
-      <td><p>if <code>TRUE</code> (the default), the returned data frame will be
-sorted by the "dateTime" column</p></td>
-    </tr>
-    <tr>
-      <th>token</th>
-      <td><p>passed to <code>fhpredict:::postgres_request</code></p></td>
-    </tr>
-    <tr>
-      <th>type</th>
-      <td><p>optional. If given, columns are removed and reordered using
-<code>fhpredict:::remove_and_reorder_columns()</code></p></td>
+      <th>seconds</th>
+      <td><p>time to wait, in seconds</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>list with elements <code>data</code>, <code>success</code>, <code>message</code></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
     </ul>
 
   </div>
