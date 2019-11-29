@@ -1,3 +1,13 @@
+# append_id_if_given -----------------------------------------------------------
+append_id_if_given <- function(path, id = -1L)
+{
+  if (id == -1L) {
+    return(path)
+  }
+
+  paste0(path, "/", id)
+}
+
 # path_bathingspot -------------------------------------------------------------
 
 #' Path to Bathing Spot API endpoint
@@ -28,22 +38,18 @@ path_bathingspot <- function(
   )
 }
 
+# path_discharges --------------------------------------------------------------
+path_discharges <- function(user_id, spot_id, discharge_id = -1L)
+{
+  path_general("discharges", user_id, spot_id, discharge_id)
+}
+
 # path_general -----------------------------------------------------------------
 path_general <- function(type, user_id, spot_id, id)
 {
   path <- paste0(path_bathingspot(user_id, spot_id), "/", type)
 
-  if (id == -1L) {
-    return(path)
-  }
-
-  paste0(path, "/", id)
-}
-
-# path_discharges --------------------------------------------------------------
-path_discharges <- function(user_id, spot_id, discharge_id = -1L)
-{
-  path_general("discharges", user_id, spot_id, discharge_id)
+  append_id_if_given(path, id)
 }
 
 # path_generics ----------------------------------------------------------------
@@ -55,13 +61,7 @@ path_generics <- function(user_id, spot_id, generic_id = -1L)
 # path_generic_measurements ----------------------------------------------------
 path_generic_measurements <- function(user_id, spot_id, generic_id, id = -1L)
 {
-  path <- paste0(path_generics(user_id, spot_id, generic_id), "/measurements")
-
-  if (id == -1L) {
-    return(path)
-  }
-
-  paste0(path, "/", id)
+  path_sub_measurements(path_generics, user_id, spot_id, generic_id, id)
 }
 
 # path_irradiances -------------------------------------------------------------
@@ -82,6 +82,18 @@ path_models <- function(user_id, spot_id, model_id = -1L)
   path_general("models", user_id, spot_id, model_id)
 }
 
+# path_plants ------------------------------------------------------------------
+path_plants <- function(user_id, spot_id, plant_id = -1L)
+{
+  path_general("purificationPlants", user_id, spot_id, plant_id)
+}
+
+# path_plant_measurements ------------------------------------------------------
+path_plant_measurements <- function(user_id, spot_id, plant_id, id = -1L)
+{
+  path_sub_measurements(path_plants, user_id, spot_id, plant_id, id)
+}
+
 # path_predictions -------------------------------------------------------------
 path_predictions <- function(user_id, spot_id, prediction_id = -1L)
 {
@@ -92,4 +104,14 @@ path_predictions <- function(user_id, spot_id, prediction_id = -1L)
 path_rains <- function(user_id, spot_id, rain_id = -1L)
 {
   path_general("rains", user_id, spot_id, rain_id)
+}
+
+# path_sub_measurements --------------------------------------------------------
+path_sub_measurements <- function(
+  path_function, user_id, spot_id, series_id, id = -1L
+)
+{
+  path <- paste0(path_function(user_id, spot_id, series_id), "/measurements")
+
+  append_id_if_given(path, id)
 }
