@@ -2,11 +2,11 @@
 % Please edit documentation in R/get_radolan_urls_for_measurements.R
 \name{get_unique_measurement_dates}
 \alias{get_unique_measurement_dates}
-\title{Sorted Unique Dates of Measurments}
+\title{Sorted Unique Dates of Measurements}
 \usage{
 get_unique_measurement_dates(user_id, spot_id)
 }
 \description{
-Sorted Unique Dates of Measurments
+Sorted Unique Dates of Measurements
 }
 \keyword{internal}
