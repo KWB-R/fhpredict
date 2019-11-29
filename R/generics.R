@@ -44,3 +44,29 @@ api_add_generic_measurements <- function(user_id, spot_id, generic_id, data)
   path <- path_generic_measurements(user_id, spot_id, generic_id)
   add_timeseries_to_database(path, data)
 }
+
+# api_get_generic_measurements -------------------------------------------------
+api_get_generic_measurements <- function(user_id, spot_id, generic_id)
+{
+  path <- path_generic_measurements(user_id, spot_id, generic_id)
+
+  data <- api_get_timeseries(path, subject = "generic measurements")
+
+  remove_and_reorder_columns(data, "generic_measurements")
+}
+
+# api_delete_generic_measurements ----------------------------------------------
+api_delete_generic_measurements <- function(
+  user_id, spot_id, generic_id, ids = NULL, ...
+)
+{
+  api_delete_timeseries(
+    user_id,
+    spot_id,
+    series_id = generic_id,
+    ids = ids,
+    path_function = path_generic_measurements,
+    subject = "generic measurements",
+    ...
+  )
+}
