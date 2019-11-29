@@ -28,8 +28,19 @@ if (FALSE)
 # Test prediction --------------------------------------------------------------
 if (FALSE)
 {
-  user_id <- 3
-  spot_id <- 42
+  user_ids <- fhpredict::api_get_users()$id
+
+  user_spots <- lapply(user_ids, function(id) try(
+    fhpredict::api_get_bathingspot(id)
+  ))
+
+  user_ids[! sapply(user_spots, inherits, "try-error")]
+
+  user_id <- 9
+
+  spot_ids <- sort(user_spots[[which(user_ids == user_id)]]$id)
+
+  spot_id <- 1
 
   date_range <- as.Date(c("2019-10-01", "2019-10-15"))
   dates <- seq(date_range[1], date_range[2], by = 1)
