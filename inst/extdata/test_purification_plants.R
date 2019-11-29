@@ -11,7 +11,7 @@ spot_id <- 1
 
 fhpredict:::api_get_plant(user_id, spot_id)
 
-plant_id <- fhpredict:::api_add_plant(user_id, spot_id, "my plant")
+plant_id <- fhpredict:::api_add_plant(user_id, spot_id, "my plant 2")
 
 data <- data.frame(dateTime = "14:15:16", date = "2019-11-30", value = 234)
 
