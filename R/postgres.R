@@ -118,10 +118,11 @@ postgres_request <- function(
 }
 
 # path_to_api_url --------------------------------------------------------------
+#' @importFrom kwb.utils assertFinalSlash
 path_to_api_url <- function(path = "")
 {
-  #paste0(assert_final_slash(get_environment_var("API_URL")), path)
-  paste0(assert_final_slash(get_environment_var("FHPREDICT_PG_API_URL")), path)
+  base_url <- get_environment_var("FHPREDICT_PG_API_URL")
+  paste0(kwb.utils::assertFinalSlash(base_url), path)
 }
 
 # get_httr_config_with_token ---------------------------------------------------

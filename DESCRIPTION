@@ -40,7 +40,7 @@ Imports:
     jsonlite (>= 1.6),
     kwb.dwd (>= 0.1.0),
     kwb.flusshygiene (>= 0.3.0),
-    kwb.utils (>= 0.4.2),
+    kwb.utils (>= 0.5.0),
     lmtest (>= 0.9-37),
     lubridate (>= 1.7.4),
     magrittr (>= 1.5),

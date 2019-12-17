@@ -14,12 +14,6 @@ all_elements_are_named <- function(x)
   length(names(x)) == length(x) && all(nzchar(names(x)))
 }
 
-# assert_final_slash -----------------------------------------------------------
-assert_final_slash <- function(x)
-{
-  paste0(gsub("/+$", "", x), "/")
-}
-
 # clean_stop -------------------------------------------------------------------
 clean_stop <- function(...)
 {
