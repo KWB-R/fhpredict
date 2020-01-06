@@ -20,6 +20,9 @@ build_and_validate_model <- function(
     dbg = dbg
   )
 
+  # Remove rows containing NA in any column
+  model_data <- structure(stats::na.omit(model_data), na.action = NULL)
+
   # Step through, forward and backward selection
   models <- stepwise(kwb.utils::removeColumns(model_data, "datum"))
 

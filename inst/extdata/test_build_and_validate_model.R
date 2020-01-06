@@ -1,11 +1,17 @@
 # Test build_and_validate_model() ----------------------------------------------
 if (FALSE)
 {
-  user_id <- 3
-  spot_id <- 50
+  # Show available users
+  fhpredict::api_get_users()
+
+  # Select a user (by its ID)
+  user_id <- 9
 
   # Show available bathing spot IDs
   fhpredict::api_get_bathingspot(user_id)$id
+
+  # Select a bathing spot (by its ID)
+  spot_id <- 41
 
   # Get data in the format that is required by build_and_validate_model()
   spot_data <- fhpredict::provide_input_data(user_id, spot_id)
