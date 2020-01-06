@@ -38,7 +38,7 @@ get_data_summary <- function(user_id, spot_id)
   ))
 
   # Look for purification plant measurements and generic inputs
-  prefixes <- c(plant = "purification_plant", generic = "gneric_input")
+  prefixes <- c(plant = "purification_plant", generic = "generic_input")
 
   for (type in names(prefixes)) {
 
