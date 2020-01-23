@@ -1,3 +1,15 @@
+# fhpredict 0.9.1 (2019-11-21)
+
+* Improve error handling when getting and testing a token
+* Stop if Radolan URLs could not be retrieved
+* Change names of Environment variables closing #21
+
+# fhpredict 0.9.0 (2019-11-19)
+
+* add plot functions
+* add sleep()
+* use R package aws.s3 to download Radolan files
+
 # fhpredict 0.7.0
 
 * consider global irradiances

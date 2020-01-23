@@ -564,8 +564,8 @@ fhpredict:::api_add_irradiances(user_id, spot_id, data = timeseries)
 The following function reads all timeseries that are stored for a bathing spot
 and returns the range of dates covered as well as the number `n`of data points.
 
-```{r eval = TRUE}
-user_id <- 3
+```{r}
+user_id <- 9
 spots <- fhpredict::api_get_bathingspot(user_id)
 spot_ids <- setNames(spots$id, spots$name)
 summaries <- lapply(spot_ids, fhpredict::get_data_summary, user_id = user_id)

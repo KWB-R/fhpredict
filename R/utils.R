@@ -47,7 +47,7 @@ create_result <- function(
   data = NULL, success = TRUE, message = "Everything ok"
 )
 {
-  list(data = data, sucess = success, message = message)
+  list(data = data, success = success, message = message)
 }
 
 # crop_or_mask -----------------------------------------------------------------
