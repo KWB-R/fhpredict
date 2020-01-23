@@ -49,7 +49,7 @@ plot_model_calibration <- function(tests, ref_model = "model_01")
     - .data$used
   )
 
-  colour_values <- c("falsch" = "red3", "richtig" = "steelblue")
+  colour_values <- c("falsch" = "red2", "richtig" = "steelblue")
 
   aesthetics <- ggplot2::aes(
     x = .data$model,
@@ -75,3 +75,4 @@ plot_model_calibration <- function(tests, ref_model = "model_01")
     ggplot2::theme_bw(base_size = 16) +
     ggplot2::ylab(expression("Bestimmtheitsma\u00df R"^2))
 }
+
