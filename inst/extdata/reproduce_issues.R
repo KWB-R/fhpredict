@@ -23,3 +23,13 @@ file <- system.file("extdata/testdata", name, package = "fhpredict")
 spot_data <- kwb.utils::loadObject(file, "spot_data")
 set.seed(1)
 result <- fhpredict:::build_and_validate_model(spot_data)
+
+# Code to reproduce https://github.com/KWB-R/fhpredict/issues/53
+#
+# Could not create a valid model!
+
+name <- "spot-data_user-9_spot-31_2020-02-04.RData"
+file <- system.file("extdata/testdata", name, package = "fhpredict")
+spot_data <- kwb.utils::loadObject(file, "spot_data")
+set.seed(1)
+result <- fhpredict:::build_and_validate_model(spot_data)

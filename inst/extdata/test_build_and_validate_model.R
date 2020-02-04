@@ -11,7 +11,9 @@ if (FALSE)
   fhpredict::api_get_bathingspot(user_id)$id
 
   # Select a bathing spot (by its ID)
-  spot_id <- 26 #41
+  spot_id <- 31 #41
+
+  #fhpredict::provide_rain_data_for_bathing_spot(user_id, spot_id)
 
   # Get data in the format that is required by build_and_validate_model()
   spot_data <- fhpredict::provide_input_data(user_id, spot_id)
@@ -21,7 +23,7 @@ if (FALSE)
     user_id, spot_id, format(Sys.Date(), "%Y-%m-%d")
   )
 
-  save(spot_data, file = file.path("./inst/extdata/testdata", name))
+  #save(spot_data, file = file.path("./inst/extdata/testdata", name))
 
   set.seed(1)
 
