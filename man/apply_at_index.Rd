@@ -25,9 +25,9 @@ Apply a Function to List Elements at Given Index
 }
 \examples{
 (x <- list(a = 1, b = 2, c = 3))
-apply_at_index(x, i = -1, fun = exp)
+fhpredict:::apply_at_index(x, i = -1, fun = exp)
 
 (x <- data.frame(a = -(1:2), b = -(2:3), c = c("a", "b")))
-apply_at_index(x, i = -3, fun = abs)
+fhpredict:::apply_at_index(x, i = -3, fun = abs)
 
 }
