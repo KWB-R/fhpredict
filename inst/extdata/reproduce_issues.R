@@ -11,6 +11,8 @@ spot_data <- kwb.utils::loadObject(file, "spot_data")
 set.seed(1)
 result <- fhpredict:::build_and_validate_model(spot_data)
 
+spot_data$hygiene_spot41$e.coli <- spot_data$hygiene_spot41$e.coli + rnorm(nrow(spot_data$hygiene_spot41), 0, 5)
+
 # Code to reproduce https://github.com/KWB-R/fhpredict/issues/52
 #
 # Fehler in lmtest::bptest(model) :
