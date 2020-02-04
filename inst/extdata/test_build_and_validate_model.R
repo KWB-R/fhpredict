@@ -4,7 +4,7 @@ if (FALSE)
   # Show available users
   fhpredict::api_get_users()
 
-  # Select a user (by its ID)
+  # Select a user (by their ID)
   user_id <- 9
 
   # Show available bathing spot IDs
