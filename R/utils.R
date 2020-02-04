@@ -14,6 +14,40 @@ all_elements_are_named <- function(x)
   length(names(x)) == length(x) && all(nzchar(names(x)))
 }
 
+# apply_at_index ---------------------------------------------------------------
+
+#' Apply a Function to List Elements at Given Index
+#'
+#' @param x a list or a data frame (which is in fact a list)
+#' @param i vector of indices of elements in \code{x} to which the function
+#'   \code{fun} is to be applied
+#' @param fun function to be applied
+#' @param \dots further arguments passed to \code{fun}
+#' @param prefix optional. String used to prefix the names of the elements to
+#'   which the function was applied. By default the name of the function
+#'   \code{fun} is used as a prefix
+#' @examples
+#' (x <- list(a = 1, b = 2, c = 3))
+#' apply_at_index(x, i = -1, fun = exp)
+#'
+#' (x <- data.frame(a = -(1:2), b = -(2:3), c = c("a", "b")))
+#' apply_at_index(x, i = -3, fun = abs)
+#'
+apply_at_index <- function(x, i, fun, ..., prefix = NULL)
+{
+  stopifnot(is.list(x))
+
+  if (is.null(prefix)) {
+    prefix <- paste0(deparse(substitute(fun)), "_")
+  }
+
+  x[i] <- lapply(x[i], fun, ...)
+
+  names(x)[i] <- paste0(prefix, names(x)[i])
+
+  x
+}
+
 # clean_stop -------------------------------------------------------------------
 clean_stop <- function(...)
 {
@@ -240,4 +274,10 @@ reset_time <- function(x)
   stopifnot(inherits(x, "POSIXct"))
 
   as.POSIXct(substr(as.character(x), 1, 10), tz = attr(x, "tzone"))
+}
+
+# safe_log10 -------------------------------------------------------------------
+safe_log10 <- function(x, offset = 1)
+{
+  log10(x + offset)
 }
