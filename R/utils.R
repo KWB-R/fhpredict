@@ -221,6 +221,22 @@ iso_timestamp_to_local_posix <- function(x, tzone = "Europe/Berlin")
   structure(times, tzone = tzone)
 }
 
+# merge_data_frames ------------------------------------------------------------
+merge_data_frames <- function(x, by, all = FALSE)
+{
+  stopifnot(is.list(x))
+  stopifnot(length(x) > 0)
+  stopifnot(all(sapply(x, is.data.frame)))
+
+  result <- x[[1]]
+
+  for (df in x[-1]) {
+    result <- merge(result, df, by = "datum", all = all)
+  }
+
+  result
+}
+
 # new_line_collapsed -----------------------------------------------------------
 new_line_collapsed <- function(x)
 {
