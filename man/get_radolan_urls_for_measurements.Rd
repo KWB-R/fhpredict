@@ -6,7 +6,7 @@
 \usage{
 get_radolan_urls_for_measurements(user_id, spot_id,
   sampling_time = "1050", date_range = NULL, all_in_range = FALSE,
-  n_days_before = 5)
+  n_days_before = 5, summer_filter = FALSE)
 }
 \arguments{
 \item{user_id}{user id}
@@ -29,6 +29,9 @@ day of measurement, are loaded.}
 
 \item{n_days_before}{number of days before a measurement for which to load
 rain data}
+
+\item{summer_filter}{if \code{TRUE}, only dates within the bathing season
+are kept. Default: \code{FALSE}}
 }
 \value{
 named vector of character containing the URLs to the Radolan files

@@ -1,5 +1,7 @@
 # prepare_river_data -----------------------------------------------------------
-prepare_river_data <- function(river_list, column_hygiene = "e.coli", sd = 2)
+prepare_river_data <- function(
+  river_list, column_hygiene = "e.coli", sd = 2, summer_filter = FALSE
+)
 {
   stopifnot(is_river_data_element(river_list))
 
@@ -16,7 +18,9 @@ prepare_river_data <- function(river_list, column_hygiene = "e.coli", sd = 2)
 
     if (grepl("^hygiene", element)) {
 
-      df <- filter_for_months(df, 5:9)
+      if (summer_filter) {
+        df <- filter_for_months(df, 5:9)
+      }
 
       # Get vector of E. coli concentrations
       conc <- kwb.utils::selectColumns(df, column_hygiene)
@@ -36,7 +40,11 @@ prepare_river_data <- function(river_list, column_hygiene = "e.coli", sd = 2)
         df[is_rain] <- lapply(df[is_rain], function(x) log(x + 1))
       }
 
-      df <- add_meancol(filter_for_months(df, 4:9))
+      if (summer_filter) {
+        df <- filter_for_months(df, 4:9)
+      }
+
+      df <- add_meancol(df)
 
     } else {
 
