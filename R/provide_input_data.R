@@ -30,6 +30,7 @@ provide_input_data <- function(user_id, spot_id)
     ))
   }
 
+  # Create "hygiene" data frame
   result[[result_element("hygiene")]] <- data.frame(
     datum = reset_time(iso_timestamp_to_local_posix(get(measurements, "date"))),
     e.coli = get(measurements, "conc_ec")
