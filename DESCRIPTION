@@ -30,6 +30,7 @@ Description: This R package provides all functions that are
 License: MIT + file LICENSE
 URL: https://github.com/KWB-R/fhpredict
 BugReports: https://github.com/KWB-R/fhpredict/issues
+Depends: R (>= 3.5.0)
 Imports: 
     aws.s3 (>= 0.3.12),
     caret (>= 6.0-84),
