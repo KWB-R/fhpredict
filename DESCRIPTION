@@ -61,7 +61,8 @@ Suggests:
 Remotes: 
     github::kwb-r/kwb.dwd,
     github::kwb-r/kwb.flusshygiene,
-    github::kwb-r/kwb.utils
+    github::kwb-r/kwb.utils,
+    github::cloudyr/aws.s3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
