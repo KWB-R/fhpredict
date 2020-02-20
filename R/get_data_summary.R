@@ -37,5 +37,23 @@ get_data_summary <- function(user_id, spot_id)
     predictions = get_date_range(predictions$dateTime)
   ))
 
+  # Look for purification plant measurements and generic inputs
+  prefixes <- c(plant = "purification_plant", generic = "generic_input")
+
+  for (type in names(prefixes)) {
+
+    #type <- "plant"
+    measurements <- collect_series_measurements(
+      type = type, prefix = prefixes[type], user_id, spot_id
+    )
+
+    if (length(measurements)) {
+
+      ranges <- c(ranges, lapply(measurements, function(df) {
+        get_date_range(df$dateTime)
+      }))
+    }
+  }
+
   do.call(rbind, ranges)
 }

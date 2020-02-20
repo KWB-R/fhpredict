@@ -14,10 +14,38 @@ all_elements_are_named <- function(x)
   length(names(x)) == length(x) && all(nzchar(names(x)))
 }
 
-# assert_final_slash -----------------------------------------------------------
-assert_final_slash <- function(x)
+# apply_at_index ---------------------------------------------------------------
+
+#' Apply a Function to List Elements at Given Index
+#'
+#' @param x a list or a data frame (which is in fact a list)
+#' @param i vector of indices of elements in \code{x} to which the function
+#'   \code{fun} is to be applied
+#' @param fun function to be applied
+#' @param \dots further arguments passed to \code{fun}
+#' @param prefix optional. String used to prefix the names of the elements to
+#'   which the function was applied. By default the name of the function
+#'   \code{fun} is used as a prefix
+#' @examples
+#' (x <- list(a = 1, b = 2, c = 3))
+#' fhpredict:::apply_at_index(x, i = -1, fun = exp)
+#'
+#' (x <- data.frame(a = -(1:2), b = -(2:3), c = c("a", "b")))
+#' fhpredict:::apply_at_index(x, i = -3, fun = abs)
+#'
+apply_at_index <- function(x, i, fun, ..., prefix = NULL)
 {
-  paste0(gsub("/+$", "", x), "/")
+  stopifnot(is.list(x))
+
+  if (is.null(prefix)) {
+    prefix <- paste0(deparse(substitute(fun)), "_")
+  }
+
+  x[i] <- lapply(x[i], fun, ...)
+
+  names(x)[i] <- paste0(prefix, names(x)[i])
+
+  x
 }
 
 # clean_stop -------------------------------------------------------------------
@@ -193,6 +221,22 @@ iso_timestamp_to_local_posix <- function(x, tzone = "Europe/Berlin")
   structure(times, tzone = tzone)
 }
 
+# merge_data_frames ------------------------------------------------------------
+merge_data_frames <- function(x, by, all = FALSE)
+{
+  stopifnot(is.list(x))
+  stopifnot(length(x) > 0)
+  stopifnot(all(sapply(x, is.data.frame)))
+
+  result <- x[[1]]
+
+  for (df in x[-1]) {
+    result <- merge(result, df, by = "datum", all = all)
+  }
+
+  result
+}
+
 # new_line_collapsed -----------------------------------------------------------
 new_line_collapsed <- function(x)
 {
@@ -246,4 +290,10 @@ reset_time <- function(x)
   stopifnot(inherits(x, "POSIXct"))
 
   as.POSIXct(substr(as.character(x), 1, 10), tz = attr(x, "tzone"))
+}
+
+# safe_log10 -------------------------------------------------------------------
+safe_log10 <- function(x, offset = 1)
+{
+  log10(x + offset)
 }

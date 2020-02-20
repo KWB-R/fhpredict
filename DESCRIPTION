@@ -1,6 +1,6 @@
 Package: fhpredict
 Title: R Package for the Project Flusshygiene
-Version: 0.9.1
+Version: 0.10.0
 Authors@R:
     c(person(given = "Wolfgang",
              family = "Seis",
@@ -30,6 +30,7 @@ Description: This R package provides all functions that are
 License: MIT + file LICENSE
 URL: https://github.com/KWB-R/fhpredict
 BugReports: https://github.com/KWB-R/fhpredict/issues
+Depends: R (>= 3.5.0)
 Imports: 
     aws.s3 (>= 0.3.12),
     caret (>= 6.0-84),
@@ -40,7 +41,7 @@ Imports:
     jsonlite (>= 1.6),
     kwb.dwd (>= 0.1.0),
     kwb.flusshygiene (>= 0.3.0),
-    kwb.utils (>= 0.4.2),
+    kwb.utils (>= 0.5.0),
     lmtest (>= 0.9-37),
     lubridate (>= 1.7.4),
     magrittr (>= 1.5),
@@ -60,7 +61,8 @@ Suggests:
 Remotes: 
     github::kwb-r/kwb.dwd,
     github::kwb-r/kwb.flusshygiene,
-    github::kwb-r/kwb.utils
+    github::kwb-r/kwb.utils,
+    github::cloudyr/aws.s3@v0.3.12
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1

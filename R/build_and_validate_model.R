@@ -10,15 +10,18 @@ build_and_validate_model <- function(
   #prefix="";n_folds=5;dbg=TRUE
 
   # Check the arguments and stop if anything is not ok
-  check_args_build_and_validate(spot_data)
+  check_spot_data(spot_data)
 
-  # Prepare all data frames (select summer season, log-transform rain, add mean,
-  # ...) add merge them to one big data frame
+  # Prepare all data frames (select summer season, apply jitter to hygiene data,
+  # log-transform rain, add mean, ...) and merge them to one big data frame
   model_data <- provide_data_for_lm(
     riverdata = prepare_river_data(spot_data),
     pattern = "(i_mean|q_mean|r_mean|ka_mean)",
     dbg = dbg
   )
+
+  # Remove rows containing NA in any column
+  model_data <- structure(stats::na.omit(model_data), na.action = NULL)
 
   # Step through, forward and backward selection
   models <- stepwise(kwb.utils::removeColumns(model_data, "datum"))
@@ -68,8 +71,8 @@ build_and_validate_model <- function(
   )
 }
 
-# check_args_build_and_validate ------------------------------------------------
-check_args_build_and_validate <- function(spot_data)
+# check_spot_data --------------------------------------------------------------
+check_spot_data <- function(spot_data)
 {
   if (! all(sapply(spot_data, is.data.frame))) {
     clean_stop(get_text("spot_data_expected_type"))

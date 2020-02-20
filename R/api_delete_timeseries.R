@@ -1,7 +1,7 @@
 # api_delete_timeseries --------------------------------------------------------
 api_delete_timeseries <- function(
   user_id, spot_id, path_function, ids = NULL, subject = "timeseries",
-  dbg = TRUE
+  series_id = NULL, dbg = TRUE
 )
 {
   # Request a token to be reused
@@ -10,7 +10,11 @@ api_delete_timeseries <- function(
   # Get all available ids if no ids are given
   if (is.null(ids)) {
 
-    path <- path_function(user_id, spot_id)
+    path <- if (is.null(series_id)) {
+      path_function(user_id, spot_id)
+    } else {
+      path_function(user_id, spot_id, series_id)
+    }
 
     df <- api_get_timeseries(path, subject, token = token)
 
@@ -33,7 +37,11 @@ api_delete_timeseries <- function(
 
       for (id in ids) {
 
-        path <- path_function(user_id, spot_id, id)
+        path <- if (is.null(series_id)) {
+          path_function(user_id, spot_id, id)
+        } else {
+          path_function(user_id, spot_id, series_id, id)
+        }
 
         safe_postgres_delete(path, token = token)
       }

@@ -1,5 +1,5 @@
 # prepare_river_data -----------------------------------------------------------
-prepare_river_data <- function(river_list)
+prepare_river_data <- function(river_list, column_hygiene = "e.coli", sd = 2)
 {
   stopifnot(is_river_data_element(river_list))
 
@@ -17,6 +17,12 @@ prepare_river_data <- function(river_list)
     if (grepl("^hygiene", element)) {
 
       df <- filter_for_months(df, 5:9)
+
+      # Get vector of E. coli concentrations
+      conc <- kwb.utils::selectColumns(df, column_hygiene)
+
+      # Apply a random noise to the E. coli concentrations
+      df[[column_hygiene]] <- conc + round(stats::rnorm(length(conc), 0, sd))
 
     } else if (grepl("^(q|ka|i|r)_", element)) {
 

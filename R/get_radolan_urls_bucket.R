@@ -58,10 +58,14 @@ get_radolan_urls_bucket <- function(
 
   content <- httr::content(response, "parsed")
 
-  if (is.null(content$files)) {
-    clean_stop(sprintf(
-      "Could not get URLs to Radolan files. Message: '%s'", content$message
-    ))
+  if (httr::http_error(response) || is.null(content$files)) {
+
+    clean_stop(paste(collapse = "\n", c(
+      "Could not get URLs to Radolan files.",
+      httr::http_status(response)$message,
+      content$error$message,
+      content$message
+    )))
   }
 
   urls <- sapply(content$files, "[[", "url")

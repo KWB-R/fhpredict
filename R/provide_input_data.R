@@ -30,6 +30,7 @@ provide_input_data <- function(user_id, spot_id)
     ))
   }
 
+  # Create "hygiene" data frame
   result[[result_element("hygiene")]] <- data.frame(
     datum = reset_time(iso_timestamp_to_local_posix(get(measurements, "date"))),
     e.coli = get(measurements, "conc_ec")
@@ -71,8 +72,46 @@ provide_input_data <- function(user_id, spot_id)
     )
   }
 
+  # Look for purification plant measurements
+  plant_measurements <- collect_series_measurements(
+    type = "plant", prefix = "ka", user_id, spot_id
+  )
+
+  # Look for generic input measurements
+  generic_measurements <- collect_series_measurements(
+    type = "generic", prefix = "gen", user_id, spot_id
+  )
+
   # Rename the elements in the result data frame?
 
   # Return the result data structure
   result
+}
+
+# collect_series_measurements --------------------------------------------------
+collect_series_measurements <- function(type, prefix, user_id, spot_id)
+{
+  get_functions <- kwb.utils::selectElements(elements = type, x = list(
+    plant = list(
+      objects = api_get_plant,
+      measurements = api_get_plant_measurements
+    ),
+    generic =list(
+      objects = api_get_generic,
+      measurements = api_get_generic_measurements
+    )
+  ))
+
+  # Look for purification plant measurements
+  series <- (get_functions$objects)(user_id, spot_id)
+
+  if (kwb.utils::defaultIfNULL(nrow(series), 0) > 0) {
+
+    lapply(
+      X = stats::setNames(series$id, sprintf("%s_%d", prefix, series$id)),
+      FUN = get_functions$measurements,
+      user_id = user_id,
+      spot_id = spot_id
+    )
+  }
 }

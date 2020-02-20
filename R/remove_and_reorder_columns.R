@@ -23,6 +23,14 @@ remove_and_reorder_columns <- function(df, type = NULL)
       remove = columns_modtime,
       first = c("id")
     ),
+    generic_measurements = list(
+      remove = columns_modtime,
+      first = c("id")
+    ),
+    plant_measurements = list(
+      remove = columns_modtime,
+      first = c("id")
+    ),
     users = list(
       remove = c("auth0Id", "version", columns_modtime),
       first = c("id", "firstName", "lastName", "role")

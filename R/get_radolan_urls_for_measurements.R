@@ -102,7 +102,7 @@ get_radolan_urls_for_measurements <- function(
 
 # get_unique_measurement_dates -------------------------------------------------
 
-#' Sorted Unique Dates of Measurments
+#' Sorted Unique Dates of Measurements
 #'
 #' @keywords internal
 get_unique_measurement_dates <- function(user_id, spot_id)
