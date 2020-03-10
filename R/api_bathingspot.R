@@ -48,7 +48,8 @@ api_get_bathingspot <- function(
 
   # If we arrive here, there is only one list element
   if (length(data) != 1L) clean_stop(
-    "The bathing spot object does not have a length of one as expected.\n",
+    "The bathing spot object does not have a length of one as expected\n",
+    sprintf("(user_id = %d, spot_id = %d). ", user_id, spot_id),
     "The R structure of the object is:\n",
     structure_as_text(data)
   )
