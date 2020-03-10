@@ -32,7 +32,7 @@ predict_quality <- function(user_id, spot_id, from = NULL, to = NULL)
   newdata <- try({
 
     # Determine the days to be predicted
-    (days_to_predict <- determine_days_to_predict(from, to))
+    (days_to_predict <- determine_days_to_predict(from, to, user_id = user_id))
 
     # Load new data for the dates to predict
     import_new_data(user_id, spot_id, days_to_predict)
