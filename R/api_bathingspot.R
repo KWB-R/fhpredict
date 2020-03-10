@@ -31,7 +31,7 @@ api_get_bathingspot <- function(
   data <- kwb.utils::selectElements(content, "data")
 
   # If there are data for more than one bathing spot, return an overview
-  if (length(data) > 1) {
+  if (length(data) > 1L) {
 
     # Apply the pattern if a pattern is given
     if (nzchar(pattern)) {
@@ -47,9 +47,13 @@ api_get_bathingspot <- function(
   }
 
   # If we arrive here, there is only one list element
-  stopifnot(length(data) == 1)
+  if (length(data) != 1L) clean_stop(
+    "The bathing spot object does not have a length of one as expected.\n",
+    "The R structure of the object is:\n",
+    structure_as_text(data)
+  )
 
-  result <- data[[1]]
+  result <- data[[1L]]
 
   result$area_coordinates <- get_area_coordinates(result)
 

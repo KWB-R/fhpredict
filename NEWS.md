@@ -1,3 +1,7 @@
+# fhpredict 0.10.1 (2020-03-10)
+
+* Fix bug in predict_quality(): pass the actual user ID
+
 # fhpredict 0.9.1 (2019-11-21)
 
 * Improve error handling when getting and testing a token

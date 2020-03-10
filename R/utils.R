@@ -297,3 +297,9 @@ safe_log10 <- function(x, offset = 1)
 {
   log10(x + offset)
 }
+
+# structure_as_text ------------------------------------------------------------
+structure_as_text <- function(x)
+{
+  paste(collapse = "\n", utils::capture.output(utils::str(x)))
+}
