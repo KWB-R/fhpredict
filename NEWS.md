@@ -1,3 +1,7 @@
+# fhpredict 0.11.0 (2020-03-11)
+
+* Use from = "yesterday", to = "tomorrow" as defaults in predict_quality()
+
 # fhpredict 0.10.1 (2020-03-10)
 
 * Fix bug in predict_quality(): pass the actual user ID

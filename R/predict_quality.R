@@ -11,12 +11,14 @@
 #' @param user_id user ID
 #' @param spot_id bathing spot ID
 #' @param from Date object or date string in format yyyy-mm-dd giving the first
-#'   day of the time period to be predicted.
+#'   day of the time period to be predicted. Default: "yesterday"
 #' @param to Date object or date string in format yyyy-mm-dd giving the last day
-#'   of the time period to be predicted.
+#'   of the time period to be predicted. Default: "tomorrrow"
 #' @return list with elements \code{data}, \code{success}, \code{message}
 #' @export
-predict_quality <- function(user_id, spot_id, from = NULL, to = NULL)
+predict_quality <- function(
+  user_id, spot_id, from = Sys.Date() - 1, to = Sys.Date() + 1
+)
 {
   #kwb.utils::assignPackageObjects("fhpredict")
   #user_id=3;spot_id=42;from=NULL;to=NULL

@@ -4,7 +4,8 @@
 \alias{predict_quality}
 \title{Predict Water Quality for Bathing Spot Using Stored Model}
 \usage{
-predict_quality(user_id, spot_id, from = NULL, to = NULL)
+predict_quality(user_id, spot_id, from = Sys.Date() - 1,
+  to = Sys.Date() + 1)
 }
 \arguments{
 \item{user_id}{user ID}
@@ -12,10 +13,10 @@ predict_quality(user_id, spot_id, from = NULL, to = NULL)
 \item{spot_id}{bathing spot ID}
 
 \item{from}{Date object or date string in format yyyy-mm-dd giving the first
-day of the time period to be predicted.}
+day of the time period to be predicted. Default: "yesterday"}
 
 \item{to}{Date object or date string in format yyyy-mm-dd giving the last day
-of the time period to be predicted.}
+of the time period to be predicted. Default: "tomorrrow"}
 }
 \value{
 list with elements \code{data}, \code{success}, \code{message}
