@@ -1,6 +1,6 @@
 Package: fhpredict
 Title: R Package for the Project Flusshygiene
-Version: 0.11.0
+Version: 0.11.0.9000
 Authors@R:
     c(person(given = "Wolfgang",
              family = "Seis",
