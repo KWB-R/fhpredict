@@ -2,6 +2,7 @@
 
 * Do not filter time series' for the summer period
 * Add new (private) function get_model_overview()
+* Add argument "import" to predict_quality() -> allow to skip rain data import
 
 # fhpredict 0.11.1 (2020-03-19)
 
