@@ -1,3 +1,15 @@
+# fhpredict 0.11.1 (2020-03-19)
+
+* Pin versions of KWB packages in remotes section of DESCRIPTION file
+
+# fhpredict 0.11.0 (2020-03-11)
+
+* Use from = "yesterday", to = "tomorrow" as defaults in predict_quality()
+
+# fhpredict 0.10.1 (2020-03-10)
+
+* Fix bug in predict_quality(): pass the actual user ID
+
 # fhpredict 0.9.1 (2019-11-21)
 
 * Improve error handling when getting and testing a token
