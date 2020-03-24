@@ -1,3 +1,8 @@
+# fhpredict 0.12.0 (2020-03-24)
+
+* Do not filter time series' for the summer period
+* Add new (private) function get_model_overview()
+
 # fhpredict 0.11.1 (2020-03-19)
 
 * Pin versions of KWB packages in remotes section of DESCRIPTION file
