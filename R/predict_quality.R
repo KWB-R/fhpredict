@@ -14,10 +14,12 @@
 #'   day of the time period to be predicted. Default: "yesterday"
 #' @param to Date object or date string in format yyyy-mm-dd giving the last day
 #'   of the time period to be predicted. Default: "tomorrrow"
+#' @param import logical telling whether to import new rain data or not.
+#'   Default: \code{TRUE}.
 #' @return list with elements \code{data}, \code{success}, \code{message}
 #' @export
 predict_quality <- function(
-  user_id, spot_id, from = Sys.Date() - 1, to = Sys.Date() + 1
+  user_id, spot_id, from = Sys.Date() - 1, to = Sys.Date() + 1, import = TRUE
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
@@ -37,7 +39,9 @@ predict_quality <- function(
     (days_to_predict <- determine_days_to_predict(from, to, user_id = user_id))
 
     # Load new data for the dates to predict
-    import_new_data(user_id, spot_id, days_to_predict)
+    if (import) {
+      import_new_data(user_id, spot_id, days_to_predict)
+    }
 
     # Collect all data that are available for the given bathing spot
     spot_data <- provide_input_data(user_id, spot_id)
@@ -53,6 +57,11 @@ predict_quality <- function(
     all_dates <- substr(newdata$datum, 1, 10)
 
     to_be_predicted <- all_dates %in% as.character(days_to_predict)
+
+    if (! any(to_be_predicted)) clean_stop(
+      "No data available for these days to be predicted: ",
+      kwb.utils::stringList(as.character(days_to_predict))
+    )
 
     kwb.utils::removeColumns(newdata[to_be_predicted, ], "log_e.coli")
   })

@@ -5,7 +5,7 @@
 \title{Predict Water Quality for Bathing Spot Using Stored Model}
 \usage{
 predict_quality(user_id, spot_id, from = Sys.Date() - 1,
-  to = Sys.Date() + 1)
+  to = Sys.Date() + 1, import = TRUE)
 }
 \arguments{
 \item{user_id}{user ID}
@@ -17,6 +17,9 @@ day of the time period to be predicted. Default: "yesterday"}
 
 \item{to}{Date object or date string in format yyyy-mm-dd giving the last day
 of the time period to be predicted. Default: "tomorrrow"}
+
+\item{import}{logical telling whether to import new rain data or not.
+Default: \code{TRUE}.}
 }
 \value{
 list with elements \code{data}, \code{success}, \code{message}
