@@ -12,8 +12,8 @@ build_and_validate_model <- function(
   # Check the arguments and stop if anything is not ok
   check_spot_data(spot_data)
 
-  # Prepare all data frames (select summer season, apply jitter to hygiene data,
-  # log-transform rain, add mean, ...) and merge them to one big data frame
+  # Prepare all data frames (apply jitter to hygiene data, log-transform rain,
+  # add mean, ...) and merge them to one big data frame
   model_data <- provide_data_for_lm(
     riverdata = prepare_river_data(spot_data),
     pattern = "(i_mean|q_mean|r_mean|ka_mean)",

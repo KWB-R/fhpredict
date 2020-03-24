@@ -21,6 +21,8 @@
 #'   day of measurement, are loaded.
 #' @param n_days_before number of days before a measurement for which to load
 #'   rain data
+#' @param summer_filter if \code{TRUE}, only dates within the bathing season
+#'   are kept. Default: \code{FALSE}
 #' @return named vector of character containing the URLs to the Radolan files
 #'   required for the measurements storted in the database. The names of the
 #'   elements are strings in which the date and time is encoded in the format
@@ -32,7 +34,7 @@
 #' }
 get_radolan_urls_for_measurements <- function(
   user_id, spot_id, sampling_time = "1050", date_range = NULL,
-  all_in_range = FALSE, n_days_before = 5
+  all_in_range = FALSE, n_days_before = 5, summer_filter = FALSE
 )
 {
   # Get the dates for which E. coli measurements are available
@@ -75,7 +77,11 @@ get_radolan_urls_for_measurements <- function(
   }
 
   # Reduce to dates within the bathing season
-  dates <- dates_all[is_in_bathing_season(dates_all)]
+  dates <- if (summer_filter) {
+    dates_all[is_in_bathing_season(dates_all)]
+  } else {
+    dates_all
+  }
 
   if (length(dates) == 0) {
     message(get_text("no_measurement_dates_in_season"))
