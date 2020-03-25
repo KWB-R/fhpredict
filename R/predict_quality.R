@@ -78,15 +78,15 @@ predict_quality <- function(
     percentiles <- finish_prediction(prediction, newdata)
 
     # Delete all predictions
-    api_delete_predictions(user_id, spot_id)
+    # api_delete_predictions(user_id, spot_id)
+    #
+    # # Add predictions to the database
+    # add_timeseries_to_database(
+    #   path = path_predictions(user_id, spot_id),
+    #   data = percentiles
+    # )
 
-    # Add predictions to the database
-    add_timeseries_to_database(
-      path = path_predictions(user_id, spot_id),
-      data = percentiles
-    )
-
-    #api_replace_predictions(user_id, spot_id, percentiles)
+    api_replace_predictions(user_id, spot_id, percentiles)
   })
 
   if (is_error(result)) {
