@@ -137,7 +137,7 @@ determine_days_to_predict <- function(from = NULL, to = NULL)
     return(seq(as.Date(from), as.Date(to), by = 1L))
   }
 
-  fhpredict:::clean_stop(
+  clean_stop(
     "Either 'from' or 'to' must be given to 'determine_days_to_predict'"
   )
 }
