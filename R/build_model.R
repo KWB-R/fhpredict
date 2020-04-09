@@ -61,19 +61,19 @@ build_model <- function(user_id, spot_id, seed = NULL, delete_rain = FALSE)
 
     parameter <- "conc_ec"
 
+    # Provide the data frame containing the results of the statistical tests
+    stat_tests <- kwb.utils::selectElements(result, "stat_tests")
+
     model_id <- api_add_model(
       user_id = user_id,
       spot_id = spot_id,
-      model = model,
+      model = structure(model, stat_tests = stat_tests),
       comment = comment,
       parameter = parameter
     )
 
-    # Provide the data frame containing the results of the statistical tests
-    tests <- kwb.utils::selectElements(result, "stat_tests")
-
     # Create the plots describing the model, with titles and descriptions
-    model_plots <- create_model_plots(tests, model)
+    model_plots <- create_model_plots(stat_tests, model)
 
     # Upload Plots to the database
     upload_model_plots(user_id, spot_id, model_id, model_plots)
