@@ -7,6 +7,7 @@
 * Remove arg "user_id" from determine_days_to_predict() -> do not read 
   prediction period from a special bathing spot "Vorhersagedatum".
 * Avoid date duplicates by calculating daily means within predict_quality()
+* Create only four plots (remove "Modellimplikationen")
 
 # fhpredict 0.12.0 (2020-03-24)
 
