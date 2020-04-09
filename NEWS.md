@@ -1,3 +1,10 @@
+# fhpredict current
+
+* Let predict_quality() not delete all existing predictions before adding the 
+  new predictions. Instead, update predictions that already exist in the 
+  database with PUT and add only those new predictions with POST that are not 
+  yet in the database.
+
 # fhpredict 0.12.0 (2020-03-24)
 
 * Do not filter time series' for the summer period

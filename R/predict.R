@@ -60,25 +60,47 @@ api_replace_predictions <- function(user_id, spot_id, percentiles)
   in_db <- ! is.na(prediction_rows)
 
   # Replace the existing records if there are any
-  for (i in which(in_db)) {
-    #i <- 1L
+  ids_updated <- if (any(in_db)) {
 
-    # ID of corresponding record in the database
-    prediction_id <- get(predictions_db, "id")[prediction_rows[i]]
+    unlist(lapply(which(in_db), function(i) {
+      #i <- 1L
 
-    # Update the record in the database with a PUT request
-    postgres_put(
-      path = path_predictions(user_id, spot_id, prediction_id),
-      body = as.list(percentiles[i, ])
-    )
+      # ID of corresponding record in the database
+      prediction_id <- get(predictions_db, "id")[prediction_rows[i]]
+
+      # Update the record in the database with a PUT request
+      postgres_put(
+        path = path_predictions(user_id, spot_id, prediction_id),
+        body = as.list(percentiles[i, ])
+      )
+
+      prediction_id
+    }))
+
+  } else {
+
+    integer()
   }
 
   # Insert new records if there are any
-  if (any(! in_db)) {
+  ids_added <- if (any(! in_db)) {
 
     # Add predictions to the database
     add_timeseries_to_database(path, data = percentiles[! in_db, ])
+
+  } else {
+
+    integer()
   }
+
+  # Return the ids of the updated or added prediction IDs. Set attributes
+  # "updated" and "added", containing the subsets of IDs that have been updated
+  # and added, respectively
+  structure(
+    c(ids_updated, ids_added),
+    updated = ids_updated,
+    added = ids_added
+  )
 }
 
 # get_percentiles_from_prediction ----------------------------------------------

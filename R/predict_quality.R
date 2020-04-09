@@ -19,11 +19,11 @@
 #' @return list with elements \code{data}, \code{success}, \code{message}
 #' @export
 predict_quality <- function(
-  user_id, spot_id, from = Sys.Date() - 1, to = Sys.Date() + 1, import = TRUE
+  user_id, spot_id, from = Sys.Date() - 1L, to = Sys.Date() + 1L, import = TRUE
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
-  #user_id=3;spot_id=42;from=NULL;to=NULL
+  #user_id=8;spot_id=43;from=Sys.Date()-1L;to=Sys.Date()+1L;import=FALSE
 
   # Try to get the model that was added last (if any)
   model <- try(get_last_added_model(user_id, spot_id))
@@ -96,7 +96,12 @@ predict_quality <- function(
   return(create_result(
     data = result,
     success = TRUE,
-    message = get_text("predictions_posted", n = length(result))
+    message = get_text(
+      "predictions_posted",
+      n = length(result),
+      n_updated = length(kwb.utils::getAttribute(result, "updated")),
+      n_added = length(kwb.utils::getAttribute(result, "added"))
+    )
   ))
 }
 
