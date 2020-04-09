@@ -43,7 +43,7 @@
 * add get_data_summary()
 * add api_delete_predictions()
 * delete all rain data before providing new rain data
-* remove invalid e.coli values -1 values befor
+* remove invalid e.coli values
 * allow to switch between raster::crop() and mask() 
 
 # fhpredict 0.5.0
