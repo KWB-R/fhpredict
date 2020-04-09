@@ -106,9 +106,9 @@ predict_quality <- function(
 }
 
 # determine_days_to_predict ----------------------------------------------------
-determine_days_to_predict <- function(from = NULL, to = NULL, user_id = 3L)
+determine_days_to_predict <- function(from = NULL, to = NULL)
 {
-  #kwb.utils::assignPackageObjects("fhpredict");from=NULL;to=NULL;user_id=3
+  #kwb.utils::assignPackageObjects("fhpredict");from=NULL;to=NULL
   from_missing <- is.null(from)
   to_missing <- is.null(to)
 
@@ -122,40 +122,9 @@ determine_days_to_predict <- function(from = NULL, to = NULL, user_id = 3L)
     return(seq(as.Date(from), as.Date(to), by = 1L))
   }
 
-  # Look for days of measurements at spot "Vorhersagedatum"
-  if (user_id != -1L) {
-
-    spots <- api_get_bathingspot(user_id)
-
-    spot_id <- spots$id[spots$name == "Vorhersagedatum"]
-
-    # Code to set new dates for prediction
-    # api_delete_measurements(user_id, spot_id)
-    # add_timeseries_to_database(
-    #   path = path_measurements(user_id, spot_id),
-    #   data = data.frame(
-    #     date = paste(
-    #       seq(as.Date("2019-09-26"), by = 1, length.out = 5), "12:00:00"
-    #     ),
-    #     conc_ec = -1L,
-    #     conc_ie = -1L
-    #   )
-    # )
-
-    if (length(spot_id)) {
-
-      measurements <- api_get_measurements(user_id, spot_id)
-
-      # If there are such days, return them
-      if (nrow(measurements)) {
-        return(as.Date(measurements$date))
-      }
-    }
-  }
-
-  # If no days were determined yet, return the five last days of the bathing
-  # season
-  seq(as.Date("2019-09-26"), by = 1, length.out = 5)
+  fhpredict:::clean_stop(
+    "Either 'from' or 'to' must be given to 'determine_days_to_predict'"
+  )
 }
 
 # get_days_with_missing_values -------------------------------------------------

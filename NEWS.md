@@ -4,6 +4,8 @@
   new predictions. Instead, update predictions that already exist in the 
   database with PUT and add only those new predictions with POST that are not 
   yet in the database.
+* Remove arg "user_id" from determine_days_to_predict() -> do not read 
+  prediction period from a special bathing spot "Vorhersagedatum".
 
 # fhpredict 0.12.0 (2020-03-24)
 
