@@ -23,7 +23,8 @@ predict_quality <- function(
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
-  #user_id=8;spot_id=43;from=Sys.Date()-1L;to=Sys.Date()+1L;import=FALSE
+  #user_id=8;spot_id=43;from=Sys.Date()-1L;to=Sys.Date()+1L;import=TRUE
+  #user_id=9;spot_id=41
 
   # Try to get the model that was added last (if any)
   model <- try(get_last_added_model(user_id, spot_id))
@@ -36,7 +37,7 @@ predict_quality <- function(
   newdata <- try({
 
     # Determine the days to be predicted
-    (days_to_predict <- determine_days_to_predict(from, to, user_id = user_id))
+    (days_to_predict <- determine_days_to_predict(from, to))
 
     # Load new data for the dates to predict
     if (import) {
@@ -47,23 +48,37 @@ predict_quality <- function(
     spot_data <- provide_input_data(user_id, spot_id)
 
     # Prepare the data (filter for bathing season, log-transform rain)
-    riverdata <- prepare_river_data(spot_data)
+    riverdata_raw <- prepare_river_data(spot_data)
 
-    # Use only rain data because currently only rain data will be updated
-    # automatically!
-    newdata <- provide_data_for_lm(riverdata, for_model_building = FALSE)#, pattern = "r_mean")
+    # Calculate daily means just in case there is more than one record per day
+    riverdata <- lapply(riverdata_raw, calculate_daily_means)
+
+    #identify_date_duplicates(riverdata_raw)
+    stopifnot(all(lengths(identify_date_duplicates(riverdata)) == 0L))
+
+    # Provide data frame with all additional variables, as required by the model
+    newdata_raw <- provide_data_for_lm(riverdata, for_model_building = FALSE)
+
+    stopifnot(length(identify_date_duplicates(newdata_raw)) == 0L)
 
     # Filter for the days to predict!
-    all_dates <- substr(newdata$datum, 1, 10)
+    all_dates <- substr(newdata_raw$datum, 1, 10)
 
-    to_be_predicted <- all_dates %in% as.character(days_to_predict)
+    use_me <- all_dates %in% as.character(days_to_predict)
 
-    if (! any(to_be_predicted)) clean_stop(
+    if (! any(use_me)) clean_stop(
       "No data available for these days to be predicted: ",
       kwb.utils::stringList(as.character(days_to_predict))
     )
 
-    kwb.utils::removeColumns(newdata[to_be_predicted, ], "log_e.coli")
+    #kwb.utils::removeColumns(newdata[use_me, ], "log_e.coli")
+
+    # Names of variables that are acutally used by the model
+    model_vars <- get_indipendent_variables(model$formula)
+
+    # Keep only the rows related to days to be predicted and keep only the
+    # variables that are required by the model
+    kwb.utils::selectColumns(newdata_raw[use_me, ], c("datum", model_vars))
   })
 
   if (is_error(newdata)) {
