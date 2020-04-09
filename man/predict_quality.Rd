@@ -4,8 +4,8 @@
 \alias{predict_quality}
 \title{Predict Water Quality for Bathing Spot Using Stored Model}
 \usage{
-predict_quality(user_id, spot_id, from = Sys.Date() - 1,
-  to = Sys.Date() + 1, import = TRUE)
+predict_quality(user_id, spot_id, from = Sys.Date() - 1L,
+  to = Sys.Date() + 1L, import = TRUE)
 }
 \arguments{
 \item{user_id}{user ID}
