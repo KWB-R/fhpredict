@@ -1,3 +1,5 @@
+# fhpredict latest developments
+
 # fhpredict 0.13.0 (2020-04-10)
 
 * Let predict_quality() not delete all existing predictions before adding the 
