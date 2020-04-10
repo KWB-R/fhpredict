@@ -71,7 +71,10 @@ get_text <- function(keyword, ...)
     ),
     not_one_model = "Not exactly one model was returned as expected!",
     nothing_to_add = "Nothing to add.",
-    predictions_posted = "<n> predictions have been posted to the database.",
+    predictions_posted = paste0(
+      "<n> predictions have been posted to the database (<n_updated> updates, ",
+      "<n_added> inserts)."
+    ),
     process_returned_no_data = paste0(
       "kwb.flusshygiene::process_model_riverdata() returned an empty data ",
       "frame! See the structure of 'riverdata' above."

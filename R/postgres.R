@@ -56,6 +56,14 @@ postgres_delete <- function(path, ...)
   postgres_request(path, "DELETE", ...)
 }
 
+# postgres_put -----------------------------------------------------------------
+
+# Send PUT Request to Postgres API
+postgres_put <- function(path, body = NULL, encode = "json", ...)
+{
+  postgres_request(path, "PUT", body = body, encode = encode, ...)
+}
+
 # postgres_request -------------------------------------------------------------
 
 #' Do a Request to the Flusshygiene Postgres API
@@ -82,7 +90,8 @@ postgres_request <- function(
   httr_function <- kwb.utils::selectElements(type, x = list(
     GET = httr::GET,
     POST = httr::POST,
-    DELETE = httr::DELETE
+    DELETE = httr::DELETE,
+    PUT = httr::PUT
   ))
 
   if (is.null(config)) {
@@ -101,15 +110,13 @@ postgres_request <- function(
 
   if (status$category != "Success") {
 
-    if (verbose) {
-      message(
-        sprintf("%s request '%s' returned with error:\n", type, path),
-        sprintf("- status code: %d\n", httr::status_code(response)),
-        sprintf("- category: %s\n", status$category),
-        sprintf("- reason: %s\n", status$reason),
-        sprintf("- message: %s\n", status$message)
-      )
-    }
+    if (verbose) message(
+      sprintf("%s request '%s' returned with error:\n", type, path),
+      sprintf("- status code: %d\n", httr::status_code(response)),
+      sprintf("- category: %s\n", status$category),
+      sprintf("- reason: %s\n", status$reason),
+      sprintf("- message: %s\n", status$message)
+    )
 
     return(structure(list(), response = response))
   }

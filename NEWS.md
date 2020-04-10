@@ -1,3 +1,14 @@
+# fhpredict 0.13.0 (2020-04-10)
+
+* Let predict_quality() not delete all existing predictions before adding the 
+  new predictions. Instead, update predictions that already exist in the 
+  database with PUT and add only those new predictions with POST that are not 
+  yet in the database.
+* Remove arg "user_id" from determine_days_to_predict() -> do not read 
+  prediction period from a special bathing spot "Vorhersagedatum".
+* Avoid date duplicates by calculating daily means within predict_quality()
+* Create only four plots (remove "Modellimplikationen")
+
 # fhpredict 0.12.0 (2020-03-24)
 
 * Do not filter time series' for the summer period
@@ -36,7 +47,7 @@
 * add get_data_summary()
 * add api_delete_predictions()
 * delete all rain data before providing new rain data
-* remove invalid e.coli values -1 values befor
+* remove invalid e.coli values
 * allow to switch between raster::crop() and mask() 
 
 # fhpredict 0.5.0

@@ -175,6 +175,21 @@ flatten_recursive_list <- function(x)
   kwb.utils::resetRowNames(df)
 }
 
+# identify_date_duplicates -----------------------------------------------------
+identify_date_duplicates <- function(x, date_column = "datum")
+{
+  stopifnot(is.list(x))
+
+  if (! is.data.frame(x)) {
+    return(lapply(x, identify_date_duplicates, date_column = date_column))
+  }
+
+  stopifnot(is.data.frame(x))
+
+  counts <- table(kwb.utils::selectColumns(x, date_column))
+  counts[counts > 1L]
+}
+
 # get_environment_var ----------------------------------------------------------
 get_environment_var <- function(name)
 {
@@ -185,6 +200,14 @@ get_environment_var <- function(name)
   }
 
   clean_stop(sprintf("Please set the environment variable '%s'", name))
+}
+
+# get_indipendent_variables ----------------------------------------------------
+get_indipendent_variables <- function(x)
+{
+  stopifnot(rlang::is_formula(x))
+
+  unlist(lapply(x[[3L]][-1L], as.character))
 }
 
 # get_prefix -------------------------------------------------------------------
