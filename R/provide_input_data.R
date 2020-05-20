@@ -6,9 +6,11 @@
 #'
 #' @param user_id user id
 #' @param spot_id bathing spot id
+#' @param require_hygiene logical. If \code{TRUE} (default) the function will
+#'   raise an error if there are no hygienic data
 #' @export
 #'
-provide_input_data <- function(user_id, spot_id)
+provide_input_data <- function(user_id, spot_id, require_hygiene = TRUE)
 {
   #kwb.utils::assignPackageObjects("fhpredict")
   #user_id=11;spot_id=57
@@ -27,11 +29,9 @@ provide_input_data <- function(user_id, spot_id)
 
   # Add microbiological measurements to the result or return if there are no
   # measurements
-  if (nrow(measurements) == 0) {
-    clean_stop(get_text(
-      "no_measurements", user_id = user_id, spot_id = spot_id
+  if (nrow(measurements) == 0 && require_hygiene) clean_stop(
+    get_text("no_measurements", user_id = user_id, spot_id = spot_id
     ))
-  }
 
   # Create "hygiene" data frame
   result[[result_element("hygiene")]] <- data.frame(

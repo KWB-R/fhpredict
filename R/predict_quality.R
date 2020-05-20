@@ -45,7 +45,7 @@ predict_quality <- function(
     }
 
     # Collect all data that are available for the given bathing spot
-    spot_data <- provide_input_data(user_id, spot_id)
+    spot_data <- provide_input_data(user_id, spot_id, require_hygiene = FALSE)
 
     # Prepare the data (filter for bathing season, log-transform rain)
     riverdata_raw <- prepare_river_data(spot_data)
