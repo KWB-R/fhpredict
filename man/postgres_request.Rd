@@ -4,8 +4,14 @@
 \alias{postgres_request}
 \title{Do a Request to the Flusshygiene Postgres API}
 \usage{
-postgres_request(path, type = "GET", ..., token = NULL,
-  config = NULL, verbose = FALSE)
+postgres_request(
+  path,
+  type = "GET",
+  ...,
+  token = NULL,
+  config = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{path}{relative path to endpoint}

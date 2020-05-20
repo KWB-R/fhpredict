@@ -4,8 +4,12 @@
 \alias{get_radolan_urls_bucket}
 \title{Get URLs to Binary Radolan Files From Flusshygiene's Amazon Bucket}
 \usage{
-get_radolan_urls_bucket(from = format(Sys.Date() - 1, "\%Y\%m\%d"),
-  to = from, time = "", bathing_season_only = FALSE)
+get_radolan_urls_bucket(
+  from = format(Sys.Date() - 1, "\%Y\%m\%d"),
+  to = from,
+  time = "",
+  bathing_season_only = FALSE
+)
 }
 \arguments{
 \item{from}{first day considered in format yyyymmdd, e.g. "20190625".

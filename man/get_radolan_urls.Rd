@@ -4,10 +4,12 @@
 \alias{get_radolan_urls}
 \title{Get URLs to Available Radolan Files on DWD Server}
 \usage{
-get_radolan_urls(date_start_daily = "2006-10-01",
+get_radolan_urls(
+  date_start_daily = "2006-10-01",
   date_start_hourly = "2005-06-01",
   date_end_daily = lubridate::rollback(Sys.Date(), roll_to_first = TRUE),
-  date_end_hourly = date_end_daily)
+  date_end_hourly = date_end_daily
+)
 }
 \arguments{
 \item{date_start_daily}{date string (yyyy-mm-dd) of first day of daily

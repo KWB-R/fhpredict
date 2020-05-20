@@ -4,9 +4,15 @@
 \alias{get_radolan_urls_for_measurements}
 \title{Determine URLs to Radolan Files for Measurements}
 \usage{
-get_radolan_urls_for_measurements(user_id, spot_id,
-  sampling_time = "1050", date_range = NULL, all_in_range = FALSE,
-  n_days_before = 5, summer_filter = FALSE)
+get_radolan_urls_for_measurements(
+  user_id,
+  spot_id,
+  sampling_time = "1050",
+  date_range = NULL,
+  all_in_range = FALSE,
+  n_days_before = 5,
+  summer_filter = FALSE
+)
 }
 \arguments{
 \item{user_id}{user id}
