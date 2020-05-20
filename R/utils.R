@@ -207,7 +207,7 @@ get_indipendent_variables <- function(x)
 {
   stopifnot(rlang::is_formula(x))
 
-  unlist(lapply(x[[3L]][-1L], as.character))
+  all.vars(x)[-1L]
 }
 
 # get_prefix -------------------------------------------------------------------
