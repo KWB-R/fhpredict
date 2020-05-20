@@ -10,6 +10,9 @@
 #'
 provide_input_data <- function(user_id, spot_id)
 {
+  #kwb.utils::assignPackageObjects("fhpredict")
+  #user_id=11;spot_id=57
+
   # Define shortcut to kwb.utils::selectColumns()
   get <- kwb.utils::selectColumns
 
@@ -72,15 +75,27 @@ provide_input_data <- function(user_id, spot_id)
     )
   }
 
-  # Look for purification plant measurements
-  plant_measurements <- collect_series_measurements(
-    type = "plant", prefix = "ka", user_id, spot_id
-  )
+  # Helper function to add further list entries (or not if length(x) == 0)
+  add_series <- function(result, type, prefix, x) {
 
-  # Look for generic input measurements
-  generic_measurements <- collect_series_measurements(
-    type = "generic", prefix = "gen", user_id, spot_id
-  )
+    x <- collect_series_measurements(type, prefix, user_id, spot_id)
+
+    if (length(x)) {
+
+      result[[result_element(prefix)]] <- kwb.utils::renameColumns(
+        merge_series_measurements(x),
+        list(dateTime = "datum")
+      )
+    }
+
+    result
+  }
+
+  # Add purification plant measurements if there are any
+  result <- add_series(result, type = "plant", prefix = "ka")
+
+  # Add generic input measurements if there are any
+  result <- add_series(result, type = "generic", prefix = "gen")
 
   # Rename the elements in the result data frame?
 
@@ -114,4 +129,20 @@ collect_series_measurements <- function(type, prefix, user_id, spot_id)
       spot_id = spot_id
     )
   }
+}
+
+# merge_series_measurements ----------------------------------------------------
+merge_series_measurements <- function(x)
+{
+  stopifnot(is.list(x))
+
+  merged <- kwb.utils::mergeAll(
+    lapply(x, kwb.utils::removeColumns, "id"),
+    by = "dateTime",
+    all = TRUE
+  )
+
+  names(merged) <- gsub("^value\\.", "", names(merged))
+
+  merged
 }
