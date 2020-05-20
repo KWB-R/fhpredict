@@ -9,7 +9,8 @@ predict_quality(
   spot_id,
   from = Sys.Date() - 1L,
   to = Sys.Date() + 1L,
-  import = TRUE
+  import = TRUE,
+  return_debug_info = FALSE
 )
 }
 \arguments{
@@ -25,9 +26,20 @@ of the time period to be predicted. Default: "tomorrrow"}
 
 \item{import}{logical telling whether to import new rain data or not.
 Default: \code{TRUE}.}
+
+\item{return_debug_info}{logical with default \code{FALSE}. If \code{TRUE}
+the prediction is not written to the database. Instead, what would be send
+to the database is returned with all relevant variables that were used to
+prepare the prediction being set as attributes.}
 }
 \value{
-list with elements \code{data}, \code{success}, \code{message}
+list with elements \code{data}, \code{success}, \code{message} or (if
+  \code{return_debug_info = TRUE}) data frame representing the predictions
+  with attributes \code{spot_data}, \code{riverdata_raw}, \code{riverdata},
+  \code{newdata_raw}, \code{newdata}, \code{prediction} representing
+  intermediate variables that were used to prepare the prediction  (see
+  source code of \code{fhpredict::predict_quality} to understand their
+  meaning)
 }
 \description{
 If no time period is specified, the function will first check the

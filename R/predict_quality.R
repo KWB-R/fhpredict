@@ -16,15 +16,25 @@
 #'   of the time period to be predicted. Default: "tomorrrow"
 #' @param import logical telling whether to import new rain data or not.
 #'   Default: \code{TRUE}.
-#' @return list with elements \code{data}, \code{success}, \code{message}
+#' @param return_debug_info logical with default \code{FALSE}. If \code{TRUE}
+#'   the prediction is not written to the database. Instead, what would be send
+#'   to the database is returned with all relevant variables that were used to
+#'   prepare the prediction being set as attributes.
+#' @return list with elements \code{data}, \code{success}, \code{message} or (if
+#'   \code{return_debug_info = TRUE}) data frame representing the predictions
+#'   with attributes \code{spot_data}, \code{riverdata_raw}, \code{riverdata},
+#'   \code{newdata_raw}, \code{newdata}, \code{prediction} representing
+#'   intermediate variables that were used to prepare the prediction  (see
+#'   source code of \code{fhpredict::predict_quality} to understand their
+#'   meaning)
 #' @export
 predict_quality <- function(
-  user_id, spot_id, from = Sys.Date() - 1L, to = Sys.Date() + 1L, import = TRUE
+  user_id, spot_id, from = Sys.Date() - 1L, to = Sys.Date() + 1L, import = TRUE,
+  return_debug_info = FALSE
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
-  #user_id=8;spot_id=43;from=Sys.Date()-1L;to=Sys.Date()+1L;import=TRUE
-  #user_id=9;spot_id=41
+  #user_id=11;spot_id=57;from=Sys.Date()-1L;to=Sys.Date()+1L;import=FALSE
 
   # Try to get the model that was added last (if any)
   model <- try(get_last_added_model(user_id, spot_id))
@@ -100,6 +110,19 @@ predict_quality <- function(
     #   path = path_predictions(user_id, spot_id),
     #   data = percentiles
     # )
+
+    if (return_debug_info) {
+
+      return(structure(
+        percentiles,
+        spot_data = spot_data,
+        riverdata_raw = riverdata_raw,
+        riverdata = riverdata,
+        newdata_raw = newdata_raw,
+        newdata = newdata,
+        prediction = prediction
+      ))
+    }
 
     api_replace_predictions(user_id, spot_id, percentiles)
   })
