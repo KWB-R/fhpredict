@@ -20,6 +20,10 @@
 #'   the prediction is not written to the database. Instead, what would be send
 #'   to the database is returned with all relevant variables that were used to
 #'   prepare the prediction being set as attributes.
+#' @param radolan_time time string ("hhmm") against which to match the RADOLAN
+#'   file names to be loaded. By default, the latest available time for the day
+#'   given in \code{from} is used (for all days within \code{from} and
+#'   \code{to}).
 #' @return list with elements \code{data}, \code{success}, \code{message} or (if
 #'   \code{return_debug_info = TRUE}) data frame representing the predictions
 #'   with attributes \code{spot_data}, \code{riverdata_raw}, \code{riverdata},
@@ -29,12 +33,17 @@
 #'   meaning)
 #' @export
 predict_quality <- function(
-  user_id, spot_id, from = Sys.Date() - 1L, to = Sys.Date() + 1L, import = TRUE,
-  return_debug_info = FALSE
+  user_id, spot_id, from = Sys.Date(), to = from, import = TRUE,
+  return_debug_info = FALSE, radolan_time = NULL
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
   #user_id=11;spot_id=57;from=Sys.Date()-1L;to=Sys.Date()+1L;import=FALSE
+
+  # Default RADOLAN time string: latest available for the first day to predict
+  radolan_time <- kwb.utils::defaultIfNULL(
+    radolan_time, utils::tail(available_radolan_times_of_day(from), 1L)
+  )
 
   # Try to get the model that was added last (if any)
   model <- try(get_last_added_model(user_id, spot_id))
@@ -51,7 +60,9 @@ predict_quality <- function(
 
     # Load new data for the dates to predict
     if (import) {
-      import_new_data(user_id, spot_id, days_to_predict)
+      import_new_data(
+        user_id, spot_id, days_to_predict, radolan_time = radolan_time
+      )
     }
 
     # Collect all data that are available for the given bathing spot
@@ -180,14 +191,14 @@ get_days_with_missing_values <- function(hygiene)
 }
 
 # import_new_data --------------------------------------------------------------
-import_new_data <- function(user_id, spot_id, days)
+import_new_data <- function(user_id, spot_id, days, radolan_time = "1050")
 {
   stopifnot(inherits(days, "Date"))
 
   # Extend days to 5-day periods before each day
   dates <- add_days_before(days, n_days_before = 5)
 
-  urls <- get_radolan_urls_for_days(dates = dates, time = "1050")
+  urls <- get_radolan_urls_for_days(dates = dates, time = radolan_time)
 
   control <- provide_rain_data(user_id, spot_id, urls = urls, info = FALSE)
 
