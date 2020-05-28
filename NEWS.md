@@ -1,5 +1,13 @@
 # fhpredict latest developments
 
+# fhpredict 0.15.0 (2020-05-28)
+
+* predict_quality():
+    + Set the defaults for both "from" and "to" to the current day. 
+    + Add argument "radolan_time" that is passed to import_new_data(). By 
+    default "radolan_time" is set to the last available time for the day given 
+    in "from".
+
 # fhpredict 0.14.0 (2020-05-28)
 
 * Fix bug in api_replace_predictions(): do not fail on missing data in db
