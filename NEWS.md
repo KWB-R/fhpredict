@@ -1,5 +1,14 @@
 # fhpredict latest developments
 
+# fhpredict 0.14.0 (2020-05-28)
+
+* Fix bug in api_replace_predictions(): do not fail on missing data in db
+* Fix bug in get_indipendent_variables(): use all.vars()
+* predict_quality(): Add argument "return_debug_info"
+* provide_input_data():
+    + Add argument "require_hygiene"
+    + Actually return purification plant and generic time series
+
 # fhpredict 0.13.0 (2020-04-10)
 
 * Let predict_quality() not delete all existing predictions before adding the 
