@@ -4,8 +4,12 @@
 \alias{provide_rain_data_for_bathing_spot}
 \title{Provide Rain Data for one Bathing Spot}
 \usage{
-provide_rain_data_for_bathing_spot(user_id, spot_id,
-  sampling_time = "1050", date_range = NULL)
+provide_rain_data_for_bathing_spot(
+  user_id,
+  spot_id,
+  sampling_time = "1050",
+  date_range = NULL
+)
 }
 \arguments{
 \item{user_id}{user id}

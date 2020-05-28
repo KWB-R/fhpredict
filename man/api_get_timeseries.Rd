@@ -4,8 +4,13 @@
 \alias{api_get_timeseries}
 \title{Get Timeseries Data from the Postgres Database Via API}
 \usage{
-api_get_timeseries(path, subject = "timeseries", sort = TRUE,
-  token = NULL, type = NULL)
+api_get_timeseries(
+  path,
+  subject = "timeseries",
+  sort = TRUE,
+  token = NULL,
+  type = NULL
+)
 }
 \arguments{
 \item{path}{(relative) path to API endpoint}

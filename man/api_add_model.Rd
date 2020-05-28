@@ -4,8 +4,13 @@
 \alias{api_add_model}
 \title{Add a Model to the Database}
 \usage{
-api_add_model(user_id, spot_id, model, comment = "any comment?",
-  parameter = "conc_ec or conc_ie?")
+api_add_model(
+  user_id,
+  spot_id,
+  model,
+  comment = "any comment?",
+  parameter = "conc_ec or conc_ie?"
+)
 }
 \arguments{
 \item{user_id}{user ID}

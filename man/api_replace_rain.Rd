@@ -4,8 +4,14 @@
 \alias{api_replace_rain}
 \title{Add Rain Data Replacing Records for Existing Times}
 \usage{
-api_replace_rain(user_id, spot_id, rain, rain_db = NULL, time_string,
-  comment = "")
+api_replace_rain(
+  user_id,
+  spot_id,
+  rain,
+  rain_db = NULL,
+  time_string,
+  comment = ""
+)
 }
 \arguments{
 \item{user_id}{user identifier}

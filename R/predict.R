@@ -48,7 +48,11 @@ api_replace_predictions <- function(user_id, spot_id, percentiles)
   predictions_db <- api_get_timeseries(path)
 
   # Date strings of the predictions in the database
-  date_strings_db <- format(get(predictions_db, "dateTime"), "%Y-%m-%d")
+  date_strings_db <- if (nrow(predictions_db)) {
+    format(get(predictions_db, "dateTime"), "%Y-%m-%d")
+  } else {
+    character()
+  }
 
   # Date strings of the new predictions
   date_strings_new <- as.character(get(percentiles, "dateTime"))

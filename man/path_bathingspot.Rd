@@ -4,8 +4,13 @@
 \alias{path_bathingspot}
 \title{Path to Bathing Spot API endpoint}
 \usage{
-path_bathingspot(user_id = -1L, spot_id = -1L, limit = NULL,
-  skip = NULL, sep = "/")
+path_bathingspot(
+  user_id = -1L,
+  spot_id = -1L,
+  limit = NULL,
+  skip = NULL,
+  sep = "/"
+)
 }
 \description{
 Path to Bathing Spot API endpoint

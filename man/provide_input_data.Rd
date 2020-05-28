@@ -4,12 +4,15 @@
 \alias{provide_input_data}
 \title{Provide Input Data for the Model Calibration}
 \usage{
-provide_input_data(user_id, spot_id)
+provide_input_data(user_id, spot_id, require_hygiene = TRUE)
 }
 \arguments{
 \item{user_id}{user id}
 
 \item{spot_id}{bathing spot id}
+
+\item{require_hygiene}{logical. If \code{TRUE} (default) the function will
+raise an error if there are no hygienic data}
 }
 \description{
 Provide data in the list format as returned by Carsten Vick's import function

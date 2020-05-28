@@ -4,8 +4,14 @@
 \alias{api_get_bathingspot}
 \title{Get Bathing Spot(s)}
 \usage{
-api_get_bathingspot(user_id = -1L, spot_id = -1L, limit = NULL,
-  skip = NULL, pattern = "", check = TRUE)
+api_get_bathingspot(
+  user_id = -1L,
+  spot_id = -1L,
+  limit = NULL,
+  skip = NULL,
+  pattern = "",
+  check = TRUE
+)
 }
 \arguments{
 \item{user_id}{user ID or -1L (all users)}
