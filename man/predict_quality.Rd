@@ -7,10 +7,11 @@
 predict_quality(
   user_id,
   spot_id,
-  from = Sys.Date() - 1L,
-  to = Sys.Date() + 1L,
+  from = Sys.Date(),
+  to = from,
   import = TRUE,
-  return_debug_info = FALSE
+  return_debug_info = FALSE,
+  radolan_time = NULL
 )
 }
 \arguments{
@@ -31,6 +32,11 @@ Default: \code{TRUE}.}
 the prediction is not written to the database. Instead, what would be send
 to the database is returned with all relevant variables that were used to
 prepare the prediction being set as attributes.}
+
+\item{radolan_time}{time string ("hhmm") against which to match the RADOLAN
+file names to be loaded. By default, the latest available time for the day
+given in \code{from} is used (for all days within \code{from} and
+\code{to}).}
 }
 \value{
 list with elements \code{data}, \code{success}, \code{message} or (if
