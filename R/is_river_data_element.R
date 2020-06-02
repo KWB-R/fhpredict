@@ -55,7 +55,7 @@ is_river_data_element <- function(x)
 # expected_prefixes ------------------------------------------------------------
 expected_prefixes <- function()
 {
-  c("hygiene", "i", "ka", "q", "r")
+  c("hygiene", "i", "ka", "q", "r", "gen")
 }
 
 # is_river_data_table ----------------------------------------------------------
