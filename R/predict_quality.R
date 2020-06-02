@@ -38,7 +38,9 @@ predict_quality <- function(
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
-  #user_id=11;spot_id=57;from=Sys.Date()-1L;to=Sys.Date()+1L;import=FALSE
+  #kwb.utils:::assignArgumentDefaults(predict_quality)
+  #user_id=11;spot_id=57;import=FALSE
+  #user_id=9;spot_id=53;to=from
 
   # Default RADOLAN time string: latest available for the first day to predict
   radolan_time <- kwb.utils::defaultIfNULL(
