@@ -9,41 +9,48 @@
 #' @param dbg if \code{TRUE}, debug messages are shown
 #' @keywords internal
 #'
-get_postgres_api_token <- function(dbg = FALSE)
+get_postgres_api_token <- function(dbg = TRUE)
 {
+  # Full path to a file in the TEMP folder that stores the token
   file <- token_file()
 
-  # If a token is stored and if it is valid, return the stored token
+  # If the token file exists, read the token from the file. Otherwise token will
+  # be NULL
   token <- if (file.exists(file)) {
-
     read_token(file, dbg = dbg)
+  }
 
-  } else {
+  # If there was no file or if the token that was read from the file is not
+  # valid we request for a new token and save it in the file
+  if (is.null(token) || ! is_valid_postgres_api_token(token)) {
 
-    kwb.utils::catAndRun(
+    token <- kwb.utils::catAndRun(
+
       get_text("requesting_token"),
       dbg = dbg,
       newLine = 1,
       expr = {
 
-        token_data <- request_token()
-
-        if (is.null(token_data)) {
+        if (is.null(token_data <- request_token())) {
           clean_stop("Requesting the token from auth0 failed!")
         }
 
-        kwb.utils::selectElements(token_data, "access_token")
+        token <- kwb.utils::selectElements(token_data, "access_token")
+
+        write_token(token, file, dbg = dbg)
+
+        token
       }
     )
   }
 
   # We expect the new token to be valid!
-  if (is_valid <- is_valid_postgres_api_token(token)) {
-    write_token(token, file, dbg = dbg)
-    return(token)
+  if (! (is_valid <- is_valid_postgres_api_token(token))) {
+
+    clean_stop(kwb.utils::getAttribute(is_valid, "error"))
   }
 
-  clean_stop(kwb.utils::getAttribute(is_valid, "error"))
+  token
 }
 
 # token_file -------------------------------------------------------------------
