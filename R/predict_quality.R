@@ -75,20 +75,16 @@ predict_quality <- function(
     spot_data <- provide_input_data(user_id, spot_id, require_hygiene = FALSE)
 
     # Prepare the data (filter for bathing season, log-transform rain)
-    riverdata <- prepare_river_data(spot_data)
+    riverdata_raw <- prepare_river_data(spot_data)
 
-    # Add fake entry (with all values 0) for the "to" date
-    riverdata <- lapply(riverdata, function(df) {
-      template <- df[1L, ]
-      template[, 1L] <- as.POSIXct(paste0(to, "00:00:00"))
-      template[, -1L] <- 0
-      rbind(df, template)
-    })
+    # If no data are available for the "to" date, add a fake entry for the "to"
+    # date (with all values 0) and reorder the data frame by the date
+    riverdata <- lapply(riverdata_raw, add_fake_entry_if_required, to)
 
     # Calculate daily means just in case there is more than one record per day
     riverdata <- lapply(riverdata, calculate_daily_means)
 
-    #identify_date_duplicates(riverdata_raw)
+    #identify_date_duplicates(riverdata)
     stopifnot(all(lengths(identify_date_duplicates(riverdata)) == 0L))
 
     # Provide data frame with all additional variables, as required by the model
@@ -236,4 +232,25 @@ finish_prediction <- function(prediction, newdata)
   percentiles$dateTime <- dates
 
   percentiles
+}
+
+# add_fake_entry_if_required ---------------------------------------------------
+add_fake_entry_if_required <- function(df, to)
+{
+  #df <- riverdata_tmp$hygiene_spot58
+  to_date <- as.POSIXct(paste0(to, "00:00:00"))
+
+  if (! to_date %in% df$datum) {
+
+    to_record <- do.call(
+      what = data.frame,
+      args = c(as.list(to_date), as.list(rep(0, ncol(df) - 1L)))
+    )
+
+    df <- rbind(df, stats::setNames(to_record, names(df)))
+
+    df <- df[order(df$datum), ]
+  }
+
+  df
 }
