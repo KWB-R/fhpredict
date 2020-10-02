@@ -1,5 +1,7 @@
 # fhpredict latest developments
 
+* rename determine_days_to_predict() to determine_date_range()
+
 # fhpredict 0.15.0 (2020-05-28)
 
 * predict_quality():

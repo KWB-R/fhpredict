@@ -156,8 +156,8 @@ predict_quality <- function(
   ))
 }
 
-# determine_days_to_predict ----------------------------------------------------
-determine_days_to_predict <- function(from = NULL, to = NULL)
+# determine_date_range ---------------------------------------------------------
+determine_date_range <- function(from = NULL, to = NULL)
 {
   #kwb.utils::assignPackageObjects("fhpredict");from=NULL;to=NULL
   from_missing <- is.null(from)
@@ -174,7 +174,7 @@ determine_days_to_predict <- function(from = NULL, to = NULL)
   }
 
   clean_stop(
-    "Either 'from' or 'to' must be given to 'determine_days_to_predict'"
+    "Either 'from' or 'to' must be given to 'determine_date_range'"
   )
 }
 
