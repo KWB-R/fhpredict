@@ -105,13 +105,11 @@ predict_quality <- function(
     #kwb.utils::removeColumns(newdata[use_me, ], "log_e.coli")
 
     # Names of variables that are acutally used by the model
-    model_vars <- get_indipendent_variables(model$formula)
+    model_vars <- get_independent_variables(model$formula)
 
     # Keep only the rows related to days to be predicted and keep only the
     # variables that are required by the model
-    columns <- c("datum", model_vars)
-
-    newdata <- kwb.utils::selectColumns(newdata_raw[use_me, ], columns)
+    kwb.utils::selectColumns(newdata_raw[use_me, ], c("datum", model_vars))
   })
 
   if (is_error(newdata)) {

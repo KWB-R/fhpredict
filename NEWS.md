@@ -1,6 +1,8 @@
 # fhpredict latest developments
 
 * rename determine_days_to_predict() to determine_date_range()
+* fix bug in predict_quality(): Distinguish between the range of days to be
+  predicted and the range of days of which to load data (one day less)
 
 # fhpredict 0.15.0 (2020-05-28)
 
@@ -13,7 +15,7 @@
 # fhpredict 0.14.0 (2020-05-28)
 
 * Fix bug in api_replace_predictions(): do not fail on missing data in db
-* Fix bug in get_indipendent_variables(): use all.vars()
+* Fix bug in get_independent_variables(): use all.vars()
 * predict_quality(): Add argument "return_debug_info"
 * provide_input_data():
     + Add argument "require_hygiene"
