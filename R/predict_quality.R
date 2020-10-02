@@ -64,7 +64,7 @@ predict_quality <- function(
     (data_days <- determine_date_range(before_from, before_to))
     (prediction_days <- determine_date_range(from, to))
 
-    # Load new data for the dates to predict
+    # Load new (rain) data required for the prediction
     if (import) {
       import_new_data(
         user_id, spot_id, data_days, radolan_time = radolan_time
@@ -84,7 +84,7 @@ predict_quality <- function(
     # Calculate daily means just in case there is more than one record per day
     riverdata <- lapply(riverdata, calculate_daily_means)
 
-    #identify_date_duplicates(riverdata)
+    #identify_date_duplicates(riverdata_raw)
     stopifnot(all(lengths(identify_date_duplicates(riverdata)) == 0L))
 
     # Provide data frame with all additional variables, as required by the model
