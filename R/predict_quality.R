@@ -41,14 +41,14 @@ predict_quality <- function(
   #kwb.utils:::assignArgumentDefaults(predict_quality)
   #user_id=11;spot_id=58;to=from;import=FALSE
 
-  before_from <- as.Date(from) - 1L
-  before_to <- as.Date(to) - 1L
+  (before_from <- as.Date(from) - 1L)
+  (before_to <- as.Date(to) - 1L)
 
   # Default RADOLAN time string: latest available for the day before the first
   # day to predict
-  radolan_time <- kwb.utils::defaultIfNULL(
+  (radolan_time <- kwb.utils::defaultIfNULL(
     radolan_time, utils::tail(available_radolan_times_of_day(before_from), 1L)
-  )
+  ))
 
   # Try to get the model that was added last (if any)
   model <- try(get_last_added_model(user_id, spot_id))
