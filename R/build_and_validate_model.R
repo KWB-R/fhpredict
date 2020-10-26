@@ -46,8 +46,9 @@ build_and_validate_model <- function(
   stat_tests <- update_stat_tests(stat_tests, models, train_rows)
 
   sorted_models <- stat_tests %>%
-    dplyr::filter(.data$below95 == 5 & .data$below90 == 5 & .data$in50 == 5) %>%
-    dplyr::arrange(dplyr::desc(.data$R2))
+    dplyr::mutate(sum_valid = .data$below95 + .data$below90 + .data$in50 +.data$in95) %>%
+    #dplyr::filter(.data$below95 == 5 & .data$below90 == 5 & .data$in50 == 5) %>%
+    dplyr::arrange(dplyr::desc(.data$sum_valid,.data$R2))
 
   if (nrow(sorted_models) == 0) {
 
@@ -234,5 +235,10 @@ test_beta <- function(is_true, percentile)
     q = percentile,
     shape1 = sum(is_true) + 1,
     shape2 = sum(! is_true) + 1
-  ) > 0.05
+  ) > 0.025 & stats::pbeta(
+    q = percentile,
+    shape1 = sum(is_true) + 1,
+    shape2 = sum(! is_true) + 1
+  ) < 0.975
 }
+
