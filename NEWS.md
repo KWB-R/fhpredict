@@ -1,8 +1,12 @@
 # fhpredict latest developments
 
+# fhpredict 0.16.0 (2020-10-26)
+
 * rename determine_days_to_predict() to determine_date_range()
 * fix bug in predict_quality(): Distinguish between the range of days to be
   predicted and the range of days of which to load data (one day less)
+* changes by Wolfgang Seis: fix bug in test_beta(), change model 
+  selection/sorting
 
 # fhpredict 0.15.0 (2020-05-28)
 
