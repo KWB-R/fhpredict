@@ -11,9 +11,9 @@
 #' @param user_id user ID
 #' @param spot_id bathing spot ID
 #' @param from Date object or date string in format yyyy-mm-dd giving the first
-#'   day of the time period to be predicted. Default: "yesterday"
+#'   day of the time period to be predicted. Default: "today"
 #' @param to Date object or date string in format yyyy-mm-dd giving the last day
-#'   of the time period to be predicted. Default: "tomorrrow"
+#'   of the time period to be predicted. Default: "today"
 #' @param import logical telling whether to import new rain data or not.
 #'   Default: \code{TRUE}.
 #' @param return_debug_info logical with default \code{FALSE}. If \code{TRUE}
@@ -38,12 +38,17 @@ predict_quality <- function(
 )
 {
   #kwb.utils::assignPackageObjects("fhpredict")
-  #user_id=11;spot_id=57;from=Sys.Date()-1L;to=Sys.Date()+1L;import=FALSE
+  #kwb.utils:::assignArgumentDefaults(predict_quality)
+  #user_id=11;spot_id=58;to=from;import=FALSE
 
-  # Default RADOLAN time string: latest available for the first day to predict
-  radolan_time <- kwb.utils::defaultIfNULL(
-    radolan_time, utils::tail(available_radolan_times_of_day(from), 1L)
-  )
+  (before_from <- as.Date(from) - 1L)
+  (before_to <- as.Date(to) - 1L)
+
+  # Default RADOLAN time string: latest available for the day before the first
+  # day to predict
+  (radolan_time <- kwb.utils::defaultIfNULL(
+    radolan_time, utils::tail(available_radolan_times_of_day(before_from), 1L)
+  ))
 
   # Try to get the model that was added last (if any)
   model <- try(get_last_added_model(user_id, spot_id))
@@ -55,13 +60,14 @@ predict_quality <- function(
   # Provide new data for prediction
   newdata <- try({
 
-    # Determine the days to be predicted
-    (days_to_predict <- determine_days_to_predict(from, to))
+    # Determine the days of which to load data and the days to be predicted
+    (data_days <- determine_date_range(before_from, before_to))
+    (prediction_days <- determine_date_range(from, to))
 
-    # Load new data for the dates to predict
+    # Load new (rain) data required for the prediction
     if (import) {
       import_new_data(
-        user_id, spot_id, days_to_predict, radolan_time = radolan_time
+        user_id, spot_id, data_days, radolan_time = radolan_time
       )
     }
 
@@ -71,8 +77,12 @@ predict_quality <- function(
     # Prepare the data (filter for bathing season, log-transform rain)
     riverdata_raw <- prepare_river_data(spot_data)
 
+    # If no data are available for the "to" date, add a fake entry for the "to"
+    # date (with all values 0) and reorder the data frame by the date
+    riverdata <- lapply(riverdata_raw, add_fake_entry_if_required, to)
+
     # Calculate daily means just in case there is more than one record per day
-    riverdata <- lapply(riverdata_raw, calculate_daily_means)
+    riverdata <- lapply(riverdata, calculate_daily_means)
 
     #identify_date_duplicates(riverdata_raw)
     stopifnot(all(lengths(identify_date_duplicates(riverdata)) == 0L))
@@ -82,20 +92,20 @@ predict_quality <- function(
 
     stopifnot(length(identify_date_duplicates(newdata_raw)) == 0L)
 
-    # Filter for the days to predict!
+    # Filter for the dates to be predicted
     all_dates <- substr(newdata_raw$datum, 1, 10)
 
-    use_me <- all_dates %in% as.character(days_to_predict)
+    use_me <- all_dates %in% as.character(prediction_days)
 
     if (! any(use_me)) clean_stop(
-      "No data available for these days to be predicted: ",
-      kwb.utils::stringList(as.character(days_to_predict))
+      "No data available for these required days for prediction: ",
+      kwb.utils::stringList(as.character(data_days))
     )
 
     #kwb.utils::removeColumns(newdata[use_me, ], "log_e.coli")
 
     # Names of variables that are acutally used by the model
-    model_vars <- get_indipendent_variables(model$formula)
+    model_vars <- get_independent_variables(model$formula)
 
     # Keep only the rows related to days to be predicted and keep only the
     # variables that are required by the model
@@ -112,15 +122,6 @@ predict_quality <- function(
     prediction <- rstanarm::posterior_predict(model, newdata = newdata)
 
     percentiles <- finish_prediction(prediction, newdata)
-
-    # Delete all predictions
-    # api_delete_predictions(user_id, spot_id)
-    #
-    # # Add predictions to the database
-    # add_timeseries_to_database(
-    #   path = path_predictions(user_id, spot_id),
-    #   data = percentiles
-    # )
 
     if (return_debug_info) {
 
@@ -154,8 +155,8 @@ predict_quality <- function(
   ))
 }
 
-# determine_days_to_predict ----------------------------------------------------
-determine_days_to_predict <- function(from = NULL, to = NULL)
+# determine_date_range ---------------------------------------------------------
+determine_date_range <- function(from = NULL, to = NULL)
 {
   #kwb.utils::assignPackageObjects("fhpredict");from=NULL;to=NULL
   from_missing <- is.null(from)
@@ -172,7 +173,7 @@ determine_days_to_predict <- function(from = NULL, to = NULL)
   }
 
   clean_stop(
-    "Either 'from' or 'to' must be given to 'determine_days_to_predict'"
+    "Either 'from' or 'to' must be given to 'determine_date_range'"
   )
 }
 
@@ -229,4 +230,25 @@ finish_prediction <- function(prediction, newdata)
   percentiles$dateTime <- dates
 
   percentiles
+}
+
+# add_fake_entry_if_required ---------------------------------------------------
+add_fake_entry_if_required <- function(df, to)
+{
+  #df <- riverdata_tmp$hygiene_spot58
+  to_date <- as.POSIXct(paste0(to, "00:00:00"))
+
+  if (! to_date %in% df$datum) {
+
+    to_record <- do.call(
+      what = data.frame,
+      args = c(as.list(to_date), as.list(rep(0, ncol(df) - 1L)))
+    )
+
+    df <- rbind(df, stats::setNames(to_record, names(df)))
+
+    df <- df[order(df$datum), ]
+  }
+
+  df
 }

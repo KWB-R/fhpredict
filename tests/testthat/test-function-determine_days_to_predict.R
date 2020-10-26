@@ -1,6 +1,6 @@
-test_that("determine_days_to_predict() works", {
+test_that("determine_date_range() works", {
 
-  f <- fhpredict:::determine_days_to_predict
+  f <- fhpredict:::determine_date_range
 
   date <- "2019-07-05"
 

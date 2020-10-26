@@ -30,8 +30,8 @@ provide_input_data <- function(user_id, spot_id, require_hygiene = TRUE)
   # Add microbiological measurements to the result or return if there are no
   # measurements
   if (nrow(measurements) == 0 && require_hygiene) clean_stop(
-    get_text("no_measurements", user_id = user_id, spot_id = spot_id
-    ))
+    get_text("no_measurements", user_id = user_id, spot_id = spot_id)
+  )
 
   # Create "hygiene" data frame
   result[[result_element("hygiene")]] <- data.frame(
@@ -76,7 +76,7 @@ provide_input_data <- function(user_id, spot_id, require_hygiene = TRUE)
   }
 
   # Helper function to add further list entries (or not if length(x) == 0)
-  add_series <- function(result, type, prefix, x) {
+  add_series <- function(result, type, prefix) {
 
     x <- collect_series_measurements(type, prefix, user_id, spot_id)
 
@@ -122,12 +122,15 @@ collect_series_measurements <- function(type, prefix, user_id, spot_id)
 
   if (kwb.utils::defaultIfNULL(nrow(series), 0) > 0) {
 
-    lapply(
+    result <- lapply(
       X = stats::setNames(series$id, sprintf("%s_%d", prefix, series$id)),
       FUN = get_functions$measurements,
       user_id = user_id,
       spot_id = spot_id
     )
+
+    # Remove empty data frames from the result list
+    result[sapply(result, nrow) > 0L]
   }
 }
 

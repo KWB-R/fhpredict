@@ -4,7 +4,7 @@
 \alias{get_postgres_api_token}
 \title{Get a Valid Token to Access the Postgres API}
 \usage{
-get_postgres_api_token(dbg = FALSE)
+get_postgres_api_token(dbg = TRUE)
 }
 \arguments{
 \item{dbg}{if \code{TRUE}, debug messages are shown}
