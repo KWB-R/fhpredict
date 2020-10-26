@@ -202,8 +202,8 @@ get_environment_var <- function(name)
   clean_stop(sprintf("Please set the environment variable '%s'", name))
 }
 
-# get_indipendent_variables ----------------------------------------------------
-get_indipendent_variables <- function(x)
+# get_independent_variables ----------------------------------------------------
+get_independent_variables <- function(x)
 {
   stopifnot(rlang::is_formula(x))
 

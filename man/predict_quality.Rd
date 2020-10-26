@@ -20,10 +20,10 @@ predict_quality(
 \item{spot_id}{bathing spot ID}
 
 \item{from}{Date object or date string in format yyyy-mm-dd giving the first
-day of the time period to be predicted. Default: "yesterday"}
+day of the time period to be predicted. Default: "today"}
 
 \item{to}{Date object or date string in format yyyy-mm-dd giving the last day
-of the time period to be predicted. Default: "tomorrrow"}
+of the time period to be predicted. Default: "today"}
 
 \item{import}{logical telling whether to import new rain data or not.
 Default: \code{TRUE}.}
