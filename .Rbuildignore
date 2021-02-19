@@ -9,3 +9,4 @@ fhpredict.Rproj
 ^index\.R?md$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.github$
